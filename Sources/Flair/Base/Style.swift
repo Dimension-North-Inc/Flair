@@ -28,7 +28,7 @@ public struct Style {
             styleKeyTypes[key.name] = key
         }
     }
-    private static var styleKeyTypes: [String: any StyleKeys.Type] = [:]
+    fileprivate static var styleKeyTypes: [String: any StyleKeys.Type] = [:]
     
     // MARK: - Style Values
     /// a style property value
@@ -121,4 +121,65 @@ public struct Style {
     }
     
     public init() {}
+}
+
+extension Style: Codable {
+    struct CodingKeys: CodingKey {
+        var stringValue: String
+        init?(stringValue: String) {
+            self.stringValue = stringValue
+        }
+        
+        var intValue: Int? { return nil }
+        init?(intValue: Int) { return nil }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        for key in values.keys {
+            guard
+                let value = values[key],
+                let codingKey = CodingKeys(stringValue: key),
+                let codingValueType = Style.styleKeyTypes[key]
+            else {
+                continue
+            }
+
+            var nestedContainer = container.nestedUnkeyedContainer(forKey: codingKey)
+
+            switch value {
+            case .inherit:
+                break
+
+            case .initial:
+                try nestedContainer.encode("i")
+            
+            case let .override(overridden):
+                try nestedContainer.encode("o")
+                try codingValueType.encode(overridden, into: &nestedContainer)
+            }
+        }
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        for key in container.allKeys {
+            guard
+                let codingValueType = Style.styleKeyTypes[key.stringValue]
+            else {
+                continue
+            }
+            
+            var nestedContainer = try container.nestedUnkeyedContainer(forKey: key)
+            
+            switch try? nestedContainer.decode(String.self) {
+            case "i":   values[key.stringValue] = .initial
+            case "o":   values[key.stringValue] = .override(try codingValueType.decode(from: &nestedContainer))
+            
+            default:    break
+            }
+        }
+    }
 }

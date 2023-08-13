@@ -23,6 +23,18 @@ public protocol StyleKeys<Value> {
     static var initial: Value { get }
 }
 
+public extension StyleKeys {
+    static func encode(_ value: Any, into container: inout UnkeyedEncodingContainer) throws {
+        guard let encodable = value as? Value else {
+            return
+        }
+        try container.encode(encodable)
+    }
+    static func decode(from container: inout UnkeyedDecodingContainer) throws -> Any {
+        return try container.decode(Value.self)
+    }
+}
+
 extension Style {
     /// A container for  shorthand references to `StyleKeys` conforming types.
     ///
