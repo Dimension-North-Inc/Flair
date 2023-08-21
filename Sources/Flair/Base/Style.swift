@@ -14,7 +14,6 @@ import Foundation
 /// border widths, or application specific display or behavioural settings. Values are their corresponding
 /// values for the given style.
 public struct Style {
-    
     /// Registers a custom `StyleKeys` conforming type, allowing it
     /// to be read-from and written-to `Encodable` containers.
     ///
@@ -22,12 +21,28 @@ public struct Style {
     /// during application start-up, so that styles stored within `Codable`
     /// archives can be succesfully read.
     ///
-    /// - Parameter key: a `StyleKeys` conforming type
+    /// - Parameter keys: a list of `StyleKeys` conforming types
     public static func register(_ keys: any StyleKeys.Type...) {
         for key in keys {
             styleKeyTypes[key.name] = key
         }
     }
+
+    /// Registers a custom `StyleKeys` conforming type, allowing it
+    /// to be read-from and written-to `Encodable` containers.
+    ///
+    /// When defiining custom style keys, be sure to register each early
+    /// during application start-up, so that styles stored within `Codable`
+    /// archives can be succesfully read.
+    ///
+    /// - Parameter paths: a list of keypaths to `StyleKeys` conforming types declared by `Style.Key`
+    public static func register(_ paths: KeyPath<Style.Key, any StyleKeys.Type>...) {
+        for path in paths {
+            let key = Style.Key()[keyPath: path]
+            styleKeyTypes[key.name] = key
+        }
+    }
+    
     fileprivate static var styleKeyTypes: [String: any StyleKeys.Type] = [:]
     
     // MARK: - Style Values

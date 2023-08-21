@@ -63,7 +63,6 @@ extension Style {
     ///
     /// ```
     public struct Key {
-        private init() {}
     }
 }
 
