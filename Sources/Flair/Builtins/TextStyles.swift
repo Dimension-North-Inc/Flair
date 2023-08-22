@@ -9,15 +9,14 @@
 import Foundation
 
 extension Style.Key {
-    public struct AlignmentStyle: StyleKeys {
-        public enum Value: Codable {
-            case leading
-            case trailing
-            case centered
-            case justified
-        }
+    public enum AlignmentStyle: StyleKeys, Codable {
+        case leading
+        case trailing
+        case centered
+        case justified
+
         public static var name      = "flair.text.alignment"
-        public static var initial   = Value.leading
+        public static var initial   = Self.leading
     }
     
     public struct ForegroundColorStyle: StyleKeys {

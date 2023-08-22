@@ -17,15 +17,30 @@ element in `Codable` containers, and an `initial` Codable value used for the sty
 element when it is left undefined within a style.
 
 ```swift
-struct CardStyle: StyleKeys {
-    enum Value: Codable {
-        case imageOnly
-        case imageLeading
-        case imageTrailing
-    }
+public protocol StyleKeys<Value> {
+    associatedtype Value: Codable
+    
+    /// a name used to store the element in `Codable` containers.
+    static var name: String { get }
+    
+    /// an  initial - or default - value for the element used when it is left undefined within a style.
+    static var initial: Value { get }
+}
+
+// a style whose value is a common codable type... 
+struct Indentation: StyleKeys {
+    static var name = "flairsamples.indentation"
+    static var initial = CGFloat(42)
+}
+
+// a fully custom style value type can act as its own key...
+enum CardStyle: StyleKeys, Codable {
+    case imageOnly
+    case imageLeading
+    case imageTrailing
     
     static var name = "flairsamples.cardstyle"
-    static var initial = Value.imageLeading
+    static var initial = Self.imageLeading
 }
 ```
 
@@ -46,16 +61,6 @@ with your `StyleKeys`-conforming type:
 
 ```swift
 extension Style.Key {
-    struct CardStyle: StyleKeys {
-        enum Value {
-            case imageOnly
-            case imageLeading
-            case imageTrailing
-        }
-        static var name = "example.cardstyle"
-        static var initial = Value.imageLeading
-    }
-    
     /// use \.card as an alias for `CardStyle.self`
     var card: CardStyle.Type { return CardStyle.self }
 }

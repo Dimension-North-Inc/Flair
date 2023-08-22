@@ -43,7 +43,18 @@ public struct Style {
         }
     }
     
-    fileprivate static var styleKeyTypes: [String: any StyleKeys.Type] = [:]
+    fileprivate static var styleKeyTypes: [String: any StyleKeys.Type] = [
+        // builtin text styles
+        Style.Key.AlignmentStyle.name:          Style.Key.AlignmentStyle.self,
+        Style.Key.ForegroundColorStyle.name:    Style.Key.ForegroundColorStyle.self,
+        Style.Key.BackgroundColorStyle.name:    Style.Key.BackgroundColorStyle.self,
+        
+        // builtin font styles
+        Style.Key.BoldStyle.name:               Style.Key.BoldStyle.self,
+        Style.Key.ItalicStyle.name:             Style.Key.ItalicStyle.self,
+        Style.Key.UnderlineStyle.name:          Style.Key.UnderlineStyle.self,
+        Style.Key.StrikethroughStyle.name:      Style.Key.StrikethroughStyle.self,
+    ]
     
     // MARK: - Style Values
     /// a style property value
