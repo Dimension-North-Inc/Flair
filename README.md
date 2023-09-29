@@ -18,7 +18,7 @@ element when it is left undefined within a style.
 
 ```swift
 public protocol StyleKeys<Value> {
-    associatedtype Value: Codable
+    associatedtype Value: Codable & Equatable
     
     /// a name used to store the element in `Codable` containers.
     static var name: String { get }
