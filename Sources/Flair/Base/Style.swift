@@ -45,15 +45,26 @@ public struct Style {
     
     fileprivate static var styleKeyTypes: [String: any StyleKeys.Type] = [
         // builtin text styles
-        Style.Key.AlignmentStyle.name:          Style.Key.AlignmentStyle.self,
-        Style.Key.ForegroundColorStyle.name:    Style.Key.ForegroundColorStyle.self,
-        Style.Key.BackgroundColorStyle.name:    Style.Key.BackgroundColorStyle.self,
+        Style.Key.AlignmentStyle.name:               Style.Key.AlignmentStyle.self,
+        
+        Style.Key.LineSpacingStyle.name:             Style.Key.LineSpacingStyle.self,
+        Style.Key.LineHeightMultipleStyle.name:      Style.Key.LineHeightMultipleStyle.self,
+
+        Style.Key.ParagraphSpacingStyle.name:        Style.Key.ParagraphSpacingStyle.self,
+        Style.Key.ParagraphSpacingBeforeStyle.name:  Style.Key.ParagraphSpacingBeforeStyle.self,
+
+        Style.Key.ForegroundColorStyle.name:         Style.Key.ForegroundColorStyle.self,
+        Style.Key.BackgroundColorStyle.name:         Style.Key.BackgroundColorStyle.self,
         
         // builtin font styles
-        Style.Key.BoldStyle.name:               Style.Key.BoldStyle.self,
-        Style.Key.ItalicStyle.name:             Style.Key.ItalicStyle.self,
-        Style.Key.UnderlineStyle.name:          Style.Key.UnderlineStyle.self,
-        Style.Key.StrikethroughStyle.name:      Style.Key.StrikethroughStyle.self,
+        Style.Key.BoldStyle.name:                    Style.Key.BoldStyle.self,
+        Style.Key.ItalicStyle.name:                  Style.Key.ItalicStyle.self,
+        Style.Key.UnderlineStyle.name:               Style.Key.UnderlineStyle.self,
+        Style.Key.StrikethroughStyle.name:           Style.Key.StrikethroughStyle.self,
+        
+        Style.Key.FontSizeStyle.name:                Style.Key.FontSizeStyle.self,
+        Style.Key.FontFaceStyle.name:                Style.Key.FontFaceStyle.self,
+        Style.Key.FontFamilyStyle.name:              Style.Key.FontFamilyStyle.self,
     ]
     
     // MARK: - Style Values
@@ -149,6 +160,39 @@ public struct Style {
     public init() {}
 }
 
+extension Style: Equatable {
+    public static func == (lhs: Style, rhs: Style) -> Bool {
+        
+        let lkeys = lhs.values.keys.sorted()
+        let rkeys = rhs.values.keys.sorted()
+
+        if lkeys != rkeys {
+            return false
+        }
+        
+        for key in lkeys {
+            guard 
+                let codingValueType = Style.styleKeyTypes[key],
+                let lhs = lhs.values[key], let rhs = rhs.values[key]
+            else {
+                return false
+            }
+            
+            switch (lhs, rhs) {
+            case let (.override(lhs), .override(rhs)):
+                return codingValueType.valuesAreEqual(lhs, rhs)
+            case (.initial, .initial):
+                return true
+            case (.inherit, .inherit):
+                return true
+                
+            default:
+                return false
+            }
+        }
+        return true
+    }
+}
 extension Style: Codable {
     struct CodingKeys: CodingKey {
         var stringValue: String

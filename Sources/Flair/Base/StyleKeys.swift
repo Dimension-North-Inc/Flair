@@ -14,7 +14,7 @@ import Foundation
 /// The definition of a style element includes a `name` used to store the element in `Codable` containers,
 /// and an `initial` value used for the style element when it is left undefined within a style.
 public protocol StyleKeys<Value> {
-    associatedtype Value: Codable
+    associatedtype Value: Codable & Equatable
     
     /// a name used to store the element in `Codable` containers.
     static var name: String { get }
@@ -32,6 +32,14 @@ public extension StyleKeys {
     }
     static func decode(from container: inout UnkeyedDecodingContainer) throws -> Any {
         return try container.decode(Value.self)
+    }
+    
+    static func valuesAreEqual(_ lhs: Any, _ rhs: Any) -> Bool {
+        if let lhs = lhs as? Value, let rhs = rhs as? Value {
+            return lhs == rhs
+        } else {
+            return false
+        }
     }
 }
 
