@@ -13,6 +13,7 @@ import Foundation
 /// Keys represent distinct style elements such as foreground or background colors, font weights,
 /// border widths, or application specific display or behavioural settings. Values are their corresponding
 /// values for the given style.
+@dynamicMemberLookup
 public struct Style {
     /// Registers a custom `StyleKeys` conforming type, allowing it
     /// to be read-from and written-to `Encodable` containers.
@@ -82,25 +83,13 @@ public struct Style {
         get { values[T.name] ?? .inherit }
         set { values[T.name]  = newValue }
     }
-
-    public subscript<T: StyleKeys>(key: T.Type) -> T.Value {
-        get {
-            switch values[T.name] {
-            case let .override(value)?:
-                value as? T.Value ?? T.initial
-            default:
-                T.initial
-            }
-        }
-        set { values[T.name] = .override(newValue) }
-    }
-
     public subscript<T: StyleKeys>(value key: KeyPath<Style.Key, T.Type>) -> Value {
         get { values[T.name] ?? .inherit }
-        set { values[T.name] = newValue }
+        set { values[T.name]  = newValue }
     }
 
-    public subscript<T: StyleKeys>(key: KeyPath<Style.Key, T.Type>) -> T.Value {
+    // MARK: - Dynamic Member Lookup
+    public subscript<T: StyleKeys>(dynamicMember key: KeyPath<Style.Key, T.Type>) -> T.Value {
         get {
             switch values[T.name] {
             case let .override(value)?:
@@ -111,7 +100,7 @@ public struct Style {
         }
         set { values[T.name] = .override(newValue) }
     }
-
+    
     // MARK: - Style Combinations
     
     /// Creates a new `Style` by appending the contents of `style` to `self`.

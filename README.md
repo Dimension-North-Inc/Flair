@@ -66,7 +66,7 @@ extension Style.Key {
 }
 
 var s = Style()
-s[\.card] = .imageTrailing
+s.card = .imageTrailing
 ```
 
 ## Registration
@@ -108,7 +108,7 @@ var columnStyle = Style() // default or fetch
 var cellStyle = Style(cascading: rowStyle, columnStyle)
 
 // fetch the background color
-let color = cellStyle[\.backgroundColor]
+let color = cellStyle.backgroundColor
 ```
 
 When cascading a list of styles, later styles will take precedence over

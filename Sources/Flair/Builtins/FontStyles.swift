@@ -128,18 +128,18 @@ extension Style {
     public var font: Font {
         var descriptor = BASE_DESCRIPTOR
             .substituting(
-                family: self[\.font.family],
-                face:   self[\.font.face  ],
-                size:   self[\.font.size  ]
-            ) 
+                family: self.fontFamily,
+                face:   self.fontFace,
+                size:   self.fontSize
+            )
 
         var traits: FontDescriptor.SymbolicTraits = []
         #if os(iOS)
-        if self[\.font.bold] { traits.formUnion(.traitBold) }
-        if self[\.font.italic] { traits.formUnion(.traitItalic) }
+        if self.bold { traits.formUnion(.traitBold) }
+        if self.italic { traits.formUnion(.traitItalic) }
         #elseif os(macOS)
-        if self[\.font.bold] { traits.formUnion(.bold) }
-        if self[\.font.italic] { traits.formUnion(.italic) }
+        if self.bold { traits.formUnion(.bold) }
+        if self.italic { traits.formUnion(.italic) }
         #endif
         
         if !traits.isEmpty {
@@ -185,37 +185,30 @@ extension Style.Key {
         public static var initial   = BASE_DESCRIPTOR.family
     }
 
-    public var font: FontKeys {
-        return FontKeys()
+    public var bold: BoldStyle.Type {
+        BoldStyle.self
     }
-
-    public struct FontKeys {
-        fileprivate init() {}
-        
-        public var bold: BoldStyle.Type {
-            BoldStyle.self
-        }
-        public var italic: ItalicStyle.Type {
-            ItalicStyle.self
-        }
-        public var outline: OutlineStyle.Type {
-            OutlineStyle.self
-        }
-        public var underline: UnderlineStyle.Type {
-            UnderlineStyle.self
-        }
-        public var strikethrough: StrikethroughStyle.Type {
-            StrikethroughStyle.self
-        }
-        
-        public var size: FontSizeStyle.Type {
-            FontSizeStyle.self
-        }
-        public var face: FontFaceStyle.Type {
-            FontFaceStyle.self
-        }
-        public var family: FontFamilyStyle.Type {
-            FontFamilyStyle.self
-        }
+    public var italic: ItalicStyle.Type {
+        ItalicStyle.self
+    }
+    public var outline: OutlineStyle.Type {
+        OutlineStyle.self
+    }
+    public var underline: UnderlineStyle.Type {
+        UnderlineStyle.self
+    }
+    public var strikethrough: StrikethroughStyle.Type {
+        StrikethroughStyle.self
+    }
+    
+    public var fontSize: FontSizeStyle.Type {
+        FontSizeStyle.self
+    }
+    
+    public var fontFace: FontFaceStyle.Type {
+        FontFaceStyle.self
+    }
+    public var fontFamily: FontFamilyStyle.Type {
+        FontFamilyStyle.self
     }
 }

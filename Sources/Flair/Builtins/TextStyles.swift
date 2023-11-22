@@ -50,56 +50,49 @@ extension Style.Key {
         public static var initial   = Color.clear
     }
     
-    public var text: TextKeys {
-        return TextKeys()
+    public var textAlignment: AlignmentStyle.Type {
+        AlignmentStyle.self
     }
-    public struct TextKeys {
-        fileprivate init() {}
-        
-        public var alignment: AlignmentStyle.Type {
-            AlignmentStyle.self
-        }
-        
-        public var color: ForegroundColorStyle.Type {
-            ForegroundColorStyle.self
-        }
-        public var backgroundColor: BackgroundColorStyle.Type {
-            BackgroundColorStyle.self
-        }
 
-        public var lineSpacing: LineSpacingStyle.Type {
-            LineSpacingStyle.self
-        }
-        public var lineHeightMultiple: LineHeightMultipleStyle.Type {
-            LineHeightMultipleStyle.self
-        }
-
-        public var paragraphSpacing: ParagraphSpacingStyle.Type {
-            ParagraphSpacingStyle.self
-        }
-        public var paragraphiSpacingBefore: ParagraphSpacingBeforeStyle.Type {
-            ParagraphSpacingBeforeStyle.self
-        }
+    public var textColor: ForegroundColorStyle.Type {
+        ForegroundColorStyle.self
     }
-}
+    
+    public var textBackgroundColor: BackgroundColorStyle.Type {
+        BackgroundColorStyle.self
+    }
+    
+    public var lineSpacing: LineSpacingStyle.Type {
+        LineSpacingStyle.self
+    }
+    public var paragraphSpacing: ParagraphSpacingStyle.Type {
+        ParagraphSpacingStyle.self
+    }
+    public var paragraphSpacingBefore: ParagraphSpacingBeforeStyle.Type {
+        ParagraphSpacingBeforeStyle.self
+    }
+    public var lineHeightMultiple: LineHeightMultipleStyle.Type {
+        LineHeightMultipleStyle.self
+    }
+ }
 
 extension Style {
     var paragraphStyle: NSParagraphStyle {
         let result = NSMutableParagraphStyle()
-        
-        switch self[\.text.alignment] {
+                
+        switch self.textAlignment {
         case .leading:   result.alignment = .left
         case .trailing:  result.alignment = .right
         case .centered:  result.alignment = .center
         case .justified: result.alignment = .justified
         }
         
-        result.lineSpacing = self[\.text.lineSpacing]
-        result.paragraphSpacing = self[\.text.paragraphSpacing]
-        result.paragraphSpacingBefore = self[\.text.paragraphiSpacingBefore]
+        result.lineSpacing = self.lineSpacing
+        result.paragraphSpacing = self.paragraphSpacing
+        result.paragraphSpacingBefore = self.paragraphSpacingBefore
         
-        result.lineHeightMultiple = self[\.text.lineHeightMultiple]
-
+        result.lineHeightMultiple = self.lineHeightMultiple
+        
         return result
     }
 }

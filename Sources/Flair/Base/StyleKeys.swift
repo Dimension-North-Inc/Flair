@@ -67,7 +67,7 @@ extension Style {
     /// }
     ///
     /// var s = Style()
-    /// s[\.card] = .imageTrailing
+    /// s.card = .imageTrailing
     ///
     /// ```
     public struct Key {
