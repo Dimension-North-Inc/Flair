@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D030EDB2BA218EC00AB1EB3 /* Flair in Frameworks */ = {isa = PBXBuildFile; productRef = 4D030EDA2BA218EC00AB1EB3 /* Flair */; };
 		4D1B12522A6EE4B500B7DB96 /* FlairSamplesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1B12512A6EE4B500B7DB96 /* FlairSamplesApp.swift */; };
-		4D1B12542A6EE4B500B7DB96 /* SampleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1B12532A6EE4B500B7DB96 /* SampleList.swift */; };
 		4D1B12562A6EE4B800B7DB96 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B12552A6EE4B800B7DB96 /* Assets.xcassets */; };
 		4D1B125A2A6EE4B800B7DB96 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B12592A6EE4B800B7DB96 /* Preview Assets.xcassets */; };
 		4DFDD9942A71259500C94350 /* Silo in Frameworks */ = {isa = PBXBuildFile; productRef = 4DFDD9932A71259500C94350 /* Silo */; };
@@ -17,7 +17,6 @@
 /* Begin PBXFileReference section */
 		4D1B124E2A6EE4B500B7DB96 /* FlairSamples.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlairSamples.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D1B12512A6EE4B500B7DB96 /* FlairSamplesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlairSamplesApp.swift; sourceTree = "<group>"; };
-		4D1B12532A6EE4B500B7DB96 /* SampleList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleList.swift; sourceTree = "<group>"; };
 		4D1B12552A6EE4B800B7DB96 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D1B12572A6EE4B800B7DB96 /* FlairSamples.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlairSamples.entitlements; sourceTree = "<group>"; };
 		4D1B12592A6EE4B800B7DB96 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -30,18 +29,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				4DFDD9942A71259500C94350 /* Silo in Frameworks */,
+				4D030EDB2BA218EC00AB1EB3 /* Flair in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D030ED92BA218EC00AB1EB3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		4D1B12452A6EE4B500B7DB96 = {
 			isa = PBXGroup;
 			children = (
 				4D1B12672A6EE60600B7DB96 /* Packages */,
 				4D1B12502A6EE4B500B7DB96 /* FlairSamples */,
 				4D1B124F2A6EE4B500B7DB96 /* Products */,
+				4D030ED92BA218EC00AB1EB3 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +66,6 @@
 			children = (
 				4DFDD9912A71256500C94350 /* Samples */,
 				4D1B12612A6EE4F600B7DB96 /* Resources */,
-				4D1B12532A6EE4B500B7DB96 /* SampleList.swift */,
 				4D1B12512A6EE4B500B7DB96 /* FlairSamplesApp.swift */,
 			);
 			path = FlairSamples;
@@ -115,6 +122,7 @@
 			name = FlairSamples;
 			packageProductDependencies = (
 				4DFDD9932A71259500C94350 /* Silo */,
+				4D030EDA2BA218EC00AB1EB3 /* Flair */,
 			);
 			productName = FlairSamples;
 			productReference = 4D1B124E2A6EE4B500B7DB96 /* FlairSamples.app */;
@@ -128,7 +136,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1510;
+				ORGANIZATIONNAME = "Dimension North Inc.";
 				TargetAttributes = {
 					4D1B124D2A6EE4B500B7DB96 = {
 						CreatedOnToolsVersion = 15.0;
@@ -173,7 +182,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D1B12542A6EE4B500B7DB96 /* SampleList.swift in Sources */,
 				4D1B12522A6EE4B500B7DB96 /* FlairSamplesApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,6 +223,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -276,6 +285,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -303,6 +313,7 @@
 				CODE_SIGN_ENTITLEMENTS = FlairSamples/FlairSamples.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"FlairSamples/Preview Content\"";
 				DEVELOPMENT_TEAM = 7Z3J577P6B;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -341,6 +352,7 @@
 				CODE_SIGN_ENTITLEMENTS = FlairSamples/FlairSamples.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"FlairSamples/Preview Content\"";
 				DEVELOPMENT_TEAM = 7Z3J577P6B;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -406,6 +418,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4D030EDA2BA218EC00AB1EB3 /* Flair */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Flair;
+		};
 		4DFDD9932A71259500C94350 /* Silo */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4DFDD9922A71259500C94350 /* XCRemoteSwiftPackageReference "Silo" */;

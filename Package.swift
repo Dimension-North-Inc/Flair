@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Flair",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v16),
         .tvOS(.v16),
@@ -18,14 +19,25 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "git@github.com:Dimension-North-Inc/Expect.git", from: "1.0.0"),
+        .package(url: "git@github.com:Dimension-North-Inc/Geometry.git", from: "1.0.0"),
+        
+        // 1. Add the xcstrings-tool Package dependency
+        .package(url: "https://github.com/liamnichols/xcstrings-tool-plugin.git", from: "0.1.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Flair"),
+            name: "Flair",
+            dependencies: [
+                "Geometry",
+                
+                .product(name: "XCStringsToolPlugin", package: "xcstrings-tool-plugin")
+            ]
+        ),
         .testTarget(
             name: "FlairTests",
-            dependencies: ["Flair", "Expect"]),
+            dependencies: ["Flair", "Expect"]
+        ),
     ]
 )

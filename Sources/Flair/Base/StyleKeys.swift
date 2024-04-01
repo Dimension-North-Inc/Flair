@@ -14,7 +14,7 @@ import Foundation
 /// The definition of a style element includes a `name` used to store the element in `Codable` containers,
 /// and an `initial` value used for the style element when it is left undefined within a style.
 public protocol StyleKeys<Value> {
-    associatedtype Value: Codable & Equatable
+    associatedtype Value: Codable & Hashable
     
     /// a name used to store the element in `Codable` containers.
     static var name: String { get }
@@ -23,18 +23,26 @@ public protocol StyleKeys<Value> {
     static var initial: Value { get }
 }
 
-public extension StyleKeys {
-    static func encode(_ value: Any, into container: inout UnkeyedEncodingContainer) throws {
+extension StyleKeys {
+    public static func encode(_ value: Any, into container: inout UnkeyedEncodingContainer) throws {
         guard let encodable = value as? Value else {
             return
         }
         try container.encode(encodable)
     }
-    static func decode(from container: inout UnkeyedDecodingContainer) throws -> Any {
+    public static func decode(from container: inout UnkeyedDecodingContainer) throws -> Any {
         return try container.decode(Value.self)
     }
     
-    static func valuesAreEqual(_ lhs: Any, _ rhs: Any) -> Bool {
+    public static func hash(value: Any, into hasher: inout Hasher) {
+        if let value = value as? Value {
+            value.hash(into: &hasher)
+        } else {
+            return
+        }
+    }
+    
+    public static func valuesAreEqual(_ lhs: Any, _ rhs: Any) -> Bool {
         if let lhs = lhs as? Value, let rhs = rhs as? Value {
             return lhs == rhs
         } else {
@@ -70,7 +78,7 @@ extension Style {
     /// s.card = .imageTrailing
     ///
     /// ```
-    public struct Key {
+    public struct Keys {
     }
 }
 

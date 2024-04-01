@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "geometry",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:Dimension-North-Inc/Geometry.git",
+      "state" : {
+        "revision" : "2f7bf2dfc1c5e47d5453c3bfa988c77990aa6e0f",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "silo",
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:Dimension-North-Inc/Silo.git",
@@ -61,6 +70,15 @@
       "state" : {
         "revision" : "d01446a78fb768adc9a78cbb6df07767c8ccfc29",
         "version" : "0.8.0"
+      }
+    },
+    {
+      "identity" : "xcstrings-tool-plugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/liamnichols/xcstrings-tool-plugin.git",
+      "state" : {
+        "revision" : "90eb3bd0e3ccf89f13ac01c6cac85b0ac04d7831",
+        "version" : "0.1.2"
       }
     },
     {

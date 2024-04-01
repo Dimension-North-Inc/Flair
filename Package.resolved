@@ -8,6 +8,24 @@
         "revision" : "7f21a0c467e051400da4036c1cd2520545197e09",
         "version" : "1.0.0"
       }
+    },
+    {
+      "identity" : "geometry",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:Dimension-North-Inc/Geometry.git",
+      "state" : {
+        "revision" : "2f7bf2dfc1c5e47d5453c3bfa988c77990aa6e0f",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "xcstrings-tool-plugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/liamnichols/xcstrings-tool-plugin.git",
+      "state" : {
+        "revision" : "90eb3bd0e3ccf89f13ac01c6cac85b0ac04d7831",
+        "version" : "0.1.2"
+      }
     }
   ],
   "version" : 2

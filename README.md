@@ -113,3 +113,49 @@ let color = cellStyle.backgroundColor
 
 When cascading a list of styles, later styles will take precedence over
 earlier styles in the list.
+
+## Text Styling
+A fundamental target for a styling system is styled text. Flair provides
+comprehensive support for text styling with custom AttributedString attributes
+and a custom TextKit2 text stack for style rendering.
+
+To apply Flair styles to an entire body of attributed text, use the custom
+attributed string property `.flair.paragraphStyle`. You can cascade additional 
+styles onto the paragraph style by using the custom attributed string property
+`.flair.characterStyle`.
+
+```swift
+var string: AttributedString = "The Rain In Spain Falls Mainly on the Plain."
+
+// assume we have some overall style meant to be applied to a body of text
+var leftAlignedBody = Style() // default or fetch
+
+string.flair.paragraphStyle = leftAlignedBody 
+
+// now assume we want to adjust font width and underline in a range of this text:
+
+guard let mainly = string.rangeOf("Mainly") else { return }
+
+var blackUnderlined = Style() // default or fetch
+
+string[mainly].characterStyle = blackUnderlined
+```
+
+## Drag & Drop Styles
+Flair adds `Transferable` support to its `Style` type, allowing you to implement
+drag-and-drop of styles between interface elements like inspectors and the content
+they inspect.
+
+To take advantage of this support, make sure to add the Flair Style UTI type - 
+`com.ndimensionl.flair.style` - to your application bundle's Info.plist description 
+of **imported** types.
+
+```swift
+extension UTType {
+    /// a namespace for `Flair` specific types
+    public enum flair {
+        /// flair style content type - access UTType as `.flair.style`
+        public static var style: UTType { UTType(importedAs: "com.ndimensionl.flair.style") }
+    }
+}
+```

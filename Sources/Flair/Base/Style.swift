@@ -28,7 +28,7 @@ public struct Style {
             styleKeyTypes[key.name] = key
         }
     }
-
+    
     /// Registers a custom `StyleKeys` conforming type, allowing it
     /// to be read-from and written-to `Encodable` containers.
     ///
@@ -37,35 +37,36 @@ public struct Style {
     /// archives can be succesfully read.
     ///
     /// - Parameter paths: a list of keypaths to `StyleKeys` conforming types declared by `Style.Key`
-    public static func register(_ paths: KeyPath<Style.Key, any StyleKeys.Type>...) {
+    public static func register(_ paths: KeyPath<Style.Keys, any StyleKeys.Type>...) {
         for path in paths {
-            let key = Style.Key()[keyPath: path]
+            let key = Style.Keys()[keyPath: path]
             styleKeyTypes[key.name] = key
         }
     }
     
     fileprivate static var styleKeyTypes: [String: any StyleKeys.Type] = [
-        // builtin text styles
-        Style.Key.AlignmentStyle.name:               Style.Key.AlignmentStyle.self,
-        
-        Style.Key.LineSpacingStyle.name:             Style.Key.LineSpacingStyle.self,
-        Style.Key.LineHeightMultipleStyle.name:      Style.Key.LineHeightMultipleStyle.self,
-
-        Style.Key.ParagraphSpacingStyle.name:        Style.Key.ParagraphSpacingStyle.self,
-        Style.Key.ParagraphSpacingBeforeStyle.name:  Style.Key.ParagraphSpacingBeforeStyle.self,
-
-        Style.Key.ForegroundColorStyle.name:         Style.Key.ForegroundColorStyle.self,
-        Style.Key.BackgroundColorStyle.name:         Style.Key.BackgroundColorStyle.self,
-        
         // builtin font styles
-        Style.Key.BoldStyle.name:                    Style.Key.BoldStyle.self,
-        Style.Key.ItalicStyle.name:                  Style.Key.ItalicStyle.self,
-        Style.Key.UnderlineStyle.name:               Style.Key.UnderlineStyle.self,
-        Style.Key.StrikethroughStyle.name:           Style.Key.StrikethroughStyle.self,
+        FontNameStyle.name:               FontNameStyle.self,
+        FontSizeStyle.name:               FontSizeStyle.self,
         
-        Style.Key.FontSizeStyle.name:                Style.Key.FontSizeStyle.self,
-        Style.Key.FontFaceStyle.name:                Style.Key.FontFaceStyle.self,
-        Style.Key.FontFamilyStyle.name:              Style.Key.FontFamilyStyle.self,
+        FontAngleStyle.name:              FontAngleStyle.self,
+        FontWidthStyle.name:              FontWidthStyle.self,
+        FontWeightStyle.name:             FontWeightStyle.self,
+        
+        // builtin text styles
+        AlignmentStyle.name:              AlignmentStyle.self,
+        
+        LineSpacingStyle.name:            LineSpacingStyle.self,
+        LineHeightMultipleStyle.name:     LineHeightMultipleStyle.self,
+        
+        ParagraphSpacingStyle.name:       ParagraphSpacingStyle.self,
+        ParagraphSpacingBeforeStyle.name: ParagraphSpacingBeforeStyle.self,
+        
+        ForegroundColorStyle.name:        ForegroundColorStyle.self,
+        BackgroundColorStyle.name:        BackgroundColorStyle.self,
+        
+        UnderlineStyle.name:              UnderlineStyle.self,
+        StrikethroughStyle.name:          StrikethroughStyle.self,
     ]
     
     // MARK: - Style Values
@@ -77,19 +78,18 @@ public struct Style {
     }
     
     private var values: [String: Value] = [:]
-        
+    
     // MARK: - Style Subscripts
-    public subscript<T: StyleKeys>(value key: T.Type) -> Value {
+    public subscript<T: StyleKeys>(key: T.Type) -> Value {
         get { values[T.name] ?? .inherit }
         set { values[T.name]  = newValue }
     }
-    public subscript<T: StyleKeys>(value key: KeyPath<Style.Key, T.Type>) -> Value {
+    public subscript<T: StyleKeys>(key: KeyPath<Style.Keys, T.Type>) -> Value {
         get { values[T.name] ?? .inherit }
         set { values[T.name]  = newValue }
     }
-
-    // MARK: - Dynamic Member Lookup
-    public subscript<T: StyleKeys>(dynamicMember key: KeyPath<Style.Key, T.Type>) -> T.Value {
+    
+    public subscript<T: StyleKeys>(value key: T.Type) -> T.Value {
         get {
             switch values[T.name] {
             case let .override(value)?:
@@ -101,27 +101,39 @@ public struct Style {
         set { values[T.name] = .override(newValue) }
     }
     
+    public subscript<T: StyleKeys>(value key: KeyPath<Style.Keys, T.Type>) -> T.Value {
+        get {
+            switch values[T.name] {
+            case let .override(value)?:
+                value as? T.Value ?? T.initial
+            default:
+                T.initial
+            }
+        }
+        set { values[T.name] = .override(newValue) }
+    }
+    
+    // MARK: - Dynamic Member Lookup
+    public subscript<T: StyleKeys>(dynamicMember key: KeyPath<Style.Keys, T.Type>) -> T.Value {
+        get {
+            switch values[T.name] {
+            case let .override(value)?:
+                value as? T.Value ?? T.initial
+            default:
+                T.initial
+            }
+        }
+        set { values[T.name] = .override(newValue) }
+    }
+
     // MARK: - Style Combinations
     
     /// Creates a new `Style` by appending the contents of `style` to `self`.
     ///
     /// - Parameter style: a style to append
     /// - Returns: a new style
-    public func style(appending style: Self) -> Self {
-        var cascading = Style()
-        
-        for key in Set(values.keys).union(style.values.keys) {
-            switch (values[key], style.values[key]) {
-            case let (_, .override(value)?):
-                cascading.values[key] = .override(value)
-            case let (.override(value)?, nil):
-                cascading.values[key] = .override(value)
-            default:
-                break
-            }
-        }
-        
-        return cascading
+    public func appending(_ style: Self) -> Self {
+        return Self.cascade(parent: self, child: style)
     }
     
     
@@ -129,12 +141,30 @@ public struct Style {
     ///
     /// - Parameter styles: a collection of styles to append
     /// - Returns: a new style
-    func style(appending styles: some Collection<Style>) -> Self {
+    func appending(_ styles: some Collection<Style>) -> Self {
         styles.reduce(self) {
-            parent, child in parent.style(appending: child)
+            parent, child in parent.appending(child)
         }
     }
-
+    
+    /// Creates a new `Style` by prepending the contents of `style` to `self`.
+    ///
+    /// - Parameter style: a style to prepend
+    /// - Returns: a new style
+    public func prepending(_ style: Self) -> Self {
+        return Self.cascade(parent: style, child: self)
+    }
+    
+    
+    /// Creates a new `Style` by prepending the contents of `styles` to `self`.
+    ///
+    /// - Parameter styles: a collection of styles to prepend
+    /// - Returns: a new style
+    func prepending(_ styles: some Collection<Style>) -> Self {
+        styles.reduce(self) {
+            parent, child in parent.prepending(child)
+        }
+    }
     
     /// Creates a new `Style` by cascading the contents of `styles`.
     ///
@@ -142,11 +172,50 @@ public struct Style {
     /// - Returns: a new style
     public init(cascading styles: some Collection<Style>) {
         self = styles.reduce(Style()) {
-            parent, child in parent.style(appending: child)
+            parent, child in parent.appending(child)
         }
     }
     
+    private static func cascade(parent: Style, child: Style) -> Style {
+        var cascade = Style()
+        
+        for key in Set(parent.values.keys).union(child.values.keys) {
+            switch (parent.values[key], child.values[key]) {
+            case let (_, .override(value)?):
+                cascade.values[key] = .override(value)
+            case let (.override(value)?, nil):
+                cascade.values[key] = .override(value)
+            default:
+                break
+            }
+        }
+        return cascade
+    }
+    
+    // MARK: - Style Component Extraction
+
+    /// Creates a new `Style` by extracting values for a list of style keys from `self`.
+    /// - Parameter keys: a list of style keys whose values should be extracted into the new style
+    /// - Returns: a new `Style`.
+    public func extracting(_ keys: KeyPath<Style.Keys, any StyleKeys.Type>...) -> Style {
+        let names = keys.map {
+            key in Style.Keys()[keyPath: key].name
+        }
+        
+        return Style(values: values.filter {
+            key, value in names.contains(key)
+        })
+    }
+    
+    private init(values: [String: Value]) {
+        self.values = values
+    }
+    
     public init() {}
+    
+    public init(conf: (inout Self) -> ()) {
+        conf(&self)
+    }
 }
 
 extension Style: Equatable {
@@ -181,6 +250,21 @@ extension Style: Equatable {
         }
         return true
     }
+}
+
+extension Style: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        values.forEach {
+            (key, value) in
+            key.hash(into: &hasher)
+            if let codingValueType = Style.styleKeyTypes[key] {
+                codingValueType.hash(value: value, into: &hasher)
+            } else {
+                // TODO: log warning for unrecognized style key type
+            }
+        }
+    }
+    
 }
 extension Style: Codable {
     struct CodingKeys: CodingKey {
@@ -240,5 +324,22 @@ extension Style: Codable {
             default:    break
             }
         }
+    }
+}
+
+import CoreTransferable
+import UniformTypeIdentifiers
+
+extension Style: Transferable {
+    public static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .flair.style)
+    }
+}
+
+extension UTType {
+    /// a namespace for `Flair` specific types
+    public enum flair {
+        /// flair style content type - access UTType as `.flair.style`
+        public static var style: UTType { UTType(importedAs: "com.ndimensionl.flair.style") }
     }
 }

@@ -1,0 +1,172 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@, %@" : {
+      "comment" : "Font Name, Size",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "12 pt." : {
+
+    },
+    "Black" : {
+      "localizations" : {
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noir"
+          }
+        }
+      }
+    },
+    "Colors" : {
+
+    },
+    "Condensed" : {
+
+    },
+    "Enter value" : {
+
+    },
+    "Face:" : {
+
+    },
+    "Font" : {
+
+    },
+    "Gill Sans" : {
+
+    },
+    "Highlighter" : {
+
+    },
+    "Italic" : {
+
+    },
+    "Multiple Selection" : {
+
+    },
+    "Name" : {
+
+    },
+    "No Selection" : {
+
+    },
+    "Quick Brown Fox" : {
+      "comment" : "Font Preview Panagram",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Victor jagt zwölf Boxkämpfer quer über den großen Sylter Deich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The quick brown fox jumps over a lazy dog."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benjamín pidió una bebida de kiwi y fresa; Noé, sin vergüenza, la más exquisita champaña del menú."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buvez de ce whisky que le patron juge fameux."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ma la volpe, col suo balzo, ha raggiunto il quieto Fido."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pchnąć w tę łódź jeża lub ośm skrzyń fig."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жебракують філософи при ґанку церкви в Гадячі, ще й шатро їхнє п’яне знаємо."
+          }
+        }
+      }
+    },
+    "Size" : {
+
+    },
+    "Text" : {
+
+    },
+    "Weight" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Breite:"
+          }
+        }
+      }
+    },
+    "Weight:" : {
+
+    },
+    "Width" : {
+
+    },
+    "Width:" : {
+
+    }
+  },
+  "version" : "1.0"
+}

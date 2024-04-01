@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import Flair
 
 @main
 struct FlairSamplesApp: App {
     var body: some Scene {
         WindowGroup {
-            SampleList()
+            InspectorList {
+                FontInspector()
+            }
+            .padding()
+            .frame(maxWidth: 300)
         }
     }
 }
