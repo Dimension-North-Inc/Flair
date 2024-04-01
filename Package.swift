@@ -28,6 +28,9 @@ let package = Package(
             name: "Flair",
             dependencies: [
                 "Geometry"
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(
