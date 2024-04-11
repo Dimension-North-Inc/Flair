@@ -141,6 +141,65 @@ var blackUnderlined = Style() // default or fetch
 string[mainly].characterStyle = blackUnderlined
 ```
 
+## FlairText SwiftUI View
+`FlairText` is a SwiftUI text `View` that is aware of `Flair` text attributes.
+
+The view is generally more capable dealing with rich text than `SwiftUI.TextField` or
+`SwiftUI.TextView` and is a more capable implementation of a text editing component.
+
+## Inspectors
+Flair provides support for `Style` inspection in SwiftUI applications.
+
+A `focusable()` component whose style selection is meant to be inspected can declare a
+list of selected styles in its `body` definition, for inspectors to inspect. The declaration
+includes both the list of selected styles, as well as a function used to merge new styles into 
+this selection:
+
+```swift
+    var body: some View {
+        List {
+            ForEach(rows) {
+                row in 
+                RowView(row)
+                    .focusable()
+                    .selectedStyles([row.styles]) {
+                        style in // perform some action to merge this style into the selection
+                    }   
+            }
+        }
+    }
+```
+
+Inspectors themselves are meant to be displayed within an `InspectorList` component:
+
+
+```swift
+import Flair
+import SwiftUI
+
+struct AppInspector: View {
+    var body: some View {
+        InspectorList {
+            // Flair font inspector
+            FontInspector()
+
+            AppCustomInspector()
+        }
+    }
+}
+
+struct AppCustomInspector: View {
+    // fetch the current focused selection
+    @FocusedValue(\.styles) var style: StyleSelection
+    
+    var body: some View {
+        Inspector("Document") {
+            // interact with styles here - 
+        }
+    }
+}
+```
+
 ## Drag & Drop Styles
 Flair adds `Transferable` support to its `Style` type, allowing you to implement
 drag-and-drop of styles between interface elements like inspectors and the content
@@ -159,3 +218,4 @@ extension UTType {
     }
 }
 ```
+

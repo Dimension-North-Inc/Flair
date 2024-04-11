@@ -44,7 +44,7 @@ extension FlairText: UIViewRepresentable {
             }
         }
         
-        var options: Options {
+        var options: FlairTextOptions {
             didSet {
                 editor?.setOptions(options)
             }
@@ -61,7 +61,7 @@ extension FlairText: UIViewRepresentable {
         }
         var context = NSStringDrawingContext()
         
-        init(text: NSAttributedString, options: Options, setUpdate: @escaping (NSAttributedString) -> Void) {
+        init(text: NSAttributedString, options: FlairTextOptions, setUpdate: @escaping (NSAttributedString) -> Void) {
             self.text = text
             self.setUpdate = setUpdate
 
@@ -179,11 +179,27 @@ final class TextView: UITextView {
     }
 }
 extension TextView {
-    func setOptions(_ options: FlairText.Options) {
+    public fileprivate(set) var flairID: Any? {
+        get {
+            flairLock.withLock {
+                flairTextViewIDs[ObjectIdentifier(self)]
+            }
+        }
+        set {
+            flairLock.withLock {
+                flairTextViewIDs[ObjectIdentifier(self)] = newValue
+            }
+        }
+    }
+
+    func setOptions(_ options: FlairTextOptions) {
         self.isEditable = options.interactivity == .editable
         self.isSelectable = options.interactivity != .display
     }
 }
+
+private var flairLock = NSLock()
+private var flairTextViewIDs: [ObjectIdentifier:Any] = [:]
 
 protocol TextViewDelegate: UITextViewDelegate {
     
@@ -192,5 +208,5 @@ protocol TextViewDelegate: UITextViewDelegate {
 #endif
 
 #Preview {
-    FlairText("Hello World").padding()
+    FlairText<Void>("Hello World").padding()
 }

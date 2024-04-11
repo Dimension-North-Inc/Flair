@@ -27,7 +27,11 @@ public struct FontDescriptor {
     }
     
     public var font: FontRef? {
+        #if os(iOS)
+        FontRef(descriptor: ref, size: 0)
+        #elseif os(macOS)
         FontRef(descriptor: ref, textTransform: .identity)
+        #endif
     }
     
     public init(font: FontRef) {

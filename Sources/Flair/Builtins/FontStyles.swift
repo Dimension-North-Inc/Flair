@@ -10,11 +10,21 @@ import SwiftUI
 
 
 public struct FontNameStyle: StyleKeys {
+    
     public static var name = "flair.font-name"
     public static var initial: FontName = {
-        guard let font = FontRef.userFont(ofSize: 0) else {
+        func userFont() -> FontRef? {
+            #if os(iOS)
+            FontRef.preferredFont(forTextStyle: .body)
+            #elseif os(macOS)
+            FontRef.userFont(ofSize: 0)
+            #endif
+        }
+
+        guard let font = userFont() else {
             return .body
         }
+        
         let descriptor = FontDescriptor(font: font)
         guard let family = descriptor.family else {
             return .body

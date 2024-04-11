@@ -10,13 +10,18 @@ import Flair
 
 @main
 struct FlairSamplesApp: App {
+    @State private var text: String = "The Rain In Spain..."
     var body: some Scene {
         WindowGroup {
-            InspectorList {
-                FontInspector()
+            VStack {
+                FreeFlairText($text)
+                
+                InspectorList {
+                    FontInspector()
+                }
+                .padding()
+                .frame(maxWidth: 300)
             }
-            .padding()
-            .frame(maxWidth: 300)
         }
     }
 }

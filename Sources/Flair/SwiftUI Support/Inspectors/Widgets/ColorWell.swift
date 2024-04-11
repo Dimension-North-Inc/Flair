@@ -28,7 +28,7 @@ public struct ColorWell {
 
 #if os(iOS)
 extension ColorWell: View {
-    var body: some View {
+    public var body: some View {
         ColorPicker(
             "Choose Color",
             selection: $value

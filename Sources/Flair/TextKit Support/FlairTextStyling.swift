@@ -1,5 +1,5 @@
 //
-//  AttributedString.swift
+//  FlairTextStyling.swift
 //  Flair
 //
 //  Created by Mark Onyschuk on 02/24/24.
