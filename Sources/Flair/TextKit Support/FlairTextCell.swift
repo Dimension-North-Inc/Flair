@@ -1,5 +1,5 @@
 //
-//  RichTextCell.swift
+//  FlairTextCell.swift
 //  Flair
 //
 //  Created by Mark Onyschuk on 10/10/23.

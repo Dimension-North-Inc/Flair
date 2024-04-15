@@ -1,5 +1,5 @@
 //
-//  RichText_iOS.swift
+//  FlairText_iOS.swift
 //  Flair
 //
 //  Created by Mark Onyschuk on 10/10/23.
@@ -208,5 +208,5 @@ protocol TextViewDelegate: UITextViewDelegate {
 #endif
 
 #Preview {
-    FlairText<Void>("Hello World").padding()
+    FlairText("Hello World").padding()
 }

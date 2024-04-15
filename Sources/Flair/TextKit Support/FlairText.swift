@@ -8,33 +8,28 @@
 
 import SwiftUI
 
-public struct FlairText<ID> {
-    var id: ID
+public struct FlairText {
     var options: FlairTextOptions
     var delegate: FlairTextDelegate?
     
     @Binding var text: NSAttributedString
     
-    public init(_ text: String, id: ID, selectable: Bool = true) {
-        self.id      = id
+    public init(_ text: String, selectable: Bool = true) {
         self.options = selectable ? .selectable : .display
         self._text   = .constant(AttributedString(text).object())
     }
     
-    public init(_ text: AttributedString, id: ID, selectable: Bool = true) {
-        self.id      = id
+    public init(_ text: AttributedString, selectable: Bool = true) {
         self.options = selectable ? .selectable : .display
         self._text   = .constant(text.object())
     }
     
-    public init(_ text: NSAttributedString, id: ID, selectable: Bool = true) {
-        self.id      = id
+    public init(_ text: NSAttributedString, selectable: Bool = true) {
         self.options = selectable ? .selectable : .display
         self._text   = .constant(text)
     }
     
-    public init(_ text: Binding<String>, id: ID, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
-        self.id       = id
+    public init(_ text: Binding<String>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
         self.options  = options
         self.delegate = delegate
         
@@ -44,8 +39,7 @@ public struct FlairText<ID> {
         )
     }
     
-    public init(_ text: Binding<AttributedString>, id: ID, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
-        self.id       = id
+    public init(_ text: Binding<AttributedString>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
         self.options  = options
         self.delegate = delegate
         
@@ -55,59 +49,13 @@ public struct FlairText<ID> {
         )
     }
     
-    public init(_ text: Binding<NSAttributedString>, id: ID, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
-        self.id       = id
-        self.options  = options
-        self.delegate = delegate
-        
-        self._text = text
-    }
-    
-    
-    public init(_ text: String, selectable: Bool = true) where ID == Void {
-        self.options = selectable ? .selectable : .display
-        self._text   = .constant(AttributedString(text).object())
-    }
-    
-    public init(_ text: AttributedString, selectable: Bool = true) where ID == Void {
-        self.options = selectable ? .selectable : .display
-        self._text   = .constant(text.object())
-    }
-    
-    public init(_ text: NSAttributedString, selectable: Bool = true) where ID == Void {
-        self.options = selectable ? .selectable : .display
-        self._text   = .constant(text)
-    }
-
-    public init(_ text: Binding<String>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) where ID == Void {
-        self.options  = options
-        self.delegate = delegate
-        
-        self._text = Binding(
-            get: { AttributedString(text.wrappedValue).object() },
-            set: { storage in text.wrappedValue = storage.string }
-        )
-    }
-    
-    public init(_ text: Binding<AttributedString>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) where ID == Void {
-        self.options  = options
-        self.delegate = delegate
-        
-        self._text = Binding(
-            get: { text.wrappedValue.object() },
-            set: { storage in text.wrappedValue = storage.value() }
-        )
-    }
-    
-    public init(_ text: Binding<NSAttributedString>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) where ID == Void {
+    public init(_ text: Binding<NSAttributedString>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
         self.options  = options
         self.delegate = delegate
         
         self._text = text
     }
 }
-
-public typealias FreeFlairText = FlairText<Void>
 
 public struct FlairTextOptions {
     public static var display    = FlairTextOptions(interactivity: .display)
@@ -170,5 +118,5 @@ extension AttributeContainer: ExpressibleByDictionaryLiteral {
 }
 
 #Preview {
-    return FreeFlairText("Hello World", selectable: true).padding()
+    return FlairText("Hello World", selectable: true).padding()
 }

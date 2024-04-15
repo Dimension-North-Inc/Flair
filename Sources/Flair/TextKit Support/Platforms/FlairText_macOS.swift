@@ -1,5 +1,5 @@
 //
-//  RichText_macOS.swift
+//  FlairText_macOS.swift
 //  Flair
 //
 //  Created by Mark Onyschuk on 10/10/23.
@@ -14,7 +14,7 @@ public typealias FlairTextDelegate = NSTextViewDelegate
 
 extension FlairText: NSViewRepresentable {
     public func makeNSView(context: Context) -> View {
-        let view = View(text: text, id: id, options: options, delegate: delegate) {
+        let view = View(text: text, options: options, delegate: delegate) {
             value in
             if text != value {
                 text = value
@@ -47,8 +47,7 @@ extension FlairText: NSViewRepresentable {
     }
 
     public final class View: NSView, NSTextViewDelegate {
-        var id: ID
-        var text: NSAttributedString {
+        public var text: NSAttributedString {
             didSet {
                 if !text.isEqual(to: oldValue) {
                     needsDisplay = true
@@ -56,13 +55,13 @@ extension FlairText: NSViewRepresentable {
             }
         }
                 
-        var options: FlairTextOptions {
+        public var options: FlairTextOptions {
             didSet {
                 editor?.setOptions(options)
             }
         }
         
-        var delegate: FlairTextDelegate?
+        public var delegate: FlairTextDelegate?
         
         var setUpdate: (NSAttributedString) -> Void
         
@@ -77,8 +76,7 @@ extension FlairText: NSViewRepresentable {
         
         var context = NSStringDrawingContext()
         
-        init(text: NSAttributedString, id: ID, options: FlairTextOptions, delegate: FlairTextDelegate? = nil, setUpdate: @escaping (NSAttributedString) -> Void) {
-            self.id = id
+        init(text: NSAttributedString, options: FlairTextOptions, delegate: FlairTextDelegate? = nil, setUpdate: @escaping (NSAttributedString) -> Void) {
             self.text = text
             self.setUpdate = setUpdate
             
@@ -133,9 +131,7 @@ extension FlairText: NSViewRepresentable {
             }
 
             let editor = NSTextView(frame: .zero)
-            
-            editor.flairID = id
-            
+                        
             // NOTE: We use `runInAnimationGroup`  instead of
             // old NSWindow API `window.disableFlushWindow()` &
             // `window.reenableFlushWindow(); window.flushWindow()`
@@ -246,19 +242,6 @@ extension FlairText: NSViewRepresentable {
 }
 
 extension NSTextView {
-    public fileprivate(set) var flairID: Any? {
-        get {
-            flairLock.withLock {
-                flairTextViewIDs[ObjectIdentifier(self)]
-            }
-        }
-        set {
-            flairLock.withLock {
-                flairTextViewIDs[ObjectIdentifier(self)] = newValue
-            }
-        }
-    }
-
     public func setOptions(_ options: FlairTextOptions) {
         self.allowsUndo = options.allowsUndo
 
@@ -269,12 +252,8 @@ extension NSTextView {
         self.isSelectable = options.interactivity != .display
     }
 }
-
-private var flairLock = NSLock()
-private var flairTextViewIDs: [ObjectIdentifier:Any] = [:]
-
 #endif
 
 #Preview {
-    FreeFlairText("Hello World", selectable: true).padding()
+    FlairText("Hello World", selectable: true).padding()
 }

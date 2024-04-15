@@ -14,14 +14,14 @@ struct FlairSamplesApp: App {
     var body: some Scene {
         WindowGroup {
             VStack {
-                FreeFlairText($text)
+                FlairText($text)
                 
                 InspectorList {
                     FontInspector()
                 }
-                .padding()
-                .frame(maxWidth: 300)
             }
+            .padding()
+                .frame(maxWidth: 300)
         }
     }
 }
