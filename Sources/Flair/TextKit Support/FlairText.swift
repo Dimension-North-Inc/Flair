@@ -13,23 +13,38 @@ public struct FlairText {
     var delegate: FlairTextDelegate?
     
     @Binding var text: NSAttributedString
+
+    @Binding var selection: [NSRange]
     
-    public init(_ text: String, selectable: Bool = true) {
-        self.options = selectable ? .selectable : .display
-        self._text   = .constant(AttributedString(text).object())
+    private static func ignored() -> Binding<[NSRange]> {
+        var ranges: [NSRange] = []
+        
+        return Binding {
+            ranges
+        } set: { value in
+            ranges = value
+        }
     }
     
-    public init(_ text: AttributedString, selectable: Bool = true) {
-        self.options = selectable ? .selectable : .display
-        self._text   = .constant(text.object())
+    public init(_ text: String, selection: Binding<[NSRange]>? = nil, selectable: Bool = true) {
+        self.options    = selectable ? .selectable : .display
+        self._text      = .constant(AttributedString(text).object())
+        self._selection = selection ?? Self.ignored()
     }
     
-    public init(_ text: NSAttributedString, selectable: Bool = true) {
-        self.options = selectable ? .selectable : .display
-        self._text   = .constant(text)
+    public init(_ text: AttributedString, selection: Binding<[NSRange]>? = nil, selectable: Bool = true) {
+        self.options    = selectable ? .selectable : .display
+        self._text      = .constant(text.object())
+        self._selection = selection ?? Self.ignored()
     }
     
-    public init(_ text: Binding<String>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
+    public init(_ text: NSAttributedString, selection: Binding<[NSRange]>? = nil, selectable: Bool = true) {
+        self.options    = selectable ? .selectable : .display
+        self._text      = .constant(text)
+        self._selection = selection ?? Self.ignored()
+    }
+    
+    public init(_ text: Binding<String>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
         self.options  = options
         self.delegate = delegate
         
@@ -37,9 +52,11 @@ public struct FlairText {
             get: { AttributedString(text.wrappedValue).object() },
             set: { storage in text.wrappedValue = storage.string }
         )
+        
+        self._selection = selection ?? Self.ignored()
     }
     
-    public init(_ text: Binding<AttributedString>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
+    public init(_ text: Binding<AttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
         self.options  = options
         self.delegate = delegate
         
@@ -47,13 +64,15 @@ public struct FlairText {
             get: { text.wrappedValue.object() },
             set: { storage in text.wrappedValue = storage.value() }
         )
+        self._selection = selection ?? Self.ignored()
     }
     
-    public init(_ text: Binding<NSAttributedString>, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
+    public init(_ text: Binding<NSAttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
         self.options  = options
         self.delegate = delegate
         
         self._text = text
+        self._selection = selection ?? Self.ignored()
     }
 }
 
@@ -78,20 +97,20 @@ public struct FlairTextOptions {
     public init(
         interactivity: Interactivity,
         
-        allowsUndo: Bool = true,
         isRichText: Bool = true,
-        
+        allowsUndo: Bool = true,
+
         endsEditingOnNewline: Bool = true
     ) {
-        self.interactivity = interactivity
-        self.allowsUndo = allowsUndo
-        self.isRichText = isRichText
+        self.interactivity        = interactivity
+
+        self.isRichText           = isRichText
+        self.allowsUndo           = allowsUndo
         self.endsEditingOnNewline = endsEditingOnNewline
     }
 }
 
 extension NSAttributedString {
-    
     /// Creates and returns the value type equivalent of the receiver
     /// - Returns: an   AttributedString`
     public func value() -> AttributedString {
@@ -100,7 +119,6 @@ extension NSAttributedString {
 }
 
 extension AttributedString {
-    
     /// Creates and returns the reference type equivalent of the receiver
     /// - Returns: an `NSAttributedString`
     public func object() -> NSAttributedString {
@@ -118,5 +136,8 @@ extension AttributeContainer: ExpressibleByDictionaryLiteral {
 }
 
 #Preview {
-    return FlairText("Hello World", selectable: true).padding()
+    return VStack {
+        FlairText("Hello World", selectable: true)
+    }.padding().preferredColorScheme(.light)
+
 }

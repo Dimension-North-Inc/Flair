@@ -13,7 +13,7 @@ public typealias FlairTextDelegate = UITextViewDelegate
 
 extension FlairText: UIViewRepresentable {
     public func makeUIView(context: Context) -> Wrapper {
-        let view = Wrapper(text: text, options: options, setUpdate: { value in text = value })
+        let view = Wrapper(text: text, options: options, textChanged: { value in text = value })
         view.isOpaque = false
         return view
     }
@@ -50,7 +50,7 @@ extension FlairText: UIViewRepresentable {
             }
         }
 
-        var setUpdate: (NSAttributedString) -> Void
+        var textChanged: (NSAttributedString) -> Void
         
         public override var frame: CGRect {
             didSet {
@@ -61,9 +61,9 @@ extension FlairText: UIViewRepresentable {
         }
         var context = NSStringDrawingContext()
         
-        init(text: NSAttributedString, options: FlairTextOptions, setUpdate: @escaping (NSAttributedString) -> Void) {
+        init(text: NSAttributedString, options: FlairTextOptions, textChanged: @escaping (NSAttributedString) -> Void) {
             self.text = text
-            self.setUpdate = setUpdate
+            self.textChanged = textChanged
 
             self.options = options
             
@@ -121,7 +121,7 @@ extension FlairText: UIViewRepresentable {
         
         private func updateValue(_ value: NSAttributedString) {
             text = value
-            setUpdate(value)
+            textChanged(value)
         }
         
         func endEditing(textView: UITextView) {

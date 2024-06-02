@@ -9,10 +9,7 @@
 import SwiftUI
 
 public struct FontInspector: View {
-    @State private var selection = StyleSelection([Style(), Style()]) {
-        merge in print("merging \(merge)")
-    }
-
+    var selection: StyleSelection
     var showsDynamicFonts: Bool = false
     
     private var fonts: [FontName] {
@@ -121,14 +118,16 @@ public struct FontInspector: View {
         }.buttonStyle(.borderless)
     }
     
-    public init() {}
+    public init(selection: StyleSelection, showsDynamicFonts: Bool = false) {
+        self.selection = selection
+        self.showsDynamicFonts = showsDynamicFonts
+    }
 }
 
 #Preview {
     InspectorList {
-        FontInspector()
+        FontInspector(selection: StyleSelection(), showsDynamicFonts: false)
             .labelsHidden()
-            .fontWidth(.condensed)
     }
     .frame(width: 250)
     .padding()

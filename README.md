@@ -34,7 +34,7 @@ struct Indentation: StyleKeys {
 }
 
 // a fully custom style value type can act as its own key...
-enum CardStyle: StyleKeys, Codable {
+enum CardStyle: Codable, Equatable, StyleKeys {
     case imageOnly
     case imageLeading
     case imageTrailing

@@ -136,12 +136,11 @@ public struct Style {
         return Self.cascade(parent: self, child: style)
     }
     
-    
     /// Creates a new `Style` by appending the contents of `styles` to `self`.
     ///
     /// - Parameter styles: a collection of styles to append
     /// - Returns: a new style
-    func appending(_ styles: some Collection<Style>) -> Self {
+    public func appending(_ styles: some Collection<Style>) -> Self {
         styles.reduce(self) {
             parent, child in parent.appending(child)
         }
@@ -160,7 +159,7 @@ public struct Style {
     ///
     /// - Parameter styles: a collection of styles to prepend
     /// - Returns: a new style
-    func prepending(_ styles: some Collection<Style>) -> Self {
+    public func prepending(_ styles: some Collection<Style>) -> Self {
         styles.reduce(self) {
             parent, child in parent.prepending(child)
         }

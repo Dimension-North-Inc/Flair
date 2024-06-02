@@ -30,7 +30,11 @@ public struct FontDescriptor {
         #if os(iOS)
         FontRef(descriptor: ref, size: 0)
         #elseif os(macOS)
-        FontRef(descriptor: ref, textTransform: .identity)
+        if let size {
+            FontRef(descriptor: ref, size: size)
+        } else {
+            FontRef(descriptor: ref, textTransform: .identity)
+        }
         #endif
     }
     
@@ -42,7 +46,7 @@ public struct FontDescriptor {
         #if os(iOS)
         let dynamic = {FontDescriptorRef.preferredFontDescriptor(withTextStyle: $0)}
         #elseif os(macOS)
-        let dynamic = {FontDescriptorRef.preferredFontDescriptor(forTextStyle: $0, options: [:])}
+        let dynamic = {FontDescriptorRef.preferredFontDescriptor(forTextStyle: $0)}
         #endif
         
         self.impl = switch style {
@@ -124,7 +128,7 @@ public struct FontDescriptor {
         if let family   { match = match.withFamily(family) }
         if let size     { match = match.withSize(resized ?? size) }
         
-        return match.matchingFontDescriptors(withMandatoryKeys: nil).map(Self.init)
+        return match.matchingFontDescriptors(withMandatoryKeys: [.family, .face, .size, .name, .visibleName]).map(Self.init)
     }
     
     public func matchingFaces() -> Set<String> {
@@ -140,16 +144,36 @@ public struct FontDescriptor {
     }
 
     public func replacing(weight value: FontWeight) -> Self {
-        let options = familyMembers()
-        let nearest = _nearest(to: value, in: options.compactMap(\.weight))
-        
-        return options.first {
-            descriptor in descriptor.weight == nearest
-        } ?? self
+        // Example: Changing the weight of an NSFontDescriptor
+        func fontDescriptorWithChangedWeight(originalFontDescriptor: NSFontDescriptor, newWeight: CGFloat) -> NSFontDescriptor {
+            // Get the current font attributes
+            var attributes = originalFontDescriptor.fontAttributes
+
+            // Get the existing traits dictionary, or create one if it doesn't exist
+            var traits = (attributes[.traits] as? [NSFontDescriptor.TraitKey: Any]) ?? [:]
+
+            // Update the weight trait
+            traits[.weight] = newWeight
+
+            // Update the traits in the attributes dictionary
+            attributes[.traits] = traits
+
+            // Create a new font descriptor with updated attributes
+            let newFontDescriptor = NSFontDescriptor(fontAttributes: attributes)
+            return newFontDescriptor
+        }
+
+        return Self(impl: fontDescriptorWithChangedWeight(originalFontDescriptor: impl, newWeight: value.rawValue))
+//        let options = familyMembers()
+//        let nearest = _nearest(to: value, in: options.compactMap(\.weight))
+//        
+//        return options.first {
+//            descriptor in descriptor.weight == nearest
+//        } ?? self
     }
     
     public func replacing(width value: FontWidth) -> Self {
-        let options = familyMembers()
+        let options = familyMembers(resized: size)
         let nearest = _nearest(to: value, in: options.compactMap(\.width))
         
         return options.first {
