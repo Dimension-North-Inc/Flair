@@ -12,18 +12,23 @@ import Combine
 import Geometry
 
 #if os(macOS)
-public typealias FlairTextDelegate = NSTextViewDelegate
+
+open class FlairTextDelegate: NSObject, NSTextViewDelegate {
+    public func textDidBeginEditing(_ notification: Notification) {
+    }
+}
 
 extension FlairText: NSViewRepresentable {
     public func makeNSView(context: Context) -> View {
-        let view = View(text: text, selection: selection, options: options, delegate: delegate) {
+        let view = View(text: text, selection: selection, options: options) {
             (text, selection) in
-            
-            if !self.text.isEqual(to: text) {
-                self.text = text
-            }
-            if self.selection != selection {
-                self.selection = selection
+            DispatchQueue.main.async {
+                if !self.text.isEqual(to: text) {
+                    self.text = text
+                }
+                if self.selection != selection {
+                    self.selection = selection
+                }
             }
         }
         
@@ -39,7 +44,6 @@ extension FlairText: NSViewRepresentable {
         view.selection  = selection
         
         view.options    = options
-        view.delegate   = delegate
     }
     
     public func sizeThatFits(_ proposal: ProposedViewSize, nsView view: View, context: Context) -> CGSize? {
@@ -65,15 +69,16 @@ extension FlairText {
                 }
             
                 // forward text to our editor, while editing...
-                if let editor, let storage = editor.textContentStorage {
+                if let editor, let textStorage = editor.textStorage {
                     // don't set if our editor contains same - it's likely the source of the update
-                    if text.isEqual(to: storage.attributedString) {
+                    if text.isEqual(to: textStorage) {
                         return
                     }
                     
-                    storage.performEditingTransaction {
-                        storage.attributedString = text
-                    }
+                    textStorage.beginEditing()
+                    textStorage.setAttributedString(text)
+                    textStorage.endEditing()
+
                 } else {
                     setNeedsDisplay(bounds)
                 }
@@ -118,8 +123,6 @@ extension FlairText {
             }
         }
         
-        public var delegate: FlairTextDelegate?
-
         public var update: (NSAttributedString, [NSRange]) -> Void
         
         public override func setFrameSize(_ newSize: NSSize) {
@@ -136,17 +139,14 @@ extension FlairText {
         init(text: NSAttributedString,
              selection: [NSRange],
              
-             options: FlairTextOptions, 
-             delegate: FlairTextDelegate? = nil,
+             options: FlairTextOptions,
              
-             update: @escaping (NSAttributedString, [NSRange]) -> Void
+             update: @MainActor @escaping (NSAttributedString, [NSRange]) -> Void
         ) {
             self.text = text
             self.selection = selection
             
             self.options = options
-            self.delegate = delegate
-
             self.update = update
             
             super.init(frame: .zero)
@@ -171,16 +171,23 @@ extension FlairText {
             text.draw(with: bounds, options: .usesLineFragmentOrigin, context: context)
         }
         
+        // once we're installed as a view, if we have an associated selection, then begin editing...
+        public override func viewDidMoveToSuperview() {
+            super.viewDidMoveToSuperview()
+            
+            if superview != nil, let selection = self.selection.first {
+                DispatchQueue.main.async {
+                    self.startEditing(event: nil, range: selection)
+                }
+            }
+        }
+        
         public override var acceptsFirstResponder: Bool {
             true
         }
 
         public override func mouseDown(with event: NSEvent) {
             startEditing(event: event)
-        }
-        
-        var editor: NSTextView? {
-            subviews.compactMap({ $0 as? NSTextView }).first
         }
         
         func startEditing(event: NSEvent?, range: NSRange? = nil) {
@@ -195,15 +202,16 @@ extension FlairText {
                 if let event {
                     editor.mouseDown(with: event)
                 }
+                
+                if let range {
+                    editor.selectedRanges = [range].map(NSValue.init)
+                }
                 return
             }
 
             let editor = NSTextView(frame: .zero)
                         
-            // NOTE: We use `runInAnimationGroup`  instead of
-            // old NSWindow API `window.disableFlushWindow()` &
-            // `window.reenableFlushWindow(); window.flushWindow()`
-
+            // make field editor display seamless
             NSAnimationContext.runAnimationGroup {
                 context in
                 
@@ -219,7 +227,9 @@ extension FlairText {
                 
                 editor.drawsBackground = false
                 
-                editor.textStorage?.setAttributedString(text)
+                editor.textContentStorage?.performEditingTransaction {
+                    editor.textContentStorage?.textStorage?.setAttributedString(text)
+                }
                 editor.textContainerInset = .zero
                 
                 editor.textContainer?.lineFragmentPadding = 0
@@ -232,81 +242,64 @@ extension FlairText {
                 self.addSubview(editor)
                 window.makeFirstResponder(editor)
 
-                editor.delegate = delegate
+                editor.delegate = self
 
-                // notify that editing has begun
-                delegate?.textDidBeginEditing?(
-                    Notification(name: NSText.didBeginEditingNotification, object: editor)
-                )
-                
-                let nc = NotificationCenter.default
-                
-                nc.addObserver(
-                    self, selector: #selector(textDidChange(_:)),
-                    name: NSText.didChangeNotification, object: editor
-                )
-                nc.addObserver(
-                    self, selector: #selector(textDidEndEditing(_:)),
-                    name: NSText.didEndEditingNotification, object: editor
-                )
-                nc.addObserver(
-                    self, selector: #selector(textViewDidChangeSelection(_:)),
-                    name: NSTextView.didChangeSelectionNotification, object: editor
-                )
-                
                 if let range {
                     editor.setSelectedRange(range)
                 }
                 
                 needsDisplay = true
             }
-
-            if let event {
+            
+            if let event, options.clickSelects == .location {
                 editor.mouseDown(with: event)
             } else {
                 editor.selectAll(nil)
             }
-            
         }
         
         func endEditing(textView: NSTextView) {
-            guard textView.isDescendant(of: self) else {
-                return
-            }
+            assert(textView == editor)
             
             textView.delegate = nil
-
-            let nc = NotificationCenter.default
-            nc.removeObserver(self, name: nil, object: textView)
-            
             textView.removeFromSuperview()
             
             needsDisplay = true
         }
         
-        private func updateText(_ attributedString: NSAttributedString) {
-            self.text = attributedString
-            self.update(text, selection)
+        var editor: NSTextView? {
+            subviews.compactMap({ $0 as? NSTextView }).first
+        }
+        
+        private func updateText(_ text: NSAttributedString) {
+            if !self.text.isEqual(to: text) {
+                self.text = text
+                self.update(text, selection)
+            }
         }
         
         private func updateSelection(_ selection: [NSRange]) {
-            self.selection = selection
-            self.update(text, selection)
+            if self.selection != selection {
+                self.selection = selection
+                self.update(text, selection)
+            }
         }
         
-        public func textDidEndEditing(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView else {
+        // MARK: - NSTextDelegate
+        
+        @objc public func textDidEndEditing(_ notification: Notification) {
+            guard let textView = notification.object as? NSTextView, textView == editor else {
                 return
             }
+
+            endEditing(textView: textView)
             
             updateText(textView.attributedString())
             updateSelection([])
-
-            endEditing(textView: textView)
         }
         
-        public func textDidChange(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView else {
+        @objc public func textDidChange(_ notification: Notification) {
+            guard let textView = notification.object as? NSTextView, textView == editor else {
                 return
             }
 
@@ -316,12 +309,22 @@ extension FlairText {
             needsDisplay = true
         }
         
-        public func textViewDidChangeSelection(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView else {
+        // MARK: - NSTextViewDelegate
+
+        @objc public func textViewDidChangeSelection(_ notification: Notification) {
+            guard let textView = notification.object as? NSTextView, textView == editor else {
                 return
             }
-            
+
             updateSelection(textView.selectedRanges.map(\.rangeValue))
+        }
+     
+        @objc public func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+            guard textView == editor else {
+                return false
+            }
+            
+            return options.editor.performAction?(textView, commandSelector) ?? false
         }
     }
 }
@@ -337,6 +340,18 @@ extension NSTextView {
         self.isSelectable = options.interactivity != .display
     }
 }
+
+
+/// A collection of optional behaviours executed while an instance of `FlairText` is being edited.
+///
+/// When configuring `FlairTextOptions`, access the `editor` property to add behavours
+/// executed while `FlairText` is being edited.
+public struct FlairTextEditingOptions {
+    /// Allows `FlairTextView` users to override common editor behaviours including
+    /// cursor actions, newline, tab, and backtab actions 
+    public var performAction: ((NSTextView, Selector) -> Bool)?
+}
+
 #endif
 
 #Preview {

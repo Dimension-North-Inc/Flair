@@ -10,13 +10,12 @@ import SwiftUI
 
 public struct FlairText {
     var options: FlairTextOptions
-    var delegate: FlairTextDelegate?
     
     @Binding var text: NSAttributedString
 
     @Binding var selection: [NSRange]
     
-    private static func ignored() -> Binding<[NSRange]> {
+    private static func ignoresSelection() -> Binding<[NSRange]> {
         var ranges: [NSRange] = []
         
         return Binding {
@@ -26,87 +25,95 @@ public struct FlairText {
         }
     }
     
-    public init(_ text: String, selection: Binding<[NSRange]>? = nil, selectable: Bool = true) {
-        self.options    = selectable ? .selectable : .display
+    public init(_ text: String, selection: Binding<[NSRange]>? = nil) {
         self._text      = .constant(AttributedString(text).object())
-        self._selection = selection ?? Self.ignored()
+        self._selection = selection ?? Self.ignoresSelection()
+
+        self.options    = selection != nil ? .selectable() : .display()
     }
     
-    public init(_ text: AttributedString, selection: Binding<[NSRange]>? = nil, selectable: Bool = true) {
-        self.options    = selectable ? .selectable : .display
+    public init(_ text: AttributedString, selection: Binding<[NSRange]>? = nil) {
         self._text      = .constant(text.object())
-        self._selection = selection ?? Self.ignored()
+        self._selection = selection ?? Self.ignoresSelection()
+
+        self.options    = selection != nil ? .selectable() : .display()
     }
     
-    public init(_ text: NSAttributedString, selection: Binding<[NSRange]>? = nil, selectable: Bool = true) {
-        self.options    = selectable ? .selectable : .display
+    public init(_ text: NSAttributedString, selection: Binding<[NSRange]>? = nil) {
         self._text      = .constant(text)
-        self._selection = selection ?? Self.ignored()
+        self._selection = selection ?? Self.ignoresSelection()
+
+        self.options    = selection != nil ? .selectable() : .display()
     }
     
-    public init(_ text: Binding<String>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
-        self.options  = options
-        self.delegate = delegate
-        
-        self._text = Binding(
+    public init(_ text: Binding<String>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable()) {
+        self._text      = Binding(
             get: { AttributedString(text.wrappedValue).object() },
             set: { storage in text.wrappedValue = storage.string }
         )
         
-        self._selection = selection ?? Self.ignored()
+        self._selection = selection ?? Self.ignoresSelection()
+
+        self.options    = options
     }
     
-    public init(_ text: Binding<AttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
-        self.options  = options
-        self.delegate = delegate
-        
-        self._text = Binding(
+    public init(_ text: Binding<AttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable()) {
+        self._text      = Binding(
             get: { text.wrappedValue.object() },
             set: { storage in text.wrappedValue = storage.value() }
         )
-        self._selection = selection ?? Self.ignored()
+        self._selection = selection ?? Self.ignoresSelection()
+
+        self.options    = options
     }
     
-    public init(_ text: Binding<NSAttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable, delegate: FlairTextDelegate? = nil) {
-        self.options  = options
-        self.delegate = delegate
-        
-        self._text = text
-        self._selection = selection ?? Self.ignored()
+    public init(_ text: Binding<NSAttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable()) {
+        self._text      = text
+        self._selection = selection ?? Self.ignoresSelection()
+
+        self.options    = options
     }
 }
 
 public struct FlairTextOptions {
-    public static var display    = FlairTextOptions(interactivity: .display)
-    public static var editable   = FlairTextOptions(interactivity: .editable)
-    public static var selectable = FlairTextOptions(interactivity: .selectable)
-
     public enum Interactivity: Equatable {
         case display
         case editable
         case selectable
     }
     
+    public enum ClickSelection: Equatable {
+        case all
+        case location
+    }
+    
     let interactivity: Interactivity
-    
-    let allowsUndo: Bool
-    let isRichText: Bool
-    
-    let endsEditingOnNewline: Bool
-    
-    public init(
-        interactivity: Interactivity,
-        
-        isRichText: Bool = true,
-        allowsUndo: Bool = true,
 
-        endsEditingOnNewline: Bool = true
-    ) {
-        self.interactivity        = interactivity
+    public typealias Configuration = (inout Self) -> Void
 
-        self.isRichText           = isRichText
-        self.allowsUndo           = allowsUndo
-        self.endsEditingOnNewline = endsEditingOnNewline
+    public static func display(configuration: Configuration? = nil) -> Self {
+        Self(.display, configuration: configuration)
+    }
+    public static func editable(configuration: Configuration? = nil) -> Self {
+        Self(.editable, configuration: configuration)
+    }
+    public static func selectable(configuration: Configuration? = nil) -> Self {
+        Self(.selectable, configuration: configuration)
+    }
+    
+    
+    public var allowsUndo = true
+    public var isRichText = true
+    
+    public var endsEditingOnNewline = true
+
+    public var clickSelects = ClickSelection.location
+
+    public var editor = FlairTextEditingOptions()
+    
+    public init(_ interactivity: Interactivity, configuration: Configuration?) {
+        self.interactivity = interactivity
+        configuration?(&self)
     }
 }
 
@@ -137,7 +144,7 @@ extension AttributeContainer: ExpressibleByDictionaryLiteral {
 
 #Preview {
     return VStack {
-        FlairText("Hello World", selectable: true)
+        FlairText("Hello World", selection: .constant([]))
     }.padding().preferredColorScheme(.light)
 
 }

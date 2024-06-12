@@ -48,10 +48,8 @@
         }
       }
     },
-    "12 pt." : {
-
-    },
     "Black" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr" : {
           "stringUnit" : {
@@ -64,12 +62,6 @@
     "Choose Color" : {
 
     },
-    "Colors" : {
-
-    },
-    "Condensed" : {
-
-    },
     "Enter value" : {
 
     },
@@ -79,19 +71,10 @@
     "Font" : {
 
     },
-    "Gill Sans" : {
-
-    },
-    "Highlighter" : {
-
-    },
     "Italic" : {
 
     },
     "Multiple Selection" : {
-
-    },
-    "Name" : {
 
     },
     "No Selection" : {
@@ -145,16 +128,7 @@
         }
       }
     },
-    "Selection = %@" : {
-
-    },
     "Size" : {
-
-    },
-    "Text" : {
-
-    },
-    "Text = %@" : {
 
     },
     "Weight" : {

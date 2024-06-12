@@ -29,7 +29,6 @@ extension Collection {
     
     public subscript(range: PartialRangeFrom<Int>) -> SubSequence {
         let startIndex = self.index(self.startIndex, offsetBy: range.lowerBound)
-        let endIndex = self.endIndex
         return self[startIndex...]
     }
     
