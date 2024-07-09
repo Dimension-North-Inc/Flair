@@ -20,336 +20,261 @@ open class FlairTextDelegate: NSObject, NSTextViewDelegate {
 
 extension FlairText: NSViewRepresentable {
     public func makeNSView(context: Context) -> View {
-        let view = View(text: text, selection: selection, options: options) {
-            (text, selection) in
-            DispatchQueue.main.async {
-                if !self.text.isEqual(to: text) {
-                    self.text = text
-                }
-                if self.selection != selection {
-                    self.selection = selection
-                }
-            }
-        }
-        
-        view.wantsLayer = true
-        view.layerContentsPlacement = .topLeft
-        view.layerContentsRedrawPolicy = .onSetNeedsDisplay
-        
-        return view
+        View(host: self)
     }
     
     public func updateNSView(_ view: View, context: Context) {
-        view.text       = text
-        view.selection  = selection
-        
-        view.options    = options
+        view.host = self
     }
     
     public func sizeThatFits(_ proposal: ProposedViewSize, nsView view: View, context: Context) -> CGSize? {
-        guard let width = proposal.width, width != 0 else {
+        guard let width = proposal.width else {
             return nil
         }
         
-        let size = CGSize(width, .infinity)
-        let boundingRect = text.boundingRect(
-            with: size, options: .usesLineFragmentOrigin, context: view.context
-        )
-        
-        return CGSize(width: width, height: ceil(boundingRect.height))
+        let height = text.boundingRect(
+            with: NSMakeSize(width, 1e6),
+            options: [.usesFontLeading, .usesLineFragmentOrigin],
+            context: nil
+        ).height
+                
+        return CGSizeMake(width, height)
     }
 }
 
 extension FlairText {
-    public final class View: NSView, NSTextViewDelegate {
-        public var text: NSAttributedString {
+    public final class View: NSClipView, NSTextViewDelegate {
+        var host: FlairText {
             didSet {
-                if text.isEqual(to: oldValue) {
-                    return
-                }
-            
-                // forward text to our editor, while editing...
-                if let editor, let textStorage = editor.textStorage {
-                    // don't set if our editor contains same - it's likely the source of the update
-                    if text.isEqual(to: textStorage) {
-                        return
-                    }
-                    
-                    textStorage.beginEditing()
-                    textStorage.setAttributedString(text)
-                    textStorage.endEditing()
-
-                } else {
-                    setNeedsDisplay(bounds)
-                }
+                text = host.text
+                selection = host.selection
             }
         }
         
-        public var selection: [NSRange] {
-            didSet {
-                if selection == oldValue {
-                    return
-                }
+        func updateHost() {
+            if !host.text.isEqual(to: text) {
+                host.text = text
+            }
+            if host.selection != selection {
+                host.selection = selection
+            }
+        }
 
-                // forward selection to our editor, while editing...
-                if let editor {
-                    // if selection is empty - interpret as wanting to end editing
-                    if selection.isEmpty {
-                        endEditing(textView: editor)
-                    } else {
-                        // don't set if our editor's selection is same - it's likely the source of the update
-                        if selection == editor.selectedRanges.map(\.rangeValue) {
-                            return
-                        }
-                        
-                        editor.selectedRanges = selection.map(NSValue.init)
+        private var selection: [NSRange] = [] {
+            didSet {
+                if selection.isEmpty {
+                    if editor != nil {
+                        endEditing()
                     }
                 } else {
-                    // if selection is non-empty - interpret as wanting to begin editing
-                    if !selection.isEmpty {
-                        startEditing(event: nil)
-                        
-                        guard let editor else { return }
-                        
-                        editor.selectedRanges = selection.map(NSValue.init)
+                    if editor == nil {
+                        beginEditing(event: nil, selection: selection)
                     }
                 }
             }
         }
-
-        public var options: FlairTextOptions {
+        
+        private var text: NSAttributedString = NSAttributedString() {
             didSet {
-                editor?.setOptions(options)
+                if !text.isEqual(to: oldValue) {
+                    needsDisplay = true
+                }
             }
         }
         
-        public var update: (NSAttributedString, [NSRange]) -> Void
-        
-        public override func setFrameSize(_ newSize: NSSize) {
-            let oldSize = frame.size
-            super.setFrameSize(newSize)
+        init(host: FlairText) {
+            self.host       = host
             
-            if newSize != oldSize {
-                needsDisplay = true
-            }
-        }
-        
-        var context = NSStringDrawingContext()
-        
-        init(text: NSAttributedString,
-             selection: [NSRange],
-             
-             options: FlairTextOptions,
-             
-             update: @MainActor @escaping (NSAttributedString, [NSRange]) -> Void
-        ) {
-            self.text = text
-            self.selection = selection
-            
-            self.options = options
-            self.update = update
+            self.text       = host.text
+            self.selection  = host.selection
             
             super.init(frame: .zero)
-            self.wantsLayer = true
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
         }
         
         required init?(coder: NSCoder) {
-            fatalError()
+            fatalError("\(#function) unimplemented")
         }
         
+        // MARK: - Lifecycle
+        public override func viewDidMoveToWindow() {
+            if superview != nil && !selection.isEmpty {
+                beginEditing(event: nil, selection: selection)
+            }
+        }
+        
+        // MARK: - Events
+        public override var acceptsFirstResponder: Bool {
+            true
+        }
+        
+        public override func mouseDown(with event: NSEvent) {
+            beginEditing(event: event, selection: selection)
+        }
+        
+        // MARK: - Editing
+        var editor: Editor? {
+            subviews
+                .compactMap { $0 as? Editor }
+                .first
+        }
+        
+        func beginEditing(event: NSEvent?, selection: [NSRange]) {
+            // update existing editor, if any
+            if let editor {
+                if let event {
+                    editor.mouseDown(with: event)
+                } else if !selection.isEmpty {
+                    editor.selectedRanges = selection.map(NSValue.init)
+                }
+                
+            } else if let window {
+                let textEditor = Editor(frame: bounds)
+                let textContainer = textEditor.textContainer
+                
+                textContainer?.lineFragmentPadding = .zero
+                
+                textEditor.wantsLayer           = true
+                
+                autoresizesSubviews             = true
+                textEditor.autoresizingMask     = [.width, .height]
+                
+                textEditor.isRichText           = host.options.isRichText
+                
+                textEditor.isEditable           = host.options.isEditable
+                textEditor.isSelectable         = host.options.isSelectable
+                
+                textEditor.usesRuler            = host.options.usesRuler
+                textEditor.usesFontPanel        = host.options.usesFontPanel
+                
+                textEditor.isFieldEditor        = host.options.isFieldEditor
+                
+                textEditor.text                 = text
+                textEditor.delegate             = self
+                
+                addSubview(textEditor)
+                window.makeFirstResponder(textEditor)
+                
+                if let event {
+                    textEditor.mouseDown(with: event)
+                } else if !selection.isEmpty {
+                    textEditor.selectedRanges = selection.map(NSValue.init)
+                }
+            }
+        }
+                
+        func endEditing() {
+            guard let editor else {
+                return
+            }
+            
+            editor.delegate = nil
+            editor.removeFromSuperview()
+            
+            text = editor.text
+            selection = []
+            updateHost()
+            
+            setNeedsDisplay(bounds)
+        }
+        
+        public func textDidChange(_ notification: Notification) {
+            guard let editor else {
+                return
+            }
+            
+            text = editor.text
+            updateHost()
+        }
+        
+        public func textViewDidChangeSelection(_ notification: Notification) {
+            guard let editor else {
+                return
+            }
+            
+            selection = editor.selectedRanges.map(\.rangeValue)
+            updateHost()
+        }
+        
+        public func textDidEndEditing(_ notification: Notification) {
+            endEditing()
+        }
+        
+        public func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+            return host.options.doCommand?(commandSelector) ?? false
+        }
+        
+        // MARK: - Drawing
         public override var isOpaque: Bool {
             false
         }
         public override var isFlipped: Bool {
             true
         }
+        
         public override func draw(_ dirtyRect: NSRect) {
             guard editor == nil else {
                 return
             }
-
-            text.draw(with: bounds, options: .usesLineFragmentOrigin, context: context)
-        }
-        
-        // once we're installed as a view, if we have an associated selection, then begin editing...
-        public override func viewDidMoveToSuperview() {
-            super.viewDidMoveToSuperview()
-            
-            if superview != nil, let selection = self.selection.first {
-                DispatchQueue.main.async {
-                    self.startEditing(event: nil, range: selection)
-                }
-            }
-        }
-        
-        public override var acceptsFirstResponder: Bool {
-            true
-        }
-
-        public override func mouseDown(with event: NSEvent) {
-            startEditing(event: event)
-        }
-        
-        func startEditing(event: NSEvent?, range: NSRange? = nil) {
-            guard
-                let window,
-                options.interactivity != .display
-            else {
-                return
-            }
-            
-            if let editor {
-                if let event {
-                    editor.mouseDown(with: event)
-                }
-                
-                if let range {
-                    editor.selectedRanges = [range].map(NSValue.init)
-                }
-                return
-            }
-
-            let editor = NSTextView(frame: .zero)
-                        
-            // make field editor display seamless
-            NSAnimationContext.runAnimationGroup {
-                context in
-                
-                context.duration = 0
-                context.allowsImplicitAnimation = false
-                
-                autoresizesSubviews = true
-
-                editor.frame = bounds
-                editor.autoresizingMask = .width
-
-                editor.setOptions(options)
-                
-                editor.drawsBackground = false
-                
-                editor.textContentStorage?.performEditingTransaction {
-                    editor.textContentStorage?.textStorage?.setAttributedString(text)
-                }
-                editor.textContainerInset = .zero
-                
-                editor.textContainer?.lineFragmentPadding = 0
-                editor.textContainer?.size.width = bounds.width
-                editor.textContainer?.size.height = .infinity
-                
-                editor.isVerticallyResizable = true
-                editor.isHorizontallyResizable = false
-
-                self.addSubview(editor)
-                window.makeFirstResponder(editor)
-
-                editor.delegate = self
-
-                if let range {
-                    editor.setSelectedRange(range)
-                }
-                
-                needsDisplay = true
-            }
-            
-            if let event, options.clickSelects == .location {
-                editor.mouseDown(with: event)
-            } else {
-                editor.selectAll(nil)
-            }
-        }
-        
-        func endEditing(textView: NSTextView) {
-            assert(textView == editor)
-            
-            textView.delegate = nil
-            textView.removeFromSuperview()
-            
-            needsDisplay = true
-        }
-        
-        var editor: NSTextView? {
-            subviews.compactMap({ $0 as? NSTextView }).first
-        }
-        
-        private func updateText(_ text: NSAttributedString) {
-            if !self.text.isEqual(to: text) {
-                self.text = text
-                self.update(text, selection)
-            }
-        }
-        
-        private func updateSelection(_ selection: [NSRange]) {
-            if self.selection != selection {
-                self.selection = selection
-                self.update(text, selection)
-            }
-        }
-        
-        // MARK: - NSTextDelegate
-        
-        @objc public func textDidEndEditing(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView, textView == editor else {
-                return
-            }
-
-            endEditing(textView: textView)
-            
-            updateText(textView.attributedString())
-            updateSelection([])
-        }
-        
-        @objc public func textDidChange(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView, textView == editor else {
-                return
-            }
-
-            updateText(textView.attributedString())
-
-            textView.sizeToFit()
-            needsDisplay = true
-        }
-        
-        // MARK: - NSTextViewDelegate
-
-        @objc public func textViewDidChangeSelection(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView, textView == editor else {
-                return
-            }
-
-            updateSelection(textView.selectedRanges.map(\.rangeValue))
-        }
-     
-        @objc public func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-            guard textView == editor else {
-                return false
-            }
-            
-            return options.editor.performAction?(textView, commandSelector) ?? false
+            text.draw(
+                with: bounds,
+                options: [.usesFontLeading, .usesLineFragmentOrigin],
+                context: nil
+            )
         }
     }
 }
 
-extension NSTextView {
-    public func setOptions(_ options: FlairTextOptions) {
-        self.allowsUndo = options.allowsUndo
-
-        self.isRichText = options.isRichText
-        self.isFieldEditor = options.endsEditingOnNewline
-
-        self.isEditable = options.interactivity == .editable
-        self.isSelectable = options.interactivity != .display
+extension FlairText {
+    public final class Editor: NSTextView {
+        var text: NSAttributedString {
+            get {
+                attributedString()
+            }
+            set {
+                if let textStorage {
+                    textStorage.edit {
+                        textStorage.setAttributedString(newValue)
+                    }
+                }
+            }
+        }
+        
+        public override func alignLeft(_ sender: Any?) {
+            align(.left)
+        }
+        public override func alignRight(_ sender: Any?) {
+            align(.right)
+        }
+        public override func alignCenter(_ sender: Any?) {
+            align(.center)
+        }
+        public override func alignJustified(_ sender: Any?) {
+            align(.justified)
+        }
+        
+        private func align(_ alignment: NSTextAlignment) {
+            guard let textStorage else {
+                return
+            }
+            
+            textStorage.edit {
+                let paragraphStyle = NSMutableParagraphStyle(); paragraphStyle.alignment = alignment
+                textStorage.addAttribute(.paragraphStyle, value: paragraphStyle, range: selectedRange)
+            }
+            
+            setNeedsDisplay(self.bounds)
+        }
     }
 }
 
-
-/// A collection of optional behaviours executed while an instance of `FlairText` is being edited.
-///
-/// When configuring `FlairTextOptions`, access the `editor` property to add behavours
-/// executed while `FlairText` is being edited.
-public struct FlairTextEditingOptions {
-    /// Allows `FlairTextView` users to override common editor behaviours including
-    /// cursor actions, newline, tab, and backtab actions 
-    public var performAction: ((NSTextView, Selector) -> Bool)?
+extension NSTextStorage {
+    public func edit(transaction: () -> Void) {
+        beginEditing()
+        transaction()
+        endEditing()
+    }
 }
 
 #endif
@@ -364,10 +289,10 @@ public struct FlairTextEditingOptions {
                 Text("Text = \(text)")
                 Text("Selection = \(selection.debugDescription)")
                 
-                FlairText($text, selection: $selection)
+                FlairText(text: $text, selection: $selection)
             }
-                .padding()
-                .preferredColorScheme(.light)
+            .padding()
+            .preferredColorScheme(.light)
         }
     }
     

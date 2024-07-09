@@ -17,7 +17,7 @@ public struct FontNameStyle: StyleKeys {
             #if os(iOS)
             FontRef.preferredFont(forTextStyle: .body)
             #elseif os(macOS)
-            FontRef.userFont(ofSize: 0)
+            FontRef.userFont(ofSize: 12)
             #endif
         }
 

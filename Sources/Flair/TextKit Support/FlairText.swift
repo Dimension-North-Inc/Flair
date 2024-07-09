@@ -8,112 +8,63 @@
 
 import SwiftUI
 
-public struct FlairText {
-    var options: FlairTextOptions
-    
-    @Binding var text: NSAttributedString
-
-    @Binding var selection: [NSRange]
-    
-    private static func ignoresSelection() -> Binding<[NSRange]> {
-        var ranges: [NSRange] = []
-        
-        return Binding {
-            ranges
-        } set: { value in
-            ranges = value
-        }
-    }
-    
-    public init(_ text: String, selection: Binding<[NSRange]>? = nil) {
-        self._text      = .constant(AttributedString(text).object())
-        self._selection = selection ?? Self.ignoresSelection()
-
-        self.options    = selection != nil ? .selectable() : .display()
-    }
-    
-    public init(_ text: AttributedString, selection: Binding<[NSRange]>? = nil) {
-        self._text      = .constant(text.object())
-        self._selection = selection ?? Self.ignoresSelection()
-
-        self.options    = selection != nil ? .selectable() : .display()
-    }
-    
-    public init(_ text: NSAttributedString, selection: Binding<[NSRange]>? = nil) {
-        self._text      = .constant(text)
-        self._selection = selection ?? Self.ignoresSelection()
-
-        self.options    = selection != nil ? .selectable() : .display()
-    }
-    
-    public init(_ text: Binding<String>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable()) {
-        self._text      = Binding(
-            get: { AttributedString(text.wrappedValue).object() },
-            set: { storage in text.wrappedValue = storage.string }
+struct IngnoredSelection {
+    @State var ranges: [NSRange] = []
+    func binding() -> Binding<[NSRange]> {
+        return Binding(
+            get: { self.ranges },
+            set: { self.ranges = $0 }
         )
-        
-        self._selection = selection ?? Self.ignoresSelection()
-
-        self.options    = options
-    }
-    
-    public init(_ text: Binding<AttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable()) {
-        self._text      = Binding(
-            get: { text.wrappedValue.object() },
-            set: { storage in text.wrappedValue = storage.value() }
-        )
-        self._selection = selection ?? Self.ignoresSelection()
-
-        self.options    = options
-    }
-    
-    public init(_ text: Binding<NSAttributedString>, selection: Binding<[NSRange]>? = nil, options: FlairTextOptions = .editable()) {
-        self._text      = text
-        self._selection = selection ?? Self.ignoresSelection()
-
-        self.options    = options
     }
 }
 
-public struct FlairTextOptions {
-    public enum Interactivity: Equatable {
-        case display
-        case editable
-        case selectable
+public struct FlairText {
+    public struct Options {
+        public var isRichText: Bool = true
+        
+        public var isEditable: Bool = true
+        public var isSelectable: Bool = true
+        
+        public var usesRuler: Bool = false
+        public var usesFontPanel: Bool = true
+                
+        public var isFieldEditor: Bool = true
+        
+        // editor delegation
+        public var doCommand: ((Selector) -> Bool)? = nil
+        
+        public init() {}
+        public init(configure: (inout Self)->Void) {
+            configure(&self)
+        }
+        
+        public static var editor = Options { opt in opt.isFieldEditor = false }
+        public static var fieldEditor = Options { opt in opt.isFieldEditor = true }
     }
     
-    public enum ClickSelection: Equatable {
-        case all
-        case location
+    @Binding var text: NSAttributedString
+    @Binding var selection: [NSRange]
+    
+    var options: Options
+    
+    init(text: Binding<String>, selection: Binding<[NSRange]>? = nil, options: Options = .fieldEditor) {
+        self._text = Binding<NSAttributedString>(
+            get: { NSAttributedString(string: text.wrappedValue) },
+            set: { obj in text.wrappedValue = obj.string }
+        )
+        self._selection = selection ?? IngnoredSelection().binding()
+        
+        self.options = options
     }
     
-    let interactivity: Interactivity
-
-    public typealias Configuration = (inout Self) -> Void
-
-    public static func display(configuration: Configuration? = nil) -> Self {
-        Self(.display, configuration: configuration)
-    }
-    public static func editable(configuration: Configuration? = nil) -> Self {
-        Self(.editable, configuration: configuration)
-    }
-    public static func selectable(configuration: Configuration? = nil) -> Self {
-        Self(.selectable, configuration: configuration)
-    }
-    
-    
-    public var allowsUndo = true
-    public var isRichText = true
-    
-    public var endsEditingOnNewline = true
-
-    public var clickSelects = ClickSelection.location
-
-    public var editor = FlairTextEditingOptions()
-    
-    public init(_ interactivity: Interactivity, configuration: Configuration?) {
-        self.interactivity = interactivity
-        configuration?(&self)
+    init(text: Binding<AttributedString>, selection: Binding<[NSRange]>? = nil, options: Options = .fieldEditor) {
+        self._text = Binding<NSAttributedString>(
+            get: { NSAttributedString(text.wrappedValue) },
+            set: { obj in text.wrappedValue = AttributedString(obj) }
+        )
+        self._selection = selection ?? IngnoredSelection().binding()
+        
+        self.options = options
     }
 }
 
@@ -133,7 +84,7 @@ extension AttributedString {
     }
 }
 
-extension AttributeContainer: ExpressibleByDictionaryLiteral {
+extension AttributeContainer: @retroactive ExpressibleByDictionaryLiteral {
     public typealias Key   = NSAttributedString.Key
     public typealias Value = Any
     
@@ -143,8 +94,9 @@ extension AttributeContainer: ExpressibleByDictionaryLiteral {
 }
 
 #Preview {
-    return VStack {
-        FlairText("Hello World", selection: .constant([]))
+    @Previewable @State var text: String = "Hello World"
+    VStack {
+        FlairText(text: $text)
     }.padding().preferredColorScheme(.light)
 
 }

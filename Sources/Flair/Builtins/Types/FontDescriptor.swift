@@ -144,50 +144,36 @@ public struct FontDescriptor {
     }
 
     public func replacing(weight value: FontWeight) -> Self {
-        // Example: Changing the weight of an NSFontDescriptor
-        func fontDescriptorWithChangedWeight(originalFontDescriptor: NSFontDescriptor, newWeight: CGFloat) -> NSFontDescriptor {
-            // Get the current font attributes
-            var attributes = originalFontDescriptor.fontAttributes
+        let options = familyMembers(resized: size)
+        let nearest = _nearest(to: value, in: options.compactMap(\.weight)) ?? value
 
-            // Get the existing traits dictionary, or create one if it doesn't exist
-            var traits = (attributes[.traits] as? [NSFontDescriptor.TraitKey: Any]) ?? [:]
-
-            // Update the weight trait
-            traits[.weight] = newWeight
-
-            // Update the traits in the attributes dictionary
-            attributes[.traits] = traits
-
-            // Create a new font descriptor with updated attributes
-            let newFontDescriptor = NSFontDescriptor(fontAttributes: attributes)
-            return newFontDescriptor
-        }
-
-        return Self(impl: fontDescriptorWithChangedWeight(originalFontDescriptor: impl, newWeight: value.rawValue))
-//        let options = familyMembers()
-//        let nearest = _nearest(to: value, in: options.compactMap(\.weight))
-//        
-//        return options.first {
-//            descriptor in descriptor.weight == nearest
-//        } ?? self
+        var traits = impl.fontAttributes[.traits] as? [FontDescriptorRef.TraitKey: Any] ?? [:]
+        
+        traits[.weight] = nearest.rawValue
+        
+        return Self(impl: impl.addingAttributes([.traits: traits]))
     }
     
     public func replacing(width value: FontWidth) -> Self {
         let options = familyMembers(resized: size)
-        let nearest = _nearest(to: value, in: options.compactMap(\.width))
+        let nearest = _nearest(to: value, in: options.compactMap(\.width)) ?? value
+
+        var traits = impl.fontAttributes[.traits] as? [FontDescriptorRef.TraitKey: Any] ?? [:]
         
-        return options.first {
-            descriptor in descriptor.width == nearest
-        } ?? self
+        traits[.width] = nearest.rawValue
+        
+        return Self(impl: impl.addingAttributes([.traits: traits]))
     }
     
     public func replacing(angle value: FontAngle) -> Self {
-        let options = familyMembers()
-        let nearest = _nearest(to: value, in: options.compactMap(\.angle))
+        let options = familyMembers(resized: size)
+        let nearest = _nearest(to: value, in: options.compactMap(\.angle)) ?? value
+
+        var traits = impl.fontAttributes[.traits] as? [FontDescriptorRef.TraitKey: Any] ?? [:]
         
-        return options.first {
-            descriptor in descriptor.angle == nearest
-        } ?? self
+        traits[.slant] = nearest.rawValue
+        
+        return Self(impl: impl.addingAttributes([.traits: traits]))
     }
 }
 
@@ -327,9 +313,9 @@ public struct FontAngle: Codable, Hashable, RawRepresentable, CaseIterable, Cust
         self.rawValue = rawValue
     }
     
-    public static let italic    = Self(rawValue:  0.01)
-    public static let standard  = Self(rawValue:  0.00)
-    public static let backslant = Self(rawValue: -0.01)
+    public static let italic    = Self(rawValue:  0.2)
+    public static let standard  = Self(rawValue:  0.0)
+    public static let backslant = Self(rawValue: -0.2)
 
     public static var allCases: [FontAngle] {[
         .italic, .standard, .backslant

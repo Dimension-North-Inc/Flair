@@ -9,11 +9,10 @@
 import SwiftUI
 import Foundation
 
-extension FontRef: @unchecked Sendable {}
+extension FontRef: @unchecked @retroactive Sendable {}
 
-extension NSParagraphStyle: @unchecked Sendable {}
-extension NSMutableParagraphStyle: @unchecked Sendable {}
-
+extension NSParagraphStyle: @unchecked @retroactive Sendable {}
+extension NSMutableParagraphStyle: @unchecked @retroactive Sendable {}
 
 extension AttributeScopes {
     public struct FlairAttributeScopes: AttributeScope  {
@@ -55,18 +54,23 @@ extension Style {
     }
 
     public var fontDescriptor: FontDescriptor {
-        var desc: FontDescriptor = FontDescriptor(style: self.fontName)
-
-        desc = desc
-            .replacing(weight:   self.fontWeight)
-            .replacing(width:    self.fontWidth)
-            .replacing(angle:    self.fontAngle)
-
-        if !self.fontName.isDynamic {
-            desc = desc.replacing(size: self.fontSize)
+        get {
+            var desc: FontDescriptor = FontDescriptor(style: self.fontName)
+            
+            if !self.fontName.isDynamic {
+                desc = desc.replacing(size: self.fontSize)
+            }
+            
+            desc = desc
+                .replacing(weight:   self.fontWeight)
+                .replacing(width:    self.fontWidth)
+                .replacing(angle:    self.fontAngle)
+            
+            return desc
         }
-
-        return desc
+        set {
+            // TODO:
+        }
     }
     
     public var paragraph: NSParagraphStyle {
@@ -108,20 +112,7 @@ extension AttributedString {
             // this is our blended style
             let style = Style(cascading: [attributes.flair.paragraphStyle, attributes.flair.characterStyle].compactMap { $0 })
             
-            // base font
-            var descriptor = style.fontDescriptor
-            
-            // bold modifier
-            if style.bold, let weight = descriptor.weight {
-                descriptor = descriptor.replacing(weight: weight.next)
-            }
-            
-            // italic modifier
-            if style.italic, let angle = descriptor.angle {
-                descriptor = descriptor.replacing(angle: angle.next)
-            }
-            
-            copy[range].font = descriptor.font
+            copy[range].font = style.font
             
             // foreground, background colors
             copy[range].foregroundColor     = style.textColor.ref
@@ -135,6 +126,7 @@ extension AttributedString {
             copy[range].strikethroughStyle  = style.strikethrough?.style
             copy[range].strikethroughColor  = style.strikethrough?.color?.ref
         }
+        
         return copy
     }
     
