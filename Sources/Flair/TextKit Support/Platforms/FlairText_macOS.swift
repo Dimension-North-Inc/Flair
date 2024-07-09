@@ -82,7 +82,7 @@ extension FlairText {
             }
         }
         
-        init(host: FlairText) {
+        public init(host: FlairText) {
             self.host       = host
             
             self.text       = host.text
@@ -114,13 +114,13 @@ extension FlairText {
         }
         
         // MARK: - Editing
-        var editor: Editor? {
+        public var editor: Editor? {
             subviews
                 .compactMap { $0 as? Editor }
                 .first
         }
         
-        func beginEditing(event: NSEvent?, selection: [NSRange]) {
+        public func beginEditing(event: NSEvent?, selection: [NSRange]) {
             // update existing editor, if any
             if let editor {
                 if let event {
@@ -164,7 +164,7 @@ extension FlairText {
             }
         }
                 
-        func endEditing() {
+        public func endEditing() {
             guard let editor else {
                 return
             }
@@ -228,7 +228,7 @@ extension FlairText {
 
 extension FlairText {
     public final class Editor: NSTextView {
-        var text: NSAttributedString {
+        public var text: NSAttributedString {
             get {
                 attributedString()
             }
