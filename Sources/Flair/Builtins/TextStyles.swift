@@ -9,7 +9,7 @@
 import SwiftUI
 import Foundation
 
-public enum AlignmentStyle: StyleKeys, Codable, Hashable {
+public enum AlignmentStyle: String, StyleKeys, Codable, Hashable, CaseIterable {
     case leading
     case trailing
     case centered
@@ -118,6 +118,20 @@ public struct StrikethroughStyle: StyleKeys, Codable, Hashable {
     public init() {}
 }
 
+public struct BoldStyle: StyleKeys, Codable, Hashable {
+    public static var name      = "flair.bold"
+    public static var initial   = false
+}
+
+public struct ItalicStyle: StyleKeys, Codable, Hashable {
+    public static var name      = "flair.italic"
+    public static var initial   = false
+}
+
+public struct OutlineStyle: StyleKeys, Codable, Hashable {
+    public static var name      = "flair.outline"
+    public static var initial   = false
+}
 
 extension Style.Keys {
     public var textAlignment: AlignmentStyle.Type {
@@ -142,6 +156,18 @@ extension Style.Keys {
     }
     public var lineHeightMultiple: LineHeightMultipleStyle.Type {
         LineHeightMultipleStyle.self
+    }
+    
+    public var bold: BoldStyle.Type {
+        BoldStyle.self
+    }
+
+    public var italic: ItalicStyle.Type {
+        ItalicStyle.self
+    }
+
+    public var outline: OutlineStyle.Type {
+        OutlineStyle.self
     }
     
     public var underline: UnderlineStyle.Type {

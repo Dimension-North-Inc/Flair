@@ -44,24 +44,14 @@ public struct FontAngleStyle: StyleKeys {
     public static var initial: FontAngle = .standard
 }
 
-public struct FontWeightStyle: StyleKeys {
-    public static var name = "flair.font-weight"
-    public static var initial: FontWeight = .regular
-}
-
 public struct FontWidthStyle: StyleKeys {
     public static var name = "flair.font-width"
     public static var initial: FontWidth = .standard
 }
 
-public struct FontBoldStyle: StyleKeys {
-    public static var name = "flair.font-bold"
-    public static var initial: Bool = false
-}
-
-public struct FontItalicStyle: StyleKeys {
-    public static var name = "flair.font-italic"
-    public static var initial: Bool = false
+public struct FontWeightStyle: StyleKeys {
+    public static var name = "flair.font-weight"
+    public static var initial: FontWeight = .regular
 }
 
 extension Style.Keys {
@@ -77,18 +67,11 @@ extension Style.Keys {
         FontAngleStyle.self
     }
     
-    public var fontWeight: FontWeightStyle.Type {
-        FontWeightStyle.self
-    }
-    
     public var fontWidth: FontWidthStyle.Type {
         FontWidthStyle.self
     }
-    
-    public var bold: FontBoldStyle.Type {
-        FontBoldStyle.self
-    }
-    public var italic: FontItalicStyle.Type {
-        FontItalicStyle.self
+
+    public var fontWeight: FontWeightStyle.Type {
+        FontWeightStyle.self
     }
 }

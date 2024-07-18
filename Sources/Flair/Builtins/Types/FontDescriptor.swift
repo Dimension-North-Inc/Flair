@@ -226,9 +226,9 @@ public struct FontWeight: Codable, Hashable, RawRepresentable, CaseIterable, Cus
         Self(rawValue: other.rawValue)
     }
     
-    public static var allCases: [FontWeight] {[
+    public static var allCases: [FontWeight]  = [
         .ultraLight, .thin, .light, .regular, .medium, .semibold, .bold, .heavy, .black
-    ]}
+    ]
         
     public var description: String {
         switch self {
@@ -254,6 +254,8 @@ public struct FontWeight: Codable, Hashable, RawRepresentable, CaseIterable, Cus
     }
 
     /// the next greatest weight, relative to `self`
+    ///
+    /// This value should be used for font weight when it is notionally `bolded`.
     public var next: Self {
         let cases = Self.allCases
         
@@ -282,9 +284,9 @@ public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, Cust
         Self(rawValue: other.rawValue)
     }
     
-    public static var allCases: [FontWidth] {[
+    public static var allCases: [FontWidth] = [
         .compressed, .condensed, .standard, .expanded
-    ]}
+    ]
 
     public var description: String {
         switch self {
@@ -295,13 +297,6 @@ public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, Cust
             
         default:            "custom(\(rawValue))"
         }
-    }
-    
-    public var nearest: Self {
-        _nearest(
-            to: self, 
-            in: .compressed, .condensed, .standard, .expanded
-        )
     }
 }
 
@@ -339,6 +334,8 @@ public struct FontAngle: Codable, Hashable, RawRepresentable, CaseIterable, Cust
     }
     
     /// the next greatest angle, relative to `self`
+    ///
+    /// This value should be used for font angle when it is notionally `italicized`.
     public var next: Self {
         let cases = Self.allCases
         
@@ -399,14 +396,14 @@ public enum FontName: Codable, Hashable, CaseIterable, CustomStringConvertible {
         
     case named(String)
     
-    var isDynamic: Bool {
+    public var isDynamic: Bool {
         switch self {
         case .named:    false
         default:        true
         }
     }
     
-    var isNamed: Bool {
+    public var isNamed: Bool {
         switch self {
         case .named:    true
         default:        false

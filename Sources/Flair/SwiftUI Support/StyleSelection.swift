@@ -16,14 +16,46 @@ public struct StyleSelection {
     /// a collection of selected styles
     public let selection: [Style]
     
+    public enum Operation: String {
+        case adding
+        case subtracting
+    }
+    
     /// an update function used to merge a passed style into the selection
-    public let merge: (Style) -> ()
+    public let merge: (Operation, Style) -> ()
+    
+    /// A convenience, given a style selection and a proposed new style value,
+    /// determines the appropriate operation to perform to existing styles.
+    ///
+    /// Behavior is determined based on the current selection, and the proposed
+    /// style value:
+    /// * In absence of an existing style value, or multiple style values, we opt to
+    /// add the new style value to all styles within the selection.
+    /// * If all styles within the selection share the same value, and that value
+    /// matches the proposed style value, then we opt to delete the style value,
+    /// otherwise we add the new style value to all styles within the selection.
+    ///
+    /// - Parameters:
+    ///   - key: a style key
+    ///   - value: a selected value
+    public func update<Key>(key: KeyPath<Style.Keys, Key.Type>, value: Key.Value) where Key: StyleKeys {
+        let operation: Operation = switch cardinality(of: key) {
+        case .empty, .multiple: .adding
+        case let .single(previous): (previous != value) ? .adding : .subtracting
+        }
+        
+        let style = Style() {
+            $0[key] = .override(value)
+        }
+
+        merge(operation, style)
+    }
     
     /// Initializes a new `StyleSelection`.
     /// - Parameters:
     ///   - selection: a collection of selected styles
     ///   - mergeStyle: an update function used to merge a passed style into the selection
-    public init(_ selection: [Style], merge: @escaping (Style) -> ()) {
+    public init(_ selection: [Style], merge: @escaping (Operation, Style) -> ()) {
         self.selection = selection
         self.merge = merge
     }
@@ -32,7 +64,7 @@ public struct StyleSelection {
     /// each style reports a single unique value for some style key, multiple values, or -
     /// when the selection itself is empty - no values.
     public enum Cardinality<Key> where Key: StyleKeys {
-        case none                       /// the style collection is empty
+        case empty                      /// the style collection is empty
         case single(Key.Value)          /// the style key has a single value across all styles
         case multiple(Set<Key.Value>)   /// the style key has more than one value across all styles
 
@@ -47,7 +79,7 @@ public struct StyleSelection {
         /// unique values for `Key`
         var values: Set<Key.Value> {
             switch self {
-            case .none: []
+            case .empty: []
             case .single(let value): [value]
             case .multiple(let values): values
             }
@@ -62,7 +94,7 @@ public struct StyleSelection {
         if let first = values.first {
             return values.dropFirst().isEmpty ? .single(first) : .multiple(values)
         } else {
-            return .none
+            return .empty
         }
     }
     
@@ -76,7 +108,7 @@ public struct StyleSelection {
 extension StyleSelection: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Style...) {
         self.init(elements) {
-            style in Logger().debug("merge \(String(describing: style))")
+            operation, style in Logger().debug("merge \(String(describing: operation)) \(String(describing: style))")
         }
     }
 }
@@ -100,7 +132,7 @@ extension View {
     ///   - styles: a collection of `Style`s
     ///   - merge: a function used to merge new style attributes into the selection
     /// - Returns: a View
-    public func focusedStyles(_ styles: some Collection<Style>, merge: @escaping (Style) -> ()) -> some View  {
+    public func focusedStyles(_ styles: some Collection<Style>, merge: @escaping (StyleSelection.Operation, Style) -> ()) -> some View  {
         self.focusedValue(\.styles, StyleSelection(Array(styles), merge: merge))
     }
     
@@ -109,7 +141,7 @@ extension View {
     ///   - styles: a collection of `Style`s
     ///   - merge: a function used to merge new style attributes into the selection
     /// - Returns: a View
-    public func focusedSceneStyles(_ styles: some Collection<Style>, merge: @escaping (Style) -> ()) -> some View {
+    public func focusedSceneStyles(_ styles: some Collection<Style>, merge: @escaping (StyleSelection.Operation, Style) -> ()) -> some View {
         self.focusedSceneValue(\.styles, StyleSelection(Array(styles), merge: merge))
     }
 }

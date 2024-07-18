@@ -65,6 +65,9 @@ public struct Style {
         ForegroundColorStyle.name:        ForegroundColorStyle.self,
         BackgroundColorStyle.name:        BackgroundColorStyle.self,
         
+        BoldStyle.name:                   BoldStyle.self,
+        ItalicStyle.name:                 ItalicStyle.self,
+        OutlineStyle.name:                OutlineStyle.self,
         UnderlineStyle.name:              UnderlineStyle.self,
         StrikethroughStyle.name:          StrikethroughStyle.self,
     ]

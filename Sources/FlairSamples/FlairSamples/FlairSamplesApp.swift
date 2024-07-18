@@ -15,7 +15,9 @@ struct FlairSamplesApp: App {
             FlairSampleView()
         }
         .commands {
-            TextFormattingCommands()
+            CommandGroup(replacing: .textFormatting) {
+                FontMenu().options
+            }
         }
     }
 }
@@ -29,8 +31,8 @@ struct FlairSampleView: View {
     }
     
     @State private var rows: [Row] =
-    (1...250)
-        .map({ "Line \($0): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin felis neque, semper a diam a, porttitor luctus tellus. Praesent vulputate lacus vel imperdiet consectetur. Fusce neque elit, elementum et ipsum a, tristique fringilla diam. Sed et risus ipsum. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent dictum vestibulum luctus. Ut vel venenatis ipsum. Aliquam vel faucibus enim. Nam porta id enim eu mattis. Suspendisse ac blandit ex. Sed velit lacus, venenatis id scelerisque sed, tempus ac nunc. Integer laoreet eros sed ipsum pulvinar feugiat. Morbi sagittis vehicula augue, non semper nisi dignissim nec." })
+    (1...25)
+        .map({ "Line \($0): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin felis neque, semper a diam a, porttitor luctus tellus. Praesent vulputate lacus vel imperdiet consectetur. Fusce neque elit, elementum et ipsum a, tristique fringilla diam. Sed et risus ipsum. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus." })
         .map(AttributedString.init)
         .map({ Row(text: $0) })
     
@@ -38,64 +40,46 @@ struct FlairSampleView: View {
         List($rows) {
             $row in
             FlairText(
-                $row.text,
+                text: $row.text,
                 selection: $row.selection,
                 options: textOptions(for: row)
-            )        
+            )
             .listRowSeparator(.hidden)
-
+            
         }
         .preferredColorScheme(.light)
     }
-
-    func textOptions(for row: Row) -> FlairTextOptions {
-        return FlairTextOptions.editable {
-            option in
-                        
-            // we'll handle end editing ourselves...
-            option.endsEditingOnNewline = false
+    
+    func endEditing(for row: Row) -> Bool {
+        guard let idx = rows.firstIndex(where: { $0.id == row.id }) else {
+            return false
+        }
+        rows[idx].selection = []
+        return true
+    }
+    
+    func textOptions(for row: Row) -> FlairText.Options {
+        return FlairText.Options {
+            $0.isEditable = true
+            $0.isSelectable = true
             
-            option.editor.performAction = {
-                editor, selector in
-                
-                switch selector {
-                    
-                /// cancel editing
-                case #selector(NSResponder.cancelOperation(_:)):
-                    editor.window?.makeFirstResponder(editor.superview)
-                    return true
-                    
-                /// newline handling
+            $0.isRichText = true
+            $0.isFieldEditor = false
+            
+            $0.usesRuler = true
+            $0.usesFontPanel = true
+            
+            $0.doCommand = {
+                switch $0 {
                 case #selector(NSResponder.insertNewline(_:)):
-                    if let index = rows.firstIndex(where: { row.id == $0.id }) {
-                        // end editing
-                        rows[index].selection = []
-                        
-                        // insert a new row...
-                        var inserted = Row()
-                        
-                        inserted.text = ""
-                        inserted.selection = [NSRange(location: 0, length: 0)]
-
-                        rows.insert(inserted, at: index + 1)
-
-                        return true
-                    }
+                    return endEditing(for: row)
                     
-                    return false
-                   
                 case #selector(NSResponder.insertNewlineIgnoringFieldEditor(_:)):
-                    return false
-                    
-                /// tab handling - tab: indent, shift-tab: outdent
-                case #selector(NSResponder.insertTab(_:)):
-                    return true
-                case #selector(NSResponder.insertBacktab(_:)):
-                    return true
+                    return endEditing(for: row)
                 default:
-                    print("got \(selector)")
-                    return false
+                    print($0)
                 }
+                return false
             }
         }
     }

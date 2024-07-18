@@ -16,7 +16,7 @@ extension NSMutableParagraphStyle: @unchecked @retroactive Sendable {}
 
 extension AttributeScopes {
     public struct FlairAttributeScopes: AttributeScope  {
-        public let paragraphStyle: ParagraphStyleAttribute
+        public let documentStyle: DocumentStyleAttribute
         public let characterStyle: CharacterStyleAttribute
         
         #if os(iOS)
@@ -38,7 +38,7 @@ public extension AttributeDynamicLookup {
     }
 }
 
-public struct ParagraphStyleAttribute: CodableAttributedStringKey, MarkdownDecodableAttributedStringKey {
+public struct DocumentStyleAttribute: CodableAttributedStringKey, MarkdownDecodableAttributedStringKey {
     public typealias Value = Style
     public static var name: String = "flair.paragraphStyle"
 }
@@ -95,12 +95,27 @@ extension Style {
 }
 
 extension AttributedString {
+    
+    public init(_ string: String, style: Style) {
+        self.init(string)
+        self.documentStyle = style
+    }
+    public init(_ substring: Substring, style: Style) {
+        self.init(substring)
+        self.documentStyle = style
+    }
+
+    public init<S>(_ elements: S, style: Style) where S : Sequence, S.Element == Character {
+        self.init(elements)
+        self.documentStyle = style
+    }
+
     /// Returns a new attributed string whose flair attributes are transformed to either AppKit or UIKit  attributed string attributes
     public var native: Self {
         var copy = self
 
         // apply paragraph style
-        if let style = self.flair.paragraphStyle {
+        if let style = self.flair.documentStyle {
             copy.paragraphStyle = style.paragraph
         }
         
@@ -110,7 +125,7 @@ extension AttributedString {
             let attributes = run.attributes
             
             // this is our blended style
-            let style = Style(cascading: [attributes.flair.paragraphStyle, attributes.flair.characterStyle].compactMap { $0 })
+            let style = Style(cascading: [attributes.flair.documentStyle, attributes.flair.characterStyle].compactMap { $0 })
             
             copy[range].font = style.font
             
@@ -135,7 +150,7 @@ extension AttributedString {
         var copy = self
 
         // apply paragraph style
-        if let style = self.flair.paragraphStyle {
+        if let style = self.flair.documentStyle {
             copy.paragraphStyle = style.paragraph
         }
         
@@ -145,7 +160,7 @@ extension AttributedString {
             let attributes = run.attributes
             
             // this is our blended style
-            let style = Style(cascading: [attributes.flair.paragraphStyle, attributes.flair.characterStyle].compactMap { $0 })
+            let style = Style(cascading: [attributes.flair.documentStyle, attributes.flair.characterStyle].compactMap { $0 })
             
             copy[range].font = style.font
         }

@@ -11,6 +11,7 @@
 		4D1B12522A6EE4B500B7DB96 /* FlairSamplesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1B12512A6EE4B500B7DB96 /* FlairSamplesApp.swift */; };
 		4D1B12562A6EE4B800B7DB96 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B12552A6EE4B800B7DB96 /* Assets.xcassets */; };
 		4D1B125A2A6EE4B800B7DB96 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D1B12592A6EE4B800B7DB96 /* Preview Assets.xcassets */; };
+		4D93635C2C3E993A00C6C1D6 /* UnderlineOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D93635B2C3E993A00C6C1D6 /* UnderlineOptionsView.swift */; };
 		4DFDD9942A71259500C94350 /* Silo in Frameworks */ = {isa = PBXBuildFile; productRef = 4DFDD9932A71259500C94350 /* Silo */; };
 /* End PBXBuildFile section */
 
@@ -20,7 +21,8 @@
 		4D1B12552A6EE4B800B7DB96 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D1B12572A6EE4B800B7DB96 /* FlairSamples.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlairSamples.entitlements; sourceTree = "<group>"; };
 		4D1B12592A6EE4B800B7DB96 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		4D1B12682A6EE60D00B7DB96 /* Flair */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Flair; path = ../..; sourceTree = "<group>"; };
+		4D1B12682A6EE60D00B7DB96 /* .. */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ..; path = ../..; sourceTree = "<group>"; };
+		4D93635B2C3E993A00C6C1D6 /* UnderlineOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnderlineOptionsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 				4DFDD9912A71256500C94350 /* Samples */,
 				4D1B12612A6EE4F600B7DB96 /* Resources */,
 				4D1B12512A6EE4B500B7DB96 /* FlairSamplesApp.swift */,
+				4D93635B2C3E993A00C6C1D6 /* UnderlineOptionsView.swift */,
 			);
 			path = FlairSamples;
 			sourceTree = "<group>";
@@ -92,7 +95,7 @@
 		4D1B12672A6EE60600B7DB96 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				4D1B12682A6EE60D00B7DB96 /* Flair */,
+				4D1B12682A6EE60D00B7DB96 /* .. */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -182,6 +185,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D93635C2C3E993A00C6C1D6 /* UnderlineOptionsView.swift in Sources */,
 				4D1B12522A6EE4B500B7DB96 /* FlairSamplesApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -412,7 +416,7 @@
 			repositoryURL = "git@github.com:Dimension-North-Inc/Silo.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

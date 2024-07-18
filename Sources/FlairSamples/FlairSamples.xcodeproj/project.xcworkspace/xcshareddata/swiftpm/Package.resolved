@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "git@github.com:Dimension-North-Inc/Silo.git",
       "state" : {
-        "revision" : "3a7331ffb7e9fcdebc2adc2fe01e57eca84bf119",
-        "version" : "1.0.1"
+        "revision" : "9451aecd1cb52e4281d2bf3a2937c6bd41de821c",
+        "version" : "1.1.1"
       }
     },
     {
@@ -75,7 +75,7 @@
     {
       "identity" : "swift-testing",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-testing.git",
+      "location" : "git@github.com:Dimension-North-Inc/swift-testing.git",
       "state" : {
         "revision" : "69d59cfc76e5daf498ca61f5af409f594768eef9",
         "version" : "0.10.0"

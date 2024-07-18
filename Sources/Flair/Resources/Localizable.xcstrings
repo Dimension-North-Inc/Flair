@@ -48,6 +48,15 @@
         }
       }
     },
+    "Align Left" : {
+
+    },
+    "Align Right" : {
+
+    },
+    "Alignment" : {
+
+    },
     "Black" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -59,22 +68,25 @@
         }
       }
     },
+    "Center" : {
+
+    },
     "Choose Color" : {
 
     },
     "Enter value" : {
 
     },
-    "Face:" : {
-
-    },
     "Font" : {
 
     },
-    "Italic" : {
+    "Justify" : {
 
     },
     "Multiple Selection" : {
+
+    },
+    "Name" : {
 
     },
     "No Selection" : {
@@ -128,7 +140,10 @@
         }
       }
     },
-    "Size" : {
+    "Show Colors" : {
+
+    },
+    "Show Fonts" : {
 
     },
     "Weight" : {
@@ -140,15 +155,6 @@
           }
         }
       }
-    },
-    "Weight:" : {
-
-    },
-    "Width" : {
-
-    },
-    "Width:" : {
-
     }
   },
   "version" : "1.0"
