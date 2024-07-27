@@ -267,7 +267,6 @@ public struct FontWeight: Codable, Hashable, RawRepresentable, CaseIterable, Cus
     }
 }
 
-
 /// Standard font widths
 public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible {
     public var rawValue: CGFloat
@@ -299,7 +298,6 @@ public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, Cust
         }
     }
 }
-
 
 /// Standard font angles
 public struct FontAngle: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible {

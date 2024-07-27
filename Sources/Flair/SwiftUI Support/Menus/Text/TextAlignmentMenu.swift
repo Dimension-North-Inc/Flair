@@ -14,8 +14,7 @@ public struct TextAlignmentMenu: View {
     public init() {}
     
     public var body: some View {
-        Menu(content: {options}, label: {title})
-
+        options
     }
     
     @ViewBuilder public var title: some View {
@@ -54,7 +53,7 @@ public struct TextAlignmentMenu: View {
     }
     
     func align(_ alignment: AlignmentStyle) {
-        selection?.merge(.adding, Style { $0.textAlignment = alignment })
+        selection?.merge(Style { $0.textAlignment = alignment }, .adding)
     }
 }
 

@@ -28,25 +28,48 @@ struct FlairSampleView: View {
         
         var text: AttributedString = ""
         var selection: [NSRange] = []
+        
+        var selectedStyles: [Style] {
+            selection.isEmpty ? [text.documentStyle].compactMap({ $0 }) : text.styles(in: selection)
+        }
+        
+        mutating func mergeStyle(style: Style, operation: Style.Merge) {
+            if selection.isEmpty {
+                let documentStyle = text.documentStyle ?? Style()
+                text.documentStyle = documentStyle.merge(style, operation)
+            } else {
+                text.setStyle(style, selection)
+            }
+            
+            text = text.native
+        }
     }
-    
+        
     @State private var rows: [Row] =
     (1...25)
         .map({ "Line \($0): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin felis neque, semper a diam a, porttitor luctus tellus. Praesent vulputate lacus vel imperdiet consectetur. Fusce neque elit, elementum et ipsum a, tristique fringilla diam. Sed et risus ipsum. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus." })
         .map(AttributedString.init)
         .map({ Row(text: $0) })
-    
+
+    @State private var selection: Set<Row.ID> = []
+
     var body: some View {
-        List($rows) {
+        List($rows, selection: $selection) {
             $row in
             FlairText(
                 text: $row.text,
                 selection: $row.selection,
                 options: textOptions(for: row)
             )
+            .focusedSceneStyles(row.selectedStyles) {
+                // FIXME: this is in the wrong place...
+                row.mergeStyle(style: $0, operation: $1)
+            }
+            .padding(.horizontal)
             .listRowSeparator(.hidden)
-            
+            .listRowBackground(Color.white)
         }
+        .focusable(true)
         .preferredColorScheme(.light)
     }
     

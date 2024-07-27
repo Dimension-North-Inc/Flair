@@ -62,9 +62,17 @@ extension Style {
             }
             
             desc = desc
-                .replacing(weight:   self.fontWeight)
-                .replacing(width:    self.fontWidth)
-                .replacing(angle:    self.fontAngle)
+                .replacing(
+                    weight: self.bold
+                    ? self.fontWeight.next : self.fontWeight
+                )
+                .replacing(
+                    width: self.fontWidth
+                )
+                .replacing(
+                    angle: self.italic
+                    ? self.fontAngle.next : self.fontAngle
+                )
             
             return desc
         }
@@ -94,8 +102,16 @@ extension Style {
     }
 }
 
+extension NSRange {
+    public func `in`(_ string: String) -> Range<String.Index>? {
+        Range(self, in: string)
+    }
+    public func `in`(_ string: AttributedString) -> Range<AttributedString.Index>? {
+        Range(self, in: string)
+    }
+}
+
 extension AttributedString {
-    
     public init(_ string: String, style: Style) {
         self.init(string)
         self.documentStyle = style
@@ -110,11 +126,51 @@ extension AttributedString {
         self.documentStyle = style
     }
 
+    public subscript(range: NSRange) -> AttributedSubstring? {
+        range.in(self).map {
+            range in self[range]
+        }
+    }
+    
+    public func styles(in selection: [NSRange]) -> [Style] {
+        let doc = self.documentStyle ?? Style()
+        
+        return selection
+            .compactMap {
+                // extract substrings
+                range in self[range]
+            }
+            .flatMap {
+                // extract all runs from substrings
+                substring in substring.runs
+            }
+            .compactMap {
+                // extract character styles from each run
+                run in self[run.range].characterStyle
+            }
+            .map {
+                // combine each character style with the document style
+                style in Style(cascading: [doc, style])
+            }
+    }
+    
+    public mutating func setStyle(_ style: Style, _ selection: [NSRange]) {
+        let style = style.subtracting(
+            self.documentStyle ?? Style()
+        )
+        for range in selection {
+            guard let r = range.in(self) else {
+                continue
+            }
+            self[r].characterStyle = style
+        }
+    }
+    
     /// Returns a new attributed string whose flair attributes are transformed to either AppKit or UIKit  attributed string attributes
     public var native: Self {
         var copy = self
 
-        // apply paragraph style
+        // apply document style
         if let style = self.flair.documentStyle {
             copy.paragraphStyle = style.paragraph
         }

@@ -15,14 +15,9 @@ import SwiftUI
 public struct StyleSelection {
     /// a collection of selected styles
     public let selection: [Style]
-    
-    public enum Operation: String {
-        case adding
-        case subtracting
-    }
-    
+        
     /// an update function used to merge a passed style into the selection
-    public let merge: (Operation, Style) -> ()
+    public let merge: (Style, Style.Merge) -> ()
     
     /// A convenience, given a style selection and a proposed new style value,
     /// determines the appropriate operation to perform to existing styles.
@@ -39,7 +34,7 @@ public struct StyleSelection {
     ///   - key: a style key
     ///   - value: a selected value
     public func update<Key>(key: KeyPath<Style.Keys, Key.Type>, value: Key.Value) where Key: StyleKeys {
-        let operation: Operation = switch cardinality(of: key) {
+        let operation: Style.Merge = switch cardinality(of: key) {
         case .empty, .multiple: .adding
         case let .single(previous): (previous != value) ? .adding : .subtracting
         }
@@ -48,14 +43,14 @@ public struct StyleSelection {
             $0[key] = .override(value)
         }
 
-        merge(operation, style)
+        merge(style, operation)
     }
     
     /// Initializes a new `StyleSelection`.
     /// - Parameters:
     ///   - selection: a collection of selected styles
     ///   - mergeStyle: an update function used to merge a passed style into the selection
-    public init(_ selection: [Style], merge: @escaping (Operation, Style) -> ()) {
+    public init(_ selection: [Style], merge: @escaping (Style, Style.Merge) -> ()) {
         self.selection = selection
         self.merge = merge
     }
@@ -113,6 +108,27 @@ extension StyleSelection: ExpressibleByArrayLiteral {
     }
 }
 
+extension Style {
+    /// A merging strategy for style properties.
+    public enum Merge {
+        case adding
+        case subtracting
+    }
+    
+    /// Merges `style` into the receiver, either by adding or subtracting properties, according to `operation`.
+    /// - Parameters:
+    ///   - style: a style to merge
+    ///   - operation: the merge operation
+    /// - Returns: a new style
+    public func merge(_ style: Style, _ operation: Style.Merge) -> Style {
+        switch operation {
+        case .adding:
+            self.appending(style)
+        case .subtracting:
+            self.subtracting(style)
+        }
+    }
+}
 
 // MARK: - SwiftUI Support
 
@@ -132,8 +148,8 @@ extension View {
     ///   - styles: a collection of `Style`s
     ///   - merge: a function used to merge new style attributes into the selection
     /// - Returns: a View
-    public func focusedStyles(_ styles: some Collection<Style>, merge: @escaping (StyleSelection.Operation, Style) -> ()) -> some View  {
-        self.focusedValue(\.styles, StyleSelection(Array(styles), merge: merge))
+    public func focusedStyles(_ styles: some Collection<Style>, merge: @escaping (Style, Style.Merge) -> ()) -> some View  {
+        self.focusable(true).focusedValue(\.styles, StyleSelection(Array(styles), merge: merge))
     }
     
     /// Identifies styles associated with the focused scene, and a function used to merge new style attributes into the selection.
@@ -141,7 +157,7 @@ extension View {
     ///   - styles: a collection of `Style`s
     ///   - merge: a function used to merge new style attributes into the selection
     /// - Returns: a View
-    public func focusedSceneStyles(_ styles: some Collection<Style>, merge: @escaping (StyleSelection.Operation, Style) -> ()) -> some View {
-        self.focusedSceneValue(\.styles, StyleSelection(Array(styles), merge: merge))
+    public func focusedSceneStyles(_ styles: some Collection<Style>, merge: @escaping (Style, Style.Merge) -> ()) -> some View {
+        self.focusable(true).focusedSceneValue(\.styles, StyleSelection(Array(styles), merge: merge))
     }
 }

@@ -25,7 +25,7 @@ public struct FontWidthMenu: View {
             Text(width.description.capitalized)
                 .font(font.flatMap(Font.init))
         } else {
-            Text("Weight")
+            Text("Width")
         }
     }
     

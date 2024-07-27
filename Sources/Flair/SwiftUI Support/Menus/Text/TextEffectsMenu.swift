@@ -14,8 +14,7 @@ public struct TextEffectsMenu: View {
     public init() {}
     
     public var body: some View {
-        Menu(content: {options}, label: {title})
-
+        options
     }
     
     @ViewBuilder public var title: some View {

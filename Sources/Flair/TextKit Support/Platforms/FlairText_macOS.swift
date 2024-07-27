@@ -156,9 +156,9 @@ extension FlairText {
                 addSubview(textEditor)
                 window.makeFirstResponder(textEditor)
                 
-                if let event {
-                    textEditor.mouseDown(with: event)
-                } else if !selection.isEmpty {
+                if selection.isEmpty {
+                    textEditor.selectAll(nil)
+                } else  {
                     textEditor.selectedRanges = selection.map(NSValue.init)
                 }
             }

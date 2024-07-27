@@ -146,6 +146,9 @@
     "Show Fonts" : {
 
     },
+    "Size" : {
+
+    },
     "Weight" : {
       "localizations" : {
         "de" : {
@@ -155,6 +158,9 @@
           }
         }
       }
+    },
+    "Width" : {
+
     }
   },
   "version" : "1.0"

@@ -22,18 +22,17 @@ public struct FontMenu: View {
     
     @ViewBuilder public var options: some View {
         FontNameMenu()
-        FontWeightMenu()
+        FontSizeMenu()
         FontWidthMenu()
+        FontWeightMenu()
         Divider()
-        TextEffectsMenu().options
+        TextEffectsMenu()
         Divider()
-        TextAlignmentMenu().options
+        TextAlignmentMenu()
         Divider()
 
         Button("Show Fonts") {
-            let panel = NSFontPanel.shared
-            panel.toolbar = nil
-            panel.orderFront(nil)
+            NSFontPanel.shared.orderFront(nil)
         }.keyboardShortcut("T", modifiers: .command)
 
         Button("Show Colors") {

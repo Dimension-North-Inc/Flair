@@ -8,8 +8,6 @@
 import Silo
 import SwiftUI
 
-private var FIXMESubFont = FontName.body
-
 public struct FontNameMenu: View {
     @FocusedValue(\.styles) var selection
     
@@ -27,7 +25,7 @@ public struct FontNameMenu: View {
         let selection = self.selection ?? []
         if case let .single(name) = selection.fontName {
             let font = Style {
-                $0.fontName = FIXMESubFont
+                $0.fontName = .body
             }.font
             Text(name.description.capitalized)
                 .font(font.flatMap(Font.init))
@@ -40,7 +38,7 @@ public struct FontNameMenu: View {
         ForEach(prefixFonts(), id: \.self) {
             name in
             let style = Style {
-                $0.fontName = FIXMESubFont
+                $0.fontName = .body
             }
             MixedStateButton(state(name), "\(name.description.capitalized)", style) {
                 select(name)
@@ -51,7 +49,7 @@ public struct FontNameMenu: View {
         ForEach(FontName.allCases.filter(\.isNamed), id: \.self) {
             name in
             let style = Style {
-                $0.fontName = FIXMESubFont
+                $0.fontName = .body
             }
             MixedStateButton(state(name), "\(name.description.capitalized)", style) {
                 select(name)

@@ -103,7 +103,6 @@ public struct Style {
         }
         set { values[T.name] = .override(newValue) }
     }
-    
     public subscript<T: StyleKeys>(value key: KeyPath<Style.Keys, T.Type>) -> T.Value {
         get {
             switch values[T.name] {
@@ -178,6 +177,10 @@ public struct Style {
         }
     }
     
+    public init(cascading styles: Style...) {
+        self.init(cascading: styles)
+    }
+    
     private static func cascade(parent: Style, child: Style) -> Style {
         var cascade = Style()
         
@@ -185,7 +188,7 @@ public struct Style {
             switch (parent.values[key], child.values[key]) {
             case let (_, .override(value)?):
                 cascade.values[key] = .override(value)
-            case let (.override(value)?, nil):
+            case let (.override(value)?, _):
                 cascade.values[key] = .override(value)
             default:
                 break
@@ -207,6 +210,25 @@ public struct Style {
         return Style(values: values.filter {
             key, value in names.contains(key)
         })
+    }
+    
+    
+    /// Creates a new `Style` by removing values which exist and are equivalent to those found in `style`.
+    /// - Parameter style: another style
+    /// - Returns: a new `Style`.
+    public func subtracting(_ style: Style) -> Style {
+        var filtered = values
+        for key in values.keys {
+            if let keyType = Style.styleKeyTypes[key] {
+                let valuesAreEqual = keyType.valuesAreEqual(
+                    self[value: keyType], style[value: keyType]
+                )
+                if valuesAreEqual {
+                    filtered[key] = nil
+                }
+            }
+        }
+        return Style(values: filtered)
     }
     
     private init(values: [String: Value]) {

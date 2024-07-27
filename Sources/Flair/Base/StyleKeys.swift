@@ -43,8 +43,8 @@ extension StyleKeys {
     }
     
     public static func valuesAreEqual(_ lhs: Any, _ rhs: Any) -> Bool {
-        if let lhs = lhs as? Value, let rhs = rhs as? Value {
-            return lhs == rhs
+        if let lhv = lhs as? Value, let rhv = rhs as? Value {
+            return lhv == rhv
         } else {
             return false
         }

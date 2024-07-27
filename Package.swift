@@ -18,6 +18,7 @@ let package = Package(
             targets: ["Flair"]),
     ],
     dependencies: [
+        .package(url: "git@github.com:Dimension-North-Inc/Silo.git", from: "1.0.0"),
         .package(url: "git@github.com:Dimension-North-Inc/Geometry.git", from: "1.0.0"),
         .package(url: "git@github.com:Dimension-North-Inc/swift-testing.git", from: "0.10.0"),
     ],
@@ -27,7 +28,7 @@ let package = Package(
         .target(
             name: "Flair",
             dependencies: [
-                "Geometry"
+                "Silo", "Geometry"
             ],
             resources: [
                 .process("Resources")
