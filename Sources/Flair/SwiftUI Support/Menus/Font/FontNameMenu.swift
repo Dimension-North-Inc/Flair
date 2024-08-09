@@ -11,8 +11,8 @@ import SwiftUI
 public struct FontNameMenu: View {
     @FocusedValue(\.styles) var selection
     
-    @Default(.local("recentFonts"), default: []) private var recentFonts: [FontName]
-    @Default(.local("maxRecentFontsCount"), default: 6) private var maxRecentFontsCount: Int
+    @Default(.local("recentFonts")) private var recentFonts: [FontName] = []
+    @Default(.local("maxRecentFontsCount")) private var maxRecentFontsCount: Int = 6
     
         
     public init() {}
@@ -22,16 +22,7 @@ public struct FontNameMenu: View {
     }
 
     @ViewBuilder public var title: some View {
-        let selection = self.selection ?? []
-        if case let .single(name) = selection.fontName {
-            let font = Style {
-                $0.fontName = .body
-            }.font
-            Text(name.description.capitalized)
-                .font(font.flatMap(Font.init))
-        } else {
-            Text("Name")
-        }
+        Text("Font")
     }
     
     @ViewBuilder public var options: some View {
