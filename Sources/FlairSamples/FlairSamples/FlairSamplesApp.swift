@@ -44,12 +44,20 @@ struct FlairSampleView: View {
             text = text.native
         }
     }
-        
+
     @State private var rows: [Row] =
     (1...25)
         .map({ "Line \($0): Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin felis neque, semper a diam a, porttitor luctus tellus. Praesent vulputate lacus vel imperdiet consectetur. Fusce neque elit, elementum et ipsum a, tristique fringilla diam. Sed et risus ipsum. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus." })
         .map(AttributedString.init)
-        .map({ Row(text: $0) })
+        .map{
+            var str = $0
+            str.documentStyle = Style {
+                $0.fontSize = 14
+                $0.fontName = .body
+                $0.lineHeightMultiple = 1.5
+            }
+            return Row(text: str)
+        }
 
     @State private var selection: Set<Row.ID> = []
 

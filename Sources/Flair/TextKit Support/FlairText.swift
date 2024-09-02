@@ -47,9 +47,12 @@ public struct FlairText {
     
     var options: Options
     
-    public init(text: Binding<String>, selection: Binding<[NSRange]>? = nil, options: Options = .fieldEditor) {
+    public init(text: Binding<String>, style: Style = Style(), selection: Binding<[NSRange]>? = nil, options: Options = .fieldEditor) {
         self._text = Binding<NSAttributedString>(
-            get: { NSAttributedString(string: text.wrappedValue) },
+            get: {
+                let str = AttributedString(text.wrappedValue, style: style)
+                return NSAttributedString(str.native)
+            },
             set: { obj in text.wrappedValue = obj.string }
         )
         self._selection = selection ?? IngnoredSelection().binding()
@@ -59,7 +62,7 @@ public struct FlairText {
     
     public init(text: Binding<AttributedString>, selection: Binding<[NSRange]>? = nil, options: Options = .fieldEditor) {
         self._text = Binding<NSAttributedString>(
-            get: { NSAttributedString(text.wrappedValue) },
+            get: { NSAttributedString(text.wrappedValue.native) },
             set: { obj in text.wrappedValue = AttributedString(obj) }
         )
         self._selection = selection ?? IngnoredSelection().binding()

@@ -46,8 +46,12 @@ extension FlairText {
     public final class View: NSClipView, NSTextViewDelegate {
         var host: FlairText {
             didSet {
-                text = host.text
-                selection = host.selection
+                if !text.isEqual(to: host.text) {
+                    text = host.text
+                }
+                if selection != host.selection {
+                    selection = host.selection
+                }
             }
         }
         
@@ -214,7 +218,7 @@ extension FlairText {
         }
         
         public override func draw(_ dirtyRect: NSRect) {
-            guard editor == nil else {
+            if editor != nil {
                 return
             }
             text.draw(

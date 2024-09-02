@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -15,12 +15,11 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Flair",
-            targets: ["Flair"]),
+            targets: ["Flair"])
     ],
     dependencies: [
-        .package(url: "git@github.com:Dimension-North-Inc/Silo.git", from: "1.0.0"),
-        .package(url: "git@github.com:Dimension-North-Inc/Geometry.git", from: "1.0.0"),
-        .package(url: "git@github.com:Dimension-North-Inc/swift-testing.git", from: "0.10.0"),
+        .package(url: "git@github.com:Dimension-North-Inc/Silo.git", from: "1.3.0"),
+        .package(url: "git@github.com:Dimension-North-Inc/Geometry.git", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -36,9 +35,7 @@ let package = Package(
         ),
         .testTarget(
             name: "FlairTests",
-            dependencies: [
-                "Flair", .product(name: "Testing", package: "swift-testing")
-            ]
+            dependencies: ["Flair"]
         ),
     ]
 )
