@@ -107,7 +107,7 @@ extension Style {
 }
 
 extension Style.Color {
-    var ref: ColorRef {
+    public var ref: ColorRef {
         switch self {
         case .black:        ColorRef.black
         case .white:        ColorRef.white
@@ -174,7 +174,7 @@ extension ColorRef {
     }
     #endif
     
-    var value: Style.Color {
+    public var value: Style.Color {
         if self.isEqual(ColorRef.black) {
             return .black
         } else if self.isEqual(ColorRef.white) {
