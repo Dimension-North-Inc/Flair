@@ -154,6 +154,11 @@ extension FlairText {
                 
                 textEditor.isFieldEditor        = host.options.isFieldEditor
                 
+                textEditor.importsGraphics      = host.options.importsGraphics
+                textEditor.allowsImageEditing   = host.options.allowsImageEditing
+                
+                textEditor.usesAdaptiveColorMappingForDarkAppearance = host.options.usesAdaptiveColorMappingForDarkAppearance
+                
                 textEditor.text                 = text
                 textEditor.delegate             = self
                 

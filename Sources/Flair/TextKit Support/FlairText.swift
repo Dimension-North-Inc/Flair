@@ -30,6 +30,11 @@ public struct FlairText {
                 
         public var isFieldEditor: Bool = true
         
+        public var importsGraphics: Bool = false
+        public var allowsImageEditing: Bool = false
+        
+        public var usesAdaptiveColorMappingForDarkAppearance: Bool = true
+        
         // editor delegation
         public var doCommand: ((Selector) -> Bool)? = nil
         
