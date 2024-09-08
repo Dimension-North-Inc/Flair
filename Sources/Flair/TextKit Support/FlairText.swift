@@ -92,6 +92,14 @@ extension AttributedString {
     }
 }
 
+extension AttributedString {
+    /// Creates and returns the `String` equivalent of the receiver
+    public var string: String {
+        String(self.characters)
+    }
+}
+
+
 extension AttributeContainer: @retroactive ExpressibleByDictionaryLiteral {
     public typealias Key   = NSAttributedString.Key
     public typealias Value = Any
