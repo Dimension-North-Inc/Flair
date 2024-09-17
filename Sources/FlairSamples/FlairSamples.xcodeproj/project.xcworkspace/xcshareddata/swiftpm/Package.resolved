@@ -1,13 +1,13 @@
 {
-  "originHash" : "2e7b612cbcd50f4f69dc0b6068faea7b3d884d89ded95a91f35f5248ee069eb7",
+  "originHash" : "657a878855d2ed7b3904ca7c8f4e97236561d11216f6b23faa5a98af5715fdf4",
   "pins" : [
     {
       "identity" : "geometry",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:Dimension-North-Inc/Geometry.git",
+      "location" : "https://github.com/Dimension-North-Inc/Geometry.git",
       "state" : {
-        "revision" : "2f7bf2dfc1c5e47d5453c3bfa988c77990aa6e0f",
-        "version" : "1.0.0"
+        "branch" : "main",
+        "revision" : "1e4271961a97864bb83d1ee904d202aa92ae372f"
       }
     },
     {
