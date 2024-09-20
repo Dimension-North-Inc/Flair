@@ -21,7 +21,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "git@github.com:Dimension-North-Inc/Silo.git", from: "1.3.0"),
-        .package(url: "https://github.com/Dimension-North-Inc/Geometry.git", branch: "main"),
+        .package(url: "https://github.com/Dimension-North-Inc/Geometry.git", from: "2.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
