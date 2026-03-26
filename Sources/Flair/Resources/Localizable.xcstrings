@@ -3,6 +3,7 @@
   "strings" : {
     "%@, %@" : {
       "comment" : "Font Name, Size",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -48,15 +49,6 @@
         }
       }
     },
-    "Align Left" : {
-
-    },
-    "Align Right" : {
-
-    },
-    "Alignment" : {
-
-    },
     "Black" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -67,27 +59,6 @@
           }
         }
       }
-    },
-    "Center" : {
-
-    },
-    "Choose Color" : {
-
-    },
-    "Enter value" : {
-
-    },
-    "Font" : {
-
-    },
-    "Justify" : {
-
-    },
-    "Multiple Selection" : {
-
-    },
-    "No Selection" : {
-
     },
     "Quick Brown Fox" : {
       "comment" : "Font Preview Panagram",
@@ -137,16 +108,8 @@
         }
       }
     },
-    "Show Colors" : {
-
-    },
-    "Show Fonts" : {
-
-    },
-    "Size" : {
-
-    },
     "Weight" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -155,9 +118,6 @@
           }
         }
       }
-    },
-    "Width" : {
-
     }
   },
   "version" : "1.0"
