@@ -44,30 +44,35 @@ enum CardStyle: Codable, Equatable, StyleKeys {
 }
 ```
 
-To fetch the effective `CardStyle` within the current `Style`,  subscript with the
-StyleKey conforming type itself:
+To fetch the effective `CardStyle` within the current `Style`, use the
+dynamic member lookup syntax:
 
 ```swift
 // fetch the current style within your app,
 // or use default style settings with an empty `Style`
 let style = Style()
 
-// use a type-based subscript to get the style value...
-let cardStyle = style[CardStyle.self] 
+// use dynamic member lookup to get the style value...
+let cardStyle = style.card
 ```
 
-To make this all a bit less verbose, extend the `Style.Key` type 
-with your `StyleKeys`-conforming type:
+To enable this, extend `Style.Keys` with a property that returns your
+`StyleKeys`-conforming type. This is the preferred pattern:
 
 ```swift
-extension Style.Key {
+extension Style.Keys {
     /// use \.card as an alias for `CardStyle.self`
-    var card: CardStyle.Type { return CardStyle.self }
+    var card: CardStyle.Type { CardStyle.self }
 }
 
 var s = Style()
-s.card = .imageTrailing
+s.card = .imageTrailing    // write: s[value: CardStyle.self] = .imageTrailing
+let cardStyle = s.card    // read:  s[value: CardStyle.self]
 ```
+
+**Note:** The `style[key: T.self]` subscript syntax also works but is
+more verbose. Use dynamic member lookup (`style.card`) for clarity and
+readability.
 
 ## Registration
 When you define custom styles within your own application, make sure to 
