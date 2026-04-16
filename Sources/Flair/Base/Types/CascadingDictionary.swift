@@ -8,8 +8,40 @@
 
 import Foundation
 
-
+/// A dictionary that combines values from multiple sources using cascading override semantics.
+///
+/// Each entry in the dictionary is one of three states:
+///
+/// - `.initial` — use the type's default value, excluding this key from cascade results
+/// - `.inherit` — signal that an ancestor provides a value, excluding this key from cascade results
+/// - `.override(Value)` — an explicit value that takes precedence in cascade operations
+///
+/// When two dictionaries are combined via `appending` or `prepending`, later (child) entries
+/// with `.override` win over earlier (parent) entries. Entries with `.initial` or `.inherit`
+/// are excluded from the combined result, allowing ancestor values to pass through.
+///
+/// This type is suitable as a foundation for any system that needs hierarchical, cascading
+/// state — such as themes, stylesheets, configuration trees, or application settings.
+///
+/// ```swift
+/// var global = CascadingDictionary<String, String>()
+/// global["theme"] = .override("dark")
+///
+/// var local = CascadingDictionary<String, String>()
+/// local["theme"] = .override("light")  // overrides parent
+/// local["font"] = .override("Helvetica") // new entry
+///
+/// let combined = global.appending(local)
+/// combined["theme"]  // .override("light") — child wins
+/// combined["font"]  // .override("Helvetica")
+/// ```
 public struct CascadingDictionary<Key: Hashable, Value> {
+
+    /// Represents a value in one of three cascade states.
+    ///
+    /// - `initial`: use the type's default, exclude from cascade results
+    /// - `inherit`: signal inheritance from an ancestor, exclude from cascade results
+    /// - `override`: an explicit value that wins in cascade
     public enum Cascade<T> {
         case initial
         case inherit
@@ -45,6 +77,9 @@ public struct CascadingDictionary<Key: Hashable, Value> {
         get { values[key] ?? .inherit }
         set { values[key] = newValue }
     }
+
+    /// The keys stored in this dictionary.
+    public var keys: [Key] { Array(values.keys) }
 
     // MARK: - Combinations
 
@@ -144,6 +179,31 @@ public struct CascadingDictionary<Key: Hashable, Value> {
     /// - Returns: a new dictionary
     public func subtracting(_ dictionary: Self) -> Self where Value: Equatable {
         subtracting(dictionary) { $0 == $1 }
+    }
+}
+
+extension CascadingDictionary: ExpressibleByDictionaryLiteral {
+    public init(dictionaryLiteral elements: (Key, Cascade<Value>)...) {
+        self.values = Dictionary(uniqueKeysWithValues: elements)
+    }
+}
+
+/// Allows initializing a `CascadingDictionary` with a dictionary literal where all values are `.override`.
+///
+/// ```swift
+/// let style: CascadingDictionary<String, String> = [
+///     "theme": "dark",
+///     "font": "Helvetica"
+/// ]
+/// // Equivalent to:
+/// // [
+/// //     "theme": .override("dark"),
+/// //     "font": .override("Helvetica")
+/// // ]
+/// ```
+public extension CascadingDictionary {
+    init(overrideLiteral elements: (Key, Value)...) {
+        self.values = Dictionary(uniqueKeysWithValues: elements.map { ($0.0, .override($0.1)) })
     }
 }
 
