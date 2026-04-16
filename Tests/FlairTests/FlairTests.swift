@@ -59,7 +59,7 @@ import SwiftUI
             $0.fontWeight = .thin
         }
         
-        let minimumDifference = s2.subtractingValues(in: s1)
+        let minimumDifference = s2.subtracting(s1)
         
         
         #expect(minimumDifference.fontName == FontNameStyle.initial)

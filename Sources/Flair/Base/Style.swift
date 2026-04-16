@@ -74,20 +74,20 @@ public struct Style {
     
     // MARK: - Style Values
     /// a style property value
-    public enum Value {
+    public enum Value<T> {
         case initial
         case inherit
-        case override(Any)
+        case override(T)
     }
-    
-    private var values: [String: Value] = [:]
+
+    private var values: [String: Value<Any>] = [:]
     
     // MARK: - Style Subscripts
-    public subscript<T: StyleKeys>(key: T.Type) -> Value {
+    public subscript<T: StyleKeys>(key: T.Type) -> Value<Any> {
         get { values[T.name] ?? .inherit }
         set { values[T.name]  = newValue }
     }
-    public subscript<T: StyleKeys>(key: KeyPath<Style.Keys, T.Type>) -> Value {
+    public subscript<T: StyleKeys>(key: KeyPath<Style.Keys, T.Type>) -> Value<Any> {
         get { values[T.name] ?? .inherit }
         set { values[T.name]  = newValue }
     }
@@ -208,7 +208,7 @@ public struct Style {
         }
         
         return Style(values: values.filter {
-            key, value in names.contains(key)
+            key, _ in names.contains(key)
         })
     }
     
@@ -231,7 +231,7 @@ public struct Style {
         return Style(values: filtered)
     }
     
-    private init(values: [String: Value]) {
+    private init(values: [String: Value<Any>]) {
         self.values = values
     }
     
@@ -244,30 +244,30 @@ public struct Style {
 
 extension Style: Equatable {
     public static func == (lhs: Style, rhs: Style) -> Bool {
-        
+
         let lkeys = lhs.values.keys.sorted()
         let rkeys = rhs.values.keys.sorted()
 
         if lkeys != rkeys {
             return false
         }
-        
+
         for key in lkeys {
-            guard 
+            guard
                 let codingValueType = Style.styleKeyTypes[key],
                 let lhs = lhs.values[key], let rhs = rhs.values[key]
             else {
                 return false
             }
-            
+
             switch (lhs, rhs) {
-            case let (.override(lhs), .override(rhs)):
-                return codingValueType.valuesAreEqual(lhs, rhs)
+            case let (.override(l), .override(r)):
+                return codingValueType.valuesAreEqual(l, r)
             case (.initial, .initial):
                 return true
             case (.inherit, .inherit):
                 return true
-                
+
             default:
                 return false
             }
@@ -282,13 +282,18 @@ extension Style: Hashable {
             (key, value) in
             key.hash(into: &hasher)
             if let codingValueType = Style.styleKeyTypes[key] {
-                codingValueType.hash(value: value, into: &hasher)
+                switch value {
+                case .override(let any):
+                    codingValueType.hash(value: any, into: &hasher)
+                case .initial, .inherit:
+                    break
+                }
             } else {
                 // TODO: log warning for unrecognized style key type
             }
         }
     }
-    
+
 }
 extension Style: Codable {
     struct CodingKeys: CodingKey {
