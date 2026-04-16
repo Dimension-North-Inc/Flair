@@ -119,6 +119,38 @@ let color = cellStyle.backgroundColor
 When cascading a list of styles, later styles will take precedence over
 earlier styles in the list.
 
+## CascadingDictionary
+`CascadingDictionary<Key, Value>` is a generic dictionary type that implements the same
+cascading behavior used by `Style`. It stores values in one of three states:
+
+- `.initial` — use the type's default value
+- `.inherit` — inherit from an ancestor (absent from result in cascade)
+- `.override(Value)` — explicit value that wins in cascade
+
+This makes it suitable as a foundation for any type that needs hierarchical, cascading
+state with override semantics — such as `Stylesheet`, `Theme`, or application configuration.
+
+```swift
+var parent = CascadingDictionary<String, String>()
+parent["name"] = .override("Alice")
+parent["age"] = .override("30")
+
+var child = CascadingDictionary<String, String>()
+child["age"] = .override("31")  // overrides parent
+child["city"] = .override("Boston")
+
+let result = parent.appending(child)
+// result["name"] == "Alice"
+// result["age"]  == "31"  // child wins
+// result["city"] == "Boston"
+```
+
+For dictionaries with non-Equatable values, use the custom equality variant:
+
+```swift
+let diff = result.subtracting(parent) { $0 == $1 }
+```
+
 ## Text Styling
 A fundamental target for a styling system is styled text. Flair provides
 comprehensive support for text styling with custom AttributedString attributes
@@ -144,65 +176,6 @@ guard let mainly = string.rangeOf("Mainly") else { return }
 var blackUnderlined = Style() // default or fetch
 
 string[mainly].characterStyle = blackUnderlined
-```
-
-## FlairText SwiftUI View
-`FlairText` is a SwiftUI text `View` that is aware of `Flair` text attributes.
-
-The view is generally more capable dealing with rich text than `SwiftUI.TextField` or
-`SwiftUI.TextView` and is a more capable implementation of a text editing component.
-
-## Inspectors
-Flair provides support for `Style` inspection in SwiftUI applications.
-
-A `focusable()` component whose style selection is meant to be inspected can declare a
-list of selected styles in its `body` definition, for inspectors to inspect. The declaration
-includes both the list of selected styles, as well as a function used to merge new styles into 
-this selection:
-
-```swift
-    var body: some View {
-        List {
-            ForEach(rows) {
-                row in 
-                RowView(row)
-                    .focusable()
-                    .selectedStyles([row.styles]) {
-                        style in // perform some action to merge this style into the selection
-                    }   
-            }
-        }
-    }
-```
-
-Inspectors themselves are meant to be displayed within an `InspectorList` component:
-
-
-```swift
-import Flair
-import SwiftUI
-
-struct AppInspector: View {
-    var body: some View {
-        InspectorList {
-            // Flair font inspector
-            FontInspector()
-
-            AppCustomInspector()
-        }
-    }
-}
-
-struct AppCustomInspector: View {
-    // fetch the current focused selection
-    @FocusedValue(\.styles) var style: StyleSelection
-    
-    var body: some View {
-        Inspector("Document") {
-            // interact with styles here - 
-        }
-    }
-}
 ```
 
 ## Drag & Drop Styles
