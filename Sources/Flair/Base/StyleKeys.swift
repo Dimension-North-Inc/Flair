@@ -14,7 +14,7 @@ import Foundation
 /// The definition of a style element includes a `name` used to store the element in `Codable` containers,
 /// and an `initial` value used for the style element when it is left undefined within a style.
 public protocol StyleKeys<Value> {
-    associatedtype Value: Codable & Hashable
+    associatedtype Value: Codable & Hashable & Sendable
     
     /// a name used to store the element in `Codable` containers.
     static var name: String { get }

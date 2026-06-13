@@ -354,6 +354,12 @@ extension Style: Codable {
     }
 }
 
+// MARK: - Sendable
+//
+// Storage is `[String: Any]`, so the compiler cannot prove Sendable, but every
+// value is a `StyleKeys.Value` — constrained to `Sendable` value types.
+extension Style: @unchecked Sendable {}
+
 // MARK: - Transferable
 
 import CoreTransferable

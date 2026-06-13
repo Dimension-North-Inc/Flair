@@ -15,7 +15,7 @@ public typealias ColorRef = NSColor
 #endif
 
 extension Style {
-    public enum Color: Codable, Hashable, CustomStringConvertible {
+    public enum Color: Codable, Hashable, CustomStringConvertible, Sendable {
         case black
         case white
         

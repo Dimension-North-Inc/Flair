@@ -206,7 +206,7 @@ extension FontDescriptorRef {
 }
 
 /// Standard font weights
-public struct FontWeight: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible {
+public struct FontWeight: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible, Sendable {
     public var rawValue: CGFloat
     public init(rawValue: CGFloat) {
         self.rawValue = rawValue
@@ -268,7 +268,7 @@ public struct FontWeight: Codable, Hashable, RawRepresentable, CaseIterable, Cus
 }
 
 /// Standard font widths
-public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible {
+public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible, Sendable {
     public var rawValue: CGFloat
     public init(rawValue: CGFloat) {
         self.rawValue = rawValue
@@ -300,7 +300,7 @@ public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, Cust
 }
 
 /// Standard font angles
-public struct FontAngle: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible {
+public struct FontAngle: Codable, Hashable, RawRepresentable, CaseIterable, CustomStringConvertible, Sendable {
     public var rawValue: CGFloat
     public init(rawValue: CGFloat) {
         self.rawValue = rawValue
@@ -374,7 +374,7 @@ private func _nearest<Value>(
 
 
 /// Standard font styles
-public enum FontName: Codable, Hashable, CaseIterable, CustomStringConvertible {
+public enum FontName: Codable, Hashable, CaseIterable, CustomStringConvertible, Sendable {
     case title1
     case title2
     case title3

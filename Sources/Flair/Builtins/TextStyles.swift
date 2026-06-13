@@ -9,7 +9,7 @@
 import SwiftUI
 import Foundation
 
-public enum AlignmentStyle: String, StyleKeys, Codable, Hashable, CaseIterable {
+public enum AlignmentStyle: String, StyleKeys, Codable, Hashable, CaseIterable, Sendable {
     case leading
     case trailing
     case centered
@@ -50,7 +50,7 @@ public struct BackgroundColorStyle: StyleKeys {
 }
 
 
-public enum Pattern: Codable, Hashable {
+public enum Pattern: Codable, Hashable, Sendable {
     case solid
     
     case dashed
@@ -69,7 +69,7 @@ public enum Pattern: Codable, Hashable {
     }
 }
 
-public enum Stroke: Codable, Hashable {
+public enum Stroke: Codable, Hashable, Sendable {
     case thick
 
     case single
@@ -84,7 +84,7 @@ public enum Stroke: Codable, Hashable {
     }
 }
 
-public struct UnderlineStyle: StyleKeys, Codable, Hashable {
+public struct UnderlineStyle: StyleKeys, Codable, Hashable, Sendable {
     public var pattern: Pattern      = .solid
     public var stroke: Stroke        = .single
     public var words: Bool           = false
@@ -101,7 +101,7 @@ public struct UnderlineStyle: StyleKeys, Codable, Hashable {
     public init() {}
 }
 
-public struct StrikethroughStyle: StyleKeys, Codable, Hashable {
+public struct StrikethroughStyle: StyleKeys, Codable, Hashable, Sendable {
     public var pattern: Pattern      = .solid
     public var stroke: Stroke        = .single
     public var words: Bool           = false

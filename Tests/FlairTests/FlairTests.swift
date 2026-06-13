@@ -70,6 +70,15 @@ import SwiftUI
 }
 
 
+@Suite struct SendableTests {
+    @Test func testStyleIsSendable() {
+        func requireSendable<T: Sendable>(_ value: T) -> T { value }
+        var style = Style()
+        style[value: ForegroundColorStyle.self] = .red
+        _ = requireSendable(style)
+    }
+}
+
 @Suite struct FontStyleTests {
     @Test
     func allStylesHaveADefaultFont() {
