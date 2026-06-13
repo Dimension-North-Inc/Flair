@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os
 
 /// A style comprised of a collection of keys and values.
 ///
@@ -33,7 +34,7 @@ public struct Style {
     /// - Parameter keys: a list of `StyleKeys` conforming types
     public static func register(_ keys: any StyleKeys.Type...) {
         for key in keys {
-            styleKeyTypes[key.name] = key
+            registry.withLock { $0[key.name] = key }
         }
     }
 
@@ -48,11 +49,12 @@ public struct Style {
     public static func register(_ paths: KeyPath<Style.Keys, any StyleKeys.Type>...) {
         for path in paths {
             let key = Style.Keys()[keyPath: path]
-            styleKeyTypes[key.name] = key
+            registry.withLock { $0[key.name] = key }
         }
     }
 
-    fileprivate static var styleKeyTypes: [String: any StyleKeys.Type] = [
+    /// Thread-safe registry of style-key types, keyed by coding `name`.
+    private static let registry = OSAllocatedUnfairLock<[String: any StyleKeys.Type]>(initialState: [
         // builtin font styles
         FontNameStyle.name:               FontNameStyle.self,
         FontSizeStyle.name:               FontSizeStyle.self,
@@ -78,7 +80,12 @@ public struct Style {
         OutlineStyle.name:                OutlineStyle.self,
         UnderlineStyle.name:              UnderlineStyle.self,
         StrikethroughStyle.name:          StrikethroughStyle.self,
-    ]
+    ])
+
+    /// Looks up the registered key type for a coding `name`, if any.
+    fileprivate static func styleKeyType(_ name: String) -> (any StyleKeys.Type)? {
+        registry.withLock { $0[name] }
+    }
 
     // MARK: - Storage
 
@@ -201,7 +208,7 @@ public struct Style {
         var result = Style()
 
         for key in self.values.keys {
-            guard let keyType = Style.styleKeyTypes[key] else { continue }
+            guard let keyType = Style.styleKeyType(key) else { continue }
 
             let selfValue = self[value: keyType]
             let otherValue = style[value: keyType]
@@ -249,7 +256,7 @@ extension Style: Equatable {
 
         for key in lkeys {
             guard
-                let codingValueType = Style.styleKeyTypes[key]
+                let codingValueType = Style.styleKeyType(key)
             else {
                 return false
             }
@@ -278,7 +285,7 @@ extension Style: Hashable {
     public func hash(into hasher: inout Hasher) {
         for key in values.keys.sorted() {
             key.hash(into: &hasher)
-            if let codingValueType = Style.styleKeyTypes[key] {
+            if let codingValueType = Style.styleKeyType(key) {
                 switch values[key] {
                 case .override(let any):
                     codingValueType.hash(value: any, into: &hasher)
@@ -309,7 +316,7 @@ extension Style: Codable {
         for key in values.keys {
             guard
                 let codingKey = CodingKeys(stringValue: key),
-                let codingValueType = Style.styleKeyTypes[key]
+                let codingValueType = Style.styleKeyType(key)
             else {
                 continue
             }
@@ -335,7 +342,7 @@ extension Style: Codable {
 
         for key in container.allKeys {
             guard
-                let codingValueType = Style.styleKeyTypes[key.stringValue]
+                let codingValueType = Style.styleKeyType(key.stringValue)
             else {
                 continue
             }

@@ -11,8 +11,8 @@ import SwiftUI
 
 public struct FontNameStyle: StyleKeys {
     
-    public static var name = "flair.font-name"
-    public static var initial: FontName = {
+    public static let name = "flair.font-name"
+    public static let initial: FontName = {
         func userFont() -> FontRef? {
             #if os(iOS)
             FontRef.preferredFont(forTextStyle: .body)
@@ -35,23 +35,23 @@ public struct FontNameStyle: StyleKeys {
 }
 
 public struct FontSizeStyle: StyleKeys {
-    public static var name = "flair.font-size"
-    public static var initial: CGFloat = 12
+    public static let name = "flair.font-size"
+    public static let initial: CGFloat = 12
 }
 
 public struct FontAngleStyle: StyleKeys {
-    public static var name = "flair.font-angle"
-    public static var initial: FontAngle = .standard
+    public static let name = "flair.font-angle"
+    public static let initial: FontAngle = .standard
 }
 
 public struct FontWidthStyle: StyleKeys {
-    public static var name = "flair.font-width"
-    public static var initial: FontWidth = .standard
+    public static let name = "flair.font-width"
+    public static let initial: FontWidth = .standard
 }
 
 public struct FontWeightStyle: StyleKeys {
-    public static var name = "flair.font-weight"
-    public static var initial: FontWeight = .regular
+    public static let name = "flair.font-weight"
+    public static let initial: FontWeight = .regular
 }
 
 extension Style.Keys {

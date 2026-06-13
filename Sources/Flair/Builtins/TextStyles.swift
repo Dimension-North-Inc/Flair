@@ -15,38 +15,38 @@ public enum AlignmentStyle: String, StyleKeys, Codable, Hashable, CaseIterable, 
     case centered
     case justified
     
-    public static var name      = "flair.alignment"
-    public static var initial   = Self.leading
+    public static let name      = "flair.alignment"
+    public static let initial   = Self.leading
 }
 
 public struct LineSpacingStyle: StyleKeys {
-    public static var name      = "flair.line-spacing"
-    public static var initial   = CGFloat(0)
+    public static let name      = "flair.line-spacing"
+    public static let initial   = CGFloat(0)
 }
 
 public struct LineHeightMultipleStyle: StyleKeys {
-    public static var name      = "flair.line-height-multiple"
-    public static var initial   = CGFloat(0)
+    public static let name      = "flair.line-height-multiple"
+    public static let initial   = CGFloat(0)
 }
 
 public struct ParagraphSpacingStyle: StyleKeys {
-    public static var name      = "flair.paragraph-spacing"
-    public static var initial   = CGFloat(0)
+    public static let name      = "flair.paragraph-spacing"
+    public static let initial   = CGFloat(0)
 }
 
 public struct ParagraphSpacingBeforeStyle: StyleKeys {
-    public static var name      = "flair.paragraph-spacing-before"
-    public static var initial   = CGFloat(0)
+    public static let name      = "flair.paragraph-spacing-before"
+    public static let initial   = CGFloat(0)
 }
 
 public struct ForegroundColorStyle: StyleKeys {
-    public static var name      = "flair.foreground-color"
-    public static var initial   = Style.Color.primary
+    public static let name      = "flair.foreground-color"
+    public static let initial   = Style.Color.primary
 }
 
 public struct BackgroundColorStyle: StyleKeys {
-    public static var name      = "flair.background-color"
-    public static var initial   = Style.Color.clear
+    public static let name      = "flair.background-color"
+    public static let initial   = Style.Color.clear
 }
 
 
@@ -91,8 +91,8 @@ public struct UnderlineStyle: StyleKeys, Codable, Hashable, Sendable {
     
     public var color: Style.Color?   = nil
     
-    public static var name           = "flair.underline"
-    public static var initial: Self? = nil
+    public static let name           = "flair.underline"
+    public static let initial: Self? = nil
     
     public var style: NSUnderlineStyle {
         [pattern.style, stroke.style, words ? .byWord : []]
@@ -108,8 +108,8 @@ public struct StrikethroughStyle: StyleKeys, Codable, Hashable, Sendable {
 
     public var color: Style.Color?   = nil
 
-    public static var name           = "flair.strikethrough"
-    public static var initial: Self? = nil
+    public static let name           = "flair.strikethrough"
+    public static let initial: Self? = nil
     
     public var style: NSUnderlineStyle {
         [pattern.style, stroke.style, words ? .byWord : []]
@@ -119,18 +119,18 @@ public struct StrikethroughStyle: StyleKeys, Codable, Hashable, Sendable {
 }
 
 public struct BoldStyle: StyleKeys, Codable, Hashable {
-    public static var name      = "flair.bold"
-    public static var initial   = false
+    public static let name      = "flair.bold"
+    public static let initial   = false
 }
 
 public struct ItalicStyle: StyleKeys, Codable, Hashable {
-    public static var name      = "flair.italic"
-    public static var initial   = false
+    public static let name      = "flair.italic"
+    public static let initial   = false
 }
 
 public struct OutlineStyle: StyleKeys, Codable, Hashable {
-    public static var name      = "flair.outline"
-    public static var initial   = false
+    public static let name      = "flair.outline"
+    public static let initial   = false
 }
 
 extension Style.Keys {

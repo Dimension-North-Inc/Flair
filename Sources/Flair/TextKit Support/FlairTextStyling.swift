@@ -40,12 +40,12 @@ public extension AttributeDynamicLookup {
 
 public struct DocumentStyleAttribute: CodableAttributedStringKey, MarkdownDecodableAttributedStringKey {
     public typealias Value = Style
-    public static var name: String = "flair.paragraphStyle"
+    public static let name: String = "flair.paragraphStyle"
 }
 
 public struct CharacterStyleAttribute: CodableAttributedStringKey, MarkdownDecodableAttributedStringKey {
     public typealias Value = Style
-    public static var name: String = "flair.characterStyle"
+    public static let name: String = "flair.characterStyle"
 }
 
 extension Style {

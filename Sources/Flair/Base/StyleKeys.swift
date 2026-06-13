@@ -13,7 +13,7 @@ import Foundation
 ///
 /// The definition of a style element includes a `name` used to store the element in `Codable` containers,
 /// and an `initial` value used for the style element when it is left undefined within a style.
-public protocol StyleKeys<Value> {
+public protocol StyleKeys<Value>: Sendable {
     associatedtype Value: Codable & Hashable & Sendable
     
     /// a name used to store the element in `Codable` containers.

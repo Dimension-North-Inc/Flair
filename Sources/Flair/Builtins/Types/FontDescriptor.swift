@@ -226,7 +226,7 @@ public struct FontWeight: Codable, Hashable, RawRepresentable, CaseIterable, Cus
         Self(rawValue: other.rawValue)
     }
     
-    public static var allCases: [FontWeight]  = [
+    public static let allCases: [FontWeight]  = [
         .ultraLight, .thin, .light, .regular, .medium, .semibold, .bold, .heavy, .black
     ]
         
@@ -283,7 +283,7 @@ public struct FontWidth: Codable, Hashable, RawRepresentable, CaseIterable, Cust
         Self(rawValue: other.rawValue)
     }
     
-    public static var allCases: [FontWidth] = [
+    public static let allCases: [FontWidth] = [
         .compressed, .condensed, .standard, .expanded
     ]
 
