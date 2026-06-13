@@ -44,6 +44,46 @@ enum CardStyle: Codable, Equatable, StyleKeys {
 }
 ```
 
+### 2. Best Practice: Use `Value` for Non-Standard Types
+
+When a style key's value type is a custom type that isn't a built-in Swift type (e.g., `Bool`, `Int`, `String`, `Double`), name the type `Value` nested inside the style struct. This avoids conflicts with SwiftUI types that share common names like `ColorScheme`, `Alignment`, `Edge`, etc., and makes the pattern consistent across all custom types.
+
+**Example — a `ColorScheme` style without the naming convention:**
+```swift
+// Conflict: ColorScheme exists in SwiftUI
+public enum ColorScheme: Codable, Hashable {
+    case system, light, dark
+}
+public struct ColorSchemeStyle {
+    public var scheme: ColorScheme  // compiles but shadows SwiftUI.ColorScheme
+}
+```
+
+**Correct approach — use `Value` for the nested type:**
+```swift
+public struct ColorSchemeStyle: StyleKeys, Codable, Hashable {
+    public enum Value: Codable, Hashable {
+        case system, light, dark
+    }
+    public var value: Value
+    public init(_ value: Value = .system) {
+        self.value = value
+    }
+    public static var name: String { "outline.colorScheme" }
+    public static var initial: Value { .system }
+}
+
+extension Style.Keys {
+    var colorScheme: DefaultKey<ColorSchemeStyle> {
+        DefaultKey(ColorSchemeStyle.name, value: ColorSchemeStyle.initial)
+    }
+}
+```
+
+This convention ensures that when a `DefaultKey<ColorSchemeStyle>` is used, `ColorSchemeStyle.Value` is unambiguous and doesn't shadow `SwiftUI.ColorScheme`. Apply the same pattern for any custom non-built-in type — the `Value` wrapper avoids name collisions regardless of whether the underlying type is an enum, a struct, or any other custom type.
+
+The convention also makes call-sites natural: `IndentationStyle.Value` reads clearly and is concise. It also makes call sites searchable — searching for `.Value` across a codebase surfaces usages of custom style values without noise from generic `Any`/`AnyObject` casts.
+
 To fetch the effective `CardStyle` within the current `Style`, use the
 dynamic member lookup syntax:
 
@@ -153,8 +193,9 @@ let diff = result.subtracting(parent) { $0 == $1 }
 
 ## Text Styling
 A fundamental target for a styling system is styled text. Flair provides
-comprehensive support for text styling with custom AttributedString attributes
-and a custom TextKit2 text stack for style rendering.
+support for text styling through custom `AttributedString` attributes, along
+with helpers that resolve those attributes into native (AppKit/UIKit) or
+SwiftUI attributed-string attributes for rendering.
 
 To apply Flair styles to an entire body of attributed text, use the custom
 attributed string property `.flair.paragraphStyle`. You can cascade additional 
@@ -176,6 +217,15 @@ guard let mainly = string.rangeOf("Mainly") else { return }
 var blackUnderlined = Style() // default or fetch
 
 string[mainly].characterStyle = blackUnderlined
+```
+
+To render styled text, resolve the Flair attributes into concrete attributes
+for your UI layer: use `.native` for AppKit/UIKit attributes (e.g. when bridging
+to an `NSAttributedString`) or `.swiftui` for SwiftUI attributes.
+
+```swift
+let nsString = NSAttributedString(string.native)   // AppKit / UIKit
+let swiftUIString = string.swiftui                  // SwiftUI Text
 ```
 
 ## Drag & Drop Styles
