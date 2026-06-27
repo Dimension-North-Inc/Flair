@@ -177,6 +177,16 @@ documentStyle.styleCatalog["Body"].fontName = .body
 documentStyle.styleCatalog["Body"].fontSize = 14
 ```
 
+Or assign a complete `Style` when you want to replace the named style wholesale:
+
+```swift
+var bodyStyle = Style()
+bodyStyle.fontName = .body
+bodyStyle.fontSize = 14
+
+documentStyle.styleCatalog["Body"] = bodyStyle
+```
+
 You can also address a catalog style by stable ID when you already have one:
 
 ```swift
