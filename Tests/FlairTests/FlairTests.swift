@@ -233,6 +233,43 @@ import SwiftUI
     }
 
     @Test
+    func styleCatalogRemovesStyleByName() {
+        var catalog = StyleCatalog()
+        catalog["Body"].fontSize = 14
+
+        catalog.removeStyle(named: "Body")
+
+        #expect(catalog.entries.isEmpty)
+        #expect(catalog["Body"] == Style())
+    }
+
+    @Test
+    func styleCatalogRemoveStyleByNameNoOpsForAmbiguousName() {
+        let firstID = UUID()
+        let secondID = UUID()
+        var catalog = StyleCatalog(entries: [
+            StyleCatalog.Entry(id: firstID, name: "Body"),
+            StyleCatalog.Entry(id: secondID, name: "Body")
+        ])
+
+        catalog.removeStyle(named: "Body")
+
+        #expect(catalog.entries.keys.sorted { $0.uuidString < $1.uuidString } == [firstID, secondID].sorted { $0.uuidString < $1.uuidString })
+    }
+
+    @Test
+    func styleCatalogRemovesStyleByID() {
+        let id = UUID()
+        var catalog = StyleCatalog()
+        catalog[id].fontSize = 18
+
+        catalog.removeStyle(id: id)
+
+        #expect(catalog.entries[id] == nil)
+        #expect(catalog[id] == Style())
+    }
+
+    @Test
     func styleCatalogReportsAvailableStyleNames() {
         let catalog = StyleCatalog(entries: [
             StyleCatalog.Entry(name: "Body"),

@@ -14,7 +14,9 @@ settings. Values are their corresponding values for the given style.
 The `StyleKeys` protocol defines types which represent distinct style elements.
 To implement a custom style element, declare a String `name` used to store the 
 element in `Codable` containers, and an `initial` Codable value used for the style
-element when it is left undefined within a style.
+element when it is left undefined within a style. A style key can also customize
+how parent and child override values combine during cascade. The default cascade
+implementation replaces the parent value with the child value.
 
 ```swift
 public protocol StyleKeys<Value> {
@@ -29,88 +31,52 @@ public protocol StyleKeys<Value> {
     /// combines inherited and descendant override values during style cascade.
     static func cascade(parent: Value, child: Value) -> Value
 }
-
-// a style whose value is a common codable type... 
-struct Indentation: StyleKeys {
-    static var name = "flairsamples.indentation"
-    static var initial = CGFloat(42)
-}
-
-// a fully custom style value type can act as its own key...
-enum CardStyle: Codable, Equatable, StyleKeys {
-    case imageOnly
-    case imageLeading
-    case imageTrailing
-    
-    static var name = "flairsamples.cardstyle"
-    static var initial = Self.imageLeading
-}
 ```
 
-### Best Practice: Use `Value` for Non-Standard Types
+For custom value types, prefer nesting the value type inside the style key as
+`Value`. This avoids collisions with framework types that share common names
+such as `SwiftUI.ColorScheme`, `Alignment`, or `Edge`, and keeps call sites
+clear and searchable:
 
-When a style key's value type is a custom type that isn't a built-in Swift type (e.g., `Bool`, `Int`, `String`, `Double`), name the type `Value` nested inside the style struct. This avoids conflicts with SwiftUI types that share common names like `ColorScheme`, `Alignment`, `Edge`, etc., and makes the pattern consistent across all custom types.
-
-**Example — a `ColorScheme` style without the naming convention:**
-```swift
-// Conflict: ColorScheme exists in SwiftUI
-public enum ColorScheme: Codable, Hashable {
-    case system, light, dark
-}
-public struct ColorSchemeStyle {
-    public var scheme: ColorScheme  // compiles but shadows SwiftUI.ColorScheme
-}
-```
-
-**Correct approach — use `Value` for the nested type:**
 ```swift
 public struct ColorSchemeStyle: StyleKeys {
     public enum Value: Codable, Hashable, Sendable {
-        case system, light, dark
+        case system
+        case light
+        case dark
     }
 
-    public static var name: String { "outline.colorScheme" }
-    public static var initial: Value { .system }
+    public static let name = "example.color-scheme"
+    public static let initial = Value.system
 }
+```
 
+Every `StyleKeys` type can be used directly through `Style` subscripts:
+
+```swift
+var style = Style()
+style[value: ColorSchemeStyle.self] = .dark
+
+let colorScheme = style[value: ColorSchemeStyle.self]
+```
+
+For a more natural API, extend `Style.Keys` with a property that returns your
+style key type:
+
+```swift
 extension Style.Keys {
     var colorScheme: ColorSchemeStyle.Type { ColorSchemeStyle.self }
 }
-```
-
-This convention ensures that `ColorSchemeStyle.Value` is unambiguous and doesn't shadow `SwiftUI.ColorScheme`. Apply the same pattern for any custom non-built-in type — the `Value` wrapper avoids name collisions regardless of whether the underlying type is an enum, a struct, or any other custom type.
-
-The convention also makes call-sites natural: `IndentationStyle.Value` reads clearly and is concise. It also makes call sites searchable — searching for `.Value` across a codebase surfaces usages of custom style values without noise from generic `Any`/`AnyObject` casts.
-
-To fetch the effective `CardStyle` within the current `Style`, use the
-dynamic member lookup syntax:
-
-```swift
-// fetch the current style within your app,
-// or use default style settings with an empty `Style`
-let style = Style()
-
-// use dynamic member lookup to get the style value...
-let cardStyle = style.card
-```
-
-To enable this, extend `Style.Keys` with a property that returns your
-`StyleKeys`-conforming type. This is the preferred pattern:
-
-```swift
-extension Style.Keys {
-    /// use \.card as an alias for `CardStyle.self`
-    var card: CardStyle.Type { CardStyle.self }
-}
 
 var s = Style()
-s.card = .imageTrailing    // write: s[value: CardStyle.self] = .imageTrailing
-let cardStyle = s.card    // read:  s[value: CardStyle.self]
+s.colorScheme = .dark
+
+let colorScheme = s.colorScheme
 ```
 
-**Note:** The `style[key: T.self]` subscript syntax also works but is
-more verbose. Use dynamic member lookup (`style.card`) for clarity and
-readability.
+**Note:** `style[value: T.self]` accesses the typed value for a key, but it is
+wordy. Prefer dynamic member lookup (`style.colorScheme`) for ordinary typed
+reads and writes.
 
 ## Registration
 When you define custom styles within your own application, make sure to 
@@ -126,8 +92,7 @@ import SwiftUI
 struct MyApp: App {
     init() {
         Style.register(
-            CardStyle.self,
-            CatalogStyle.self
+            ColorSchemeStyle.self
         )
     }
     var body: some Scene {
@@ -192,6 +157,13 @@ You can also address a catalog style by stable ID when you already have one:
 ```swift
 let bodyID = UUID()
 documentStyle.styleCatalog[bodyID].fontName = .body
+```
+
+Remove catalog styles by name or by ID:
+
+```swift
+documentStyle.styleCatalog.removeStyle(named: "Body")
+documentStyle.styleCatalog.removeStyle(id: bodyID)
 ```
 
 Catalogs cascade by entry ID. Parent entries remain available, child entries

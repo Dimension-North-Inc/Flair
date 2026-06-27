@@ -89,6 +89,18 @@ public struct StyleCatalog: Codable, Hashable, Sendable {
         return matches.first
     }
 
+    public mutating func removeStyle(named name: String) {
+        guard let entry = entry(named: name) else {
+            return
+        }
+
+        entries[entry.id] = nil
+    }
+
+    public mutating func removeStyle(id: Entry.ID) {
+        entries[id] = nil
+    }
+
     public var styleNames: Set<String> {
         Set(entries.values.map(\.name.name))
     }
