@@ -18,13 +18,16 @@ element when it is left undefined within a style.
 
 ```swift
 public protocol StyleKeys<Value> {
-    associatedtype Value: Codable & Equatable
+    associatedtype Value: Codable & Hashable & Sendable
     
     /// a name used to store the element in `Codable` containers.
     static var name: String { get }
     
     /// an  initial - or default - value for the element used when it is left undefined within a style.
     static var initial: Value { get }
+
+    /// combines inherited and descendant override values during style cascade.
+    static func cascade(parent: Value, child: Value) -> Value
 }
 
 // a style whose value is a common codable type... 
@@ -44,7 +47,7 @@ enum CardStyle: Codable, Equatable, StyleKeys {
 }
 ```
 
-### 2. Best Practice: Use `Value` for Non-Standard Types
+### Best Practice: Use `Value` for Non-Standard Types
 
 When a style key's value type is a custom type that isn't a built-in Swift type (e.g., `Bool`, `Int`, `String`, `Double`), name the type `Value` nested inside the style struct. This avoids conflicts with SwiftUI types that share common names like `ColorScheme`, `Alignment`, `Edge`, etc., and makes the pattern consistent across all custom types.
 
@@ -61,26 +64,21 @@ public struct ColorSchemeStyle {
 
 **Correct approach — use `Value` for the nested type:**
 ```swift
-public struct ColorSchemeStyle: StyleKeys, Codable, Hashable {
-    public enum Value: Codable, Hashable {
+public struct ColorSchemeStyle: StyleKeys {
+    public enum Value: Codable, Hashable, Sendable {
         case system, light, dark
     }
-    public var value: Value
-    public init(_ value: Value = .system) {
-        self.value = value
-    }
+
     public static var name: String { "outline.colorScheme" }
     public static var initial: Value { .system }
 }
 
 extension Style.Keys {
-    var colorScheme: DefaultKey<ColorSchemeStyle> {
-        DefaultKey(ColorSchemeStyle.name, value: ColorSchemeStyle.initial)
-    }
+    var colorScheme: ColorSchemeStyle.Type { ColorSchemeStyle.self }
 }
 ```
 
-This convention ensures that when a `DefaultKey<ColorSchemeStyle>` is used, `ColorSchemeStyle.Value` is unambiguous and doesn't shadow `SwiftUI.ColorScheme`. Apply the same pattern for any custom non-built-in type — the `Value` wrapper avoids name collisions regardless of whether the underlying type is an enum, a struct, or any other custom type.
+This convention ensures that `ColorSchemeStyle.Value` is unambiguous and doesn't shadow `SwiftUI.ColorScheme`. Apply the same pattern for any custom non-built-in type — the `Value` wrapper avoids name collisions regardless of whether the underlying type is an enum, a struct, or any other custom type.
 
 The convention also makes call-sites natural: `IndentationStyle.Value` reads clearly and is concise. It also makes call sites searchable — searching for `.Value` across a codebase surfaces usages of custom style values without noise from generic `Any`/`AnyObject` casts.
 
