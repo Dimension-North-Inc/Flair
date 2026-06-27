@@ -161,6 +161,78 @@ import SwiftUI
     }
 
     @Test
+    func emptyStyleCarriesEmptyStyleCatalogByDefault() {
+        let style = Style()
+
+        #expect(style.styleCatalog == StyleCatalog())
+    }
+
+    @Test
+    func missingCatalogIDReturnsEmptyStyle() {
+        let catalog = StyleCatalog()
+
+        #expect(catalog[UUID()] == Style())
+    }
+
+    @Test
+    func missingCatalogNameReturnsEmptyStyle() {
+        let catalog = StyleCatalog()
+
+        #expect(catalog["Body"] == Style())
+    }
+
+    @Test
+    func settingCatalogStyleByMissingNameCreatesEntry() throws {
+        var catalog = StyleCatalog()
+        var body = Style()
+        body.fontName = .named("Arial")
+
+        catalog["Body"] = body
+
+        let entry = try #require(catalog.entries.values.first)
+        #expect(entry.name.name == "Body")
+        #expect(entry.style.fontName == .named("Arial"))
+        #expect(catalog["Body"].fontName == .named("Arial"))
+    }
+
+    @Test
+    func settingCatalogStyleByMissingIDCreatesEntry() {
+        let id = UUID()
+        var catalog = StyleCatalog()
+        var body = Style()
+        body.fontSize = 14
+
+        catalog[id] = body
+
+        #expect(catalog.entries[id]?.id == id)
+        #expect(catalog.entries[id]?.name.name == id.uuidString)
+        #expect(catalog[id].fontSize == 14)
+    }
+
+    @Test
+    func styleCatalogSupportsNestedStyleMutationByName() {
+        var style = Style()
+
+        style.styleCatalog["Body"].fontName = .named("Arial")
+        style.styleCatalog["Body"].fontSize = 14
+
+        #expect(style.styleCatalog["Body"].fontName == .named("Arial"))
+        #expect(style.styleCatalog["Body"].fontSize == 14)
+        #expect(style.styleCatalog.entries.values.first?.name.name == "Body")
+    }
+
+    @Test
+    func styleCatalogSupportsNestedStyleMutationByID() {
+        let id = UUID()
+        var style = Style()
+
+        style.styleCatalog[id].fontSize = 18
+
+        #expect(style.styleCatalog[id].fontSize == 18)
+        #expect(style.styleCatalog.entries[id]?.name.id == id)
+    }
+
+    @Test
     func styleCatalogReportsAvailableStyleNames() {
         let catalog = StyleCatalog(entries: [
             StyleCatalog.Entry(name: "Body"),

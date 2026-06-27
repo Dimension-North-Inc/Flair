@@ -161,32 +161,27 @@ earlier styles in the list.
 Flair supports named styles without introducing a separate stylesheet object
 outside of normal `Style` values. A style can carry a `StyleCatalog`, and it can
 also carry a reference to one entry in that catalog through `baseStyleID`.
+The default value for `styleCatalog` is an empty `StyleCatalog`, so every
+style can be used as a catalog-bearing style without optional checks.
 
-A catalog entry combines a stable UUID-backed `StyleName` with a `Style`.
-The textual name is safe to rename because references use the stable ID:
-
-```swift
-let bodyID = UUID()
-
-var body = Style()
-body.fontName = .body
-body.fontSize = 14
-
-let bodyEntry = StyleCatalog.Entry(
-    id: bodyID,
-    name: "Body",
-    style: body
-)
-```
-
-Catalogs are themselves style values. Store one directly in any style with the
-built-in `styleCatalog` key:
+A catalog entry combines a stable UUID-backed `StyleName` with a `Style`. The
+textual name is safe to rename because references use the stable ID. For common
+editing code, use the catalog subscript by name or ID. Missing entries return an
+empty `Style`, and assigning through a missing name creates an entry with that
+name:
 
 ```swift
 var documentStyle = Style()
-documentStyle.styleCatalog = StyleCatalog(entries: [
-    bodyEntry
-])
+
+documentStyle.styleCatalog["Body"].fontName = .body
+documentStyle.styleCatalog["Body"].fontSize = 14
+```
+
+You can also address a catalog style by stable ID when you already have one:
+
+```swift
+let bodyID = UUID()
+documentStyle.styleCatalog[bodyID].fontName = .body
 ```
 
 Catalogs cascade by entry ID. Parent entries remain available, child entries
@@ -199,6 +194,7 @@ UI-friendly `baseStyleName` property:
 
 ```swift
 var paragraphStyle = Style()
+paragraphStyle.styleCatalog = documentStyle.styleCatalog
 paragraphStyle.baseStyleName = "Body"
 paragraphStyle.italic = true
 ```

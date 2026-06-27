@@ -49,9 +49,44 @@ public struct StyleCatalog: Codable, Hashable, Sendable {
         self.entries = Dictionary(uniqueKeysWithValues: entries.map { ($0.id, $0) })
     }
 
-    public subscript(id: Entry.ID) -> Entry? {
-        get { entries[id] }
-        set { entries[id] = newValue }
+    public subscript(id: Entry.ID) -> Style {
+        get {
+            entries[id]?.style ?? Style()
+        }
+        set {
+            let name = entries[id]?.name ?? StyleName(id: id, name: id.uuidString)
+            entries[id] = Entry(name: name, style: newValue)
+        }
+    }
+
+    public subscript(name: String) -> Style {
+        get {
+            entry(named: name)?.style ?? Style()
+        }
+        set {
+            let matches = entries.values.filter { $0.name.name == name }
+            switch matches.count {
+            case 0:
+                let styleName = StyleName(name: name)
+                entries[styleName.id] = Entry(name: styleName, style: newValue)
+            case 1:
+                guard let match = matches.first else {
+                    return
+                }
+                entries[match.id] = Entry(name: match.name, style: newValue)
+            default:
+                return
+            }
+        }
+    }
+
+    public func entry(named name: String) -> Entry? {
+        let matches = entries.values.filter { $0.name.name == name }
+        guard matches.count == 1 else {
+            return nil
+        }
+
+        return matches.first
     }
 
     public var styleNames: Set<String> {
