@@ -21,9 +21,25 @@ public protocol StyleKeys<Value>: Sendable {
     
     /// an  initial - or default - value for the element used when it is left undefined within a style.
     static var initial: Value { get }
+
+    /// Combines an inherited override value with a descendant override value during style cascade.
+    static func cascade(parent: Value, child: Value) -> Value
 }
 
 extension StyleKeys {
+    public static func cascade(parent: Value, child: Value) -> Value {
+        child
+    }
+
+    static func cascadeAny(parent: Any, child: Any) -> Any? {
+        guard let parent = parent as? Value,
+              let child = child as? Value else {
+            return nil
+        }
+
+        return cascade(parent: parent, child: child)
+    }
+
     public static func encode(_ value: Any, into container: inout UnkeyedEncodingContainer) throws {
         guard let encodable = value as? Value else {
             return
@@ -81,4 +97,3 @@ extension Style {
     public struct Keys {
     }
 }
-

@@ -80,6 +80,10 @@ public struct Style {
         OutlineStyle.name:                OutlineStyle.self,
         UnderlineStyle.name:              UnderlineStyle.self,
         StrikethroughStyle.name:          StrikethroughStyle.self,
+
+        // builtin style catalog
+        StyleCatalogStyle.name:           StyleCatalogStyle.self,
+        BaseStyleIDStyle.name:            BaseStyleIDStyle.self,
     ])
 
     /// Looks up the registered key type for a coding `name`, if any.
@@ -147,7 +151,15 @@ public struct Style {
     /// - Returns: a new style
     public func appending(_ style: Self) -> Self {
         var result = Style()
-        result.values = self.values.appending(style.values)
+        result.values = Self.cascade(parent: self.values, child: style.values)
+
+        if let baseStyle = Self.baseStyle(in: result) {
+            result.values = Self.cascade(
+                parent: Self.cascade(parent: self.values, child: baseStyle.values),
+                child: style.values
+            )
+        }
+
         return result
     }
 
@@ -165,7 +177,7 @@ public struct Style {
     /// - Returns: a new style
     public func prepending(_ style: Self) -> Self {
         var result = Style()
-        result.values = self.values.prepending(style.values)
+        result.values = Self.cascade(parent: style.values, child: self.values)
         return result
     }
 
@@ -182,7 +194,9 @@ public struct Style {
     /// - Parameter styles: a collection of styles to cascade
     /// - Returns: a new style
     public init(cascading styles: some Collection<Style>) {
-        self.values = CascadingDictionary(cascading: styles.map(\.values))
+        self = styles.reduce(Style()) { parent, child in
+            parent.appending(child)
+        }
     }
 
     public init(cascading styles: Style...) {
@@ -240,6 +254,112 @@ public struct Style {
 
     public init(conf: (inout Self) -> ()) {
         conf(&self)
+    }
+
+    // MARK: - Named Styles
+
+    public var baseStyleNames: Set<String> {
+        self.styleCatalog.styleNames
+    }
+
+    public var baseStyleEntry: StyleCatalog.Entry? {
+        guard let id = self.baseStyleID else {
+            return nil
+        }
+
+        return self.styleCatalog.entries[id]
+    }
+
+    public var baseStyleName: String? {
+        get {
+            baseStyleEntry?.name.name
+        }
+        set {
+            guard let newValue else {
+                self.baseStyleID = nil
+                return
+            }
+
+            let matches = self.styleCatalog.entries.values.filter { $0.name.name == newValue }
+            guard matches.count == 1,
+                  let match = matches.first else {
+                return
+            }
+
+            self.baseStyleID = match.id
+        }
+    }
+
+    public var isPureBaseStyleRepresentation: Bool {
+        baseStyleEntry != nil && styleOverridesRelativeToBaseStyle() == Style()
+    }
+
+    public var variesFromBaseStyle: Bool {
+        baseStyleEntry != nil && !isPureBaseStyleRepresentation
+    }
+
+    public func styleOverridesRelativeToBaseStyle() -> Style {
+        guard let baseStyle = baseStyleEntry?.style else {
+            return Style()
+        }
+
+        var result = Style()
+        for key in values.keys where !Self.isBaseStyleMetadataKey(key) {
+            guard let keyType = Self.styleKeyType(key) else {
+                continue
+            }
+
+            let localValue = self[value: keyType]
+            let baseValue = baseStyle[value: keyType]
+            guard !keyType.valuesAreEqual(localValue, baseValue) else {
+                continue
+            }
+
+            result.values[key] = values[key]
+        }
+
+        return result
+    }
+
+    // MARK: - Cascade Internals
+
+    private static func cascade(
+        parent: CascadingDictionary<String, Any>,
+        child: CascadingDictionary<String, Any>
+    ) -> CascadingDictionary<String, Any> {
+        var result = CascadingDictionary<String, Any>()
+
+        for key in Set(parent.keys).union(child.keys) {
+            switch (parent[key], child[key]) {
+            case let (.override(parentValue), .override(childValue)):
+                let value = styleKeyType(key)?
+                    .cascadeAny(parent: parentValue, child: childValue) ?? childValue
+                result[key] = .override(value)
+
+            case (_, .override(let value)):
+                result[key] = .override(value)
+
+            case (.override(let value), _):
+                result[key] = .override(value)
+
+            default:
+                break
+            }
+        }
+
+        return result
+    }
+
+    private static func baseStyle(in style: Style) -> Style? {
+        guard let id = style.baseStyleID else {
+            return nil
+        }
+
+        return style.styleCatalog.entries[id]?.style
+    }
+
+    private static func isBaseStyleMetadataKey(_ key: String) -> Bool {
+        key == StyleCatalogStyle.name || key == BaseStyleIDStyle.name
     }
 }
 

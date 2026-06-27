@@ -159,6 +159,82 @@ let color = cellStyle.backgroundColor
 When cascading a list of styles, later styles will take precedence over
 earlier styles in the list.
 
+## Named Styles and Style Catalogs
+Flair supports named styles without introducing a separate stylesheet object
+outside of normal `Style` values. A style can carry a `StyleCatalog`, and it can
+also carry a reference to one entry in that catalog through `baseStyleID`.
+
+A catalog entry combines a stable UUID-backed `StyleName` with a `Style`.
+The textual name is safe to rename because references use the stable ID:
+
+```swift
+let bodyID = UUID()
+
+var body = Style()
+body.fontName = .body
+body.fontSize = 14
+
+let bodyEntry = StyleCatalog.Entry(
+    id: bodyID,
+    name: "Body",
+    style: body
+)
+```
+
+Catalogs are themselves style values. Store one directly in any style with the
+built-in `styleCatalog` key:
+
+```swift
+var documentStyle = Style()
+documentStyle.styleCatalog = StyleCatalog(entries: [
+    bodyEntry
+])
+```
+
+Catalogs cascade by entry ID. Parent entries remain available, child entries
+replace entries with the same ID, and child-only entries are added. This lets an
+application define standard styles at a document, notebook, page, or item level
+using the same cascade model as every other style key.
+
+A style can opt into a named catalog entry with `baseStyleID`, or with the
+UI-friendly `baseStyleName` property:
+
+```swift
+var paragraphStyle = Style()
+paragraphStyle.baseStyleName = "Body"
+paragraphStyle.italic = true
+```
+
+During cascade, Flair resolves the current effective catalog and inserts the
+referenced entry style between the parent and child style:
+
+```swift
+// Conceptually:
+// parent -> catalog entry named "Body" -> paragraphStyle
+let resolved = documentStyle.appending(paragraphStyle)
+```
+
+This keeps `Style` as the only value you need to pass around. A style carries
+its catalog, its base-style reference, and any local overrides together.
+
+Several convenience APIs are available for building inspectors and pop-up menus:
+
+```swift
+let currentName = paragraphStyle.baseStyleName
+let possibleNames = paragraphStyle.baseStyleNames
+let entry = paragraphStyle.baseStyleEntry
+
+if paragraphStyle.variesFromBaseStyle {
+    let localOverrides = paragraphStyle.styleOverridesRelativeToBaseStyle()
+}
+```
+
+`isPureBaseStyleRepresentation` is true when the style has a valid base style
+and its local values do not differ from that catalog entry. `variesFromBaseStyle`
+is true when the style is based on a catalog entry but has local values that
+change the result. These checks ignore the catalog and base-style metadata
+themselves, so UI can distinguish "Body" from "Body with local overrides".
+
 ## CascadingDictionary
 `CascadingDictionary<Key, Value>` is a generic dictionary type that implements the same
 cascading behavior used by `Style`. It stores values in one of three states:
@@ -246,4 +322,3 @@ extension UTType {
     }
 }
 ```
-
