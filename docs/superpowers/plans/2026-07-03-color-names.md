@@ -43,6 +43,8 @@ extension Style.Color {
 - Keep `Sources/Flair/Builtins/Types/Color.swift` focused on the existing `Style.Color` and `ColorRef` bridge; only add tiny helpers here if access to RGBA components cannot be cleanly implemented in `ColorName.swift`.
 - Create `Tests/FlairTests/ColorNameTests.swift`: tests for palette loading, OKLab conversion, exact matching, relative modifier buckets, and localized formatting.
 - Modify `README.md`: add a short example of `Style.Color.localizedName`.
+- Post-implementation only: create a temporary sample PDF outside the package
+  showing 50 random colors and their generated names, then open it for review.
 
 ---
 
@@ -955,6 +957,48 @@ Expected: changes are limited to color naming, palette resource, localization ke
 git add README.md Tests/FlairTests/ColorNameTests.swift
 git commit -m "Document localized color names"
 ```
+
+---
+
+### Task 6: Temporary Color Name Sample PDF
+
+**Files:**
+- Create outside repository only: a temporary Swift script or Swift package under `/tmp` or another system temporary directory
+- Create outside repository only: a PDF showing 50 random colors and their generated names
+
+**Interfaces:**
+- Consumes: the completed `Style.Color.localizedName` API from this package.
+- Produces no package files and no package commits.
+
+- [ ] **Step 1: Create the temporary generator**
+
+Create a temporary script or small helper outside `/Users/mark/Developer/Packages/Flair`. It should use the completed Flair code to obtain each generated color label, then draw a PDF with one swatch plus generated name per color. It does not need to use SwiftUI.
+
+- [ ] **Step 2: Generate the PDF**
+
+Run the temporary generator from its temporary directory.
+
+Expected: a PDF exists outside the Flair repository and contains exactly 50 rows of random colors and generated names.
+
+- [ ] **Step 3: Open the PDF**
+
+Run:
+
+```bash
+open /path/to/generated-color-name-samples.pdf
+```
+
+Expected: Preview opens the generated PDF for visual review.
+
+- [ ] **Step 4: Confirm repository remains clean except intended work**
+
+Run:
+
+```bash
+git status --short
+```
+
+Expected: no temporary sample app, script, or PDF appears inside the Flair repository.
 
 ---
 
