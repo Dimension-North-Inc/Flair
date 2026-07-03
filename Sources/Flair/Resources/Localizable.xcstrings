@@ -72,37 +72,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aluminum"
+            "value": "Aluminium"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aluminum"
+            "value": "Aluminium"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aluminum"
+            "value": "Aluminio"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aluminum"
+            "value": "Alluminio"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aluminum"
+            "value": "Aluminium"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aluminum"
+            "value": "Алюміній"
           }
         }
       }
@@ -131,13 +131,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aqua"
+            "value": "Agua"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aqua"
+            "value": "Acqua"
           }
         },
         "pl": {
@@ -149,7 +149,7 @@
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aqua"
+            "value": "Аква"
           }
         }
       }
@@ -166,37 +166,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asparagus"
+            "value": "Asperge"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asparagus"
+            "value": "Spargel"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asparagus"
+            "value": "Espárrago"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asparagus"
+            "value": "Asparago"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asparagus"
+            "value": "Szparag"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asparagus"
+            "value": "Спаржа"
           }
         }
       }
@@ -213,13 +213,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Banana"
+            "value": "Banane"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Banana"
+            "value": "Banane"
           }
         },
         "es": {
@@ -237,13 +237,13 @@
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Banana"
+            "value": "Banan"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Banana"
+            "value": "Банан"
           }
         }
       }
@@ -260,37 +260,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Blueberry"
+            "value": "Myrtille"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Blueberry"
+            "value": "Heidelbeere"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Blueberry"
+            "value": "Arándano"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Blueberry"
+            "value": "Mirtillo"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Blueberry"
+            "value": "Borówka"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Blueberry"
+            "value": "Чорниця"
           }
         }
       }
@@ -307,37 +307,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bubblegum"
+            "value": "Chewing-gum"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bubblegum"
+            "value": "Kaugummi"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bubblegum"
+            "value": "Chicle"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bubblegum"
+            "value": "Gomma"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bubblegum"
+            "value": "Guma balonowa"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bubblegum"
+            "value": "Жувальна гумка"
           }
         }
       }
@@ -354,7 +354,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cantaloupe"
+            "value": "Cantaloup"
           }
         },
         "de": {
@@ -366,25 +366,25 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cantaloupe"
+            "value": "Cantalupo"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cantaloupe"
+            "value": "Cantalupo"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cantaloupe"
+            "value": "Kantalupa"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cantaloupe"
+            "value": "Канталупа"
           }
         }
       }
@@ -401,37 +401,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carnation"
+            "value": "Œillet"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carnation"
+            "value": "Nelke"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carnation"
+            "value": "Clavel"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carnation"
+            "value": "Garofano"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carnation"
+            "value": "Goździk"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carnation"
+            "value": "Гвоздика"
           }
         }
       }
@@ -460,25 +460,25 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cayenne"
+            "value": "Cayena"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cayenne"
+            "value": "Cayenna"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cayenne"
+            "value": "Kajen"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cayenne"
+            "value": "Каєн"
           }
         }
       }
@@ -495,37 +495,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clover"
+            "value": "Trèfle"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clover"
+            "value": "Klee"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clover"
+            "value": "Trébol"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clover"
+            "value": "Trifoglio"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clover"
+            "value": "Koniczyna"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clover"
+            "value": "Конюшина"
           }
         }
       }
@@ -542,37 +542,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eggplant"
+            "value": "Aubergine"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eggplant"
+            "value": "Aubergine"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eggplant"
+            "value": "Berenjena"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eggplant"
+            "value": "Melanzana"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eggplant"
+            "value": "Bakłażan"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eggplant"
+            "value": "Баклажан"
           }
         }
       }
@@ -589,37 +589,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fern"
+            "value": "Fougère"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fern"
+            "value": "Farn"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fern"
+            "value": "Helecho"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fern"
+            "value": "Felce"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fern"
+            "value": "Paproć"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fern"
+            "value": "Папороть"
           }
         }
       }
@@ -636,7 +636,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Flora"
+            "value": "Flore"
           }
         },
         "de": {
@@ -666,7 +666,7 @@
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Flora"
+            "value": "Флора"
           }
         }
       }
@@ -683,37 +683,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grape"
+            "value": "Raisin"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grape"
+            "value": "Traube"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grape"
+            "value": "Uva"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grape"
+            "value": "Uva"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grape"
+            "value": "Winogrono"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grape"
+            "value": "Виноград"
           }
         }
       }
@@ -730,37 +730,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Honeydew"
+            "value": "Melon miel"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Honeydew"
+            "value": "Honigmelone"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Honeydew"
+            "value": "Melón dulce"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Honeydew"
+            "value": "Melone mielato"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Honeydew"
+            "value": "Melon miodowy"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Honeydew"
+            "value": "Медова диня"
           }
         }
       }
@@ -777,37 +777,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ice"
+            "value": "Glace"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ice"
+            "value": "Eis"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ice"
+            "value": "Hielo"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ice"
+            "value": "Ghiaccio"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ice"
+            "value": "Lód"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ice"
+            "value": "Лід"
           }
         }
       }
@@ -824,37 +824,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iron"
+            "value": "Fer"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iron"
+            "value": "Eisen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iron"
+            "value": "Hierro"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iron"
+            "value": "Ferro"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iron"
+            "value": "Żelazo"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Iron"
+            "value": "Залізо"
           }
         }
       }
@@ -871,37 +871,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lavender"
+            "value": "Lavande"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lavender"
+            "value": "Lavendel"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lavender"
+            "value": "Lavanda"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lavender"
+            "value": "Lavanda"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lavender"
+            "value": "Lawenda"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lavender"
+            "value": "Лаванда"
           }
         }
       }
@@ -918,37 +918,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lead"
+            "value": "Plomb"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lead"
+            "value": "Blei"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lead"
+            "value": "Plomo"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lead"
+            "value": "Piombo"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lead"
+            "value": "Ołów"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lead"
+            "value": "Свинець"
           }
         }
       }
@@ -965,37 +965,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lemon"
+            "value": "Citron"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lemon"
+            "value": "Zitrone"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lemon"
+            "value": "Limón"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lemon"
+            "value": "Limone"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lemon"
+            "value": "Cytryna"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lemon"
+            "value": "Лимон"
           }
         }
       }
@@ -1012,37 +1012,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licorice"
+            "value": "Réglisse"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licorice"
+            "value": "Lakritz"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licorice"
+            "value": "Regaliz"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licorice"
+            "value": "Liquirizia"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licorice"
+            "value": "Lukrecja"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Licorice"
+            "value": "Лакриця"
           }
         }
       }
@@ -1059,19 +1059,19 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lime"
+            "value": "Citron vert"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lime"
+            "value": "Limette"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lime"
+            "value": "Lima"
           }
         },
         "it": {
@@ -1083,13 +1083,13 @@
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lime"
+            "value": "Limonka"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lime"
+            "value": "Лайм"
           }
         }
       }
@@ -1136,7 +1136,7 @@
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Magenta"
+            "value": "Маджента"
           }
         }
       }
@@ -1153,7 +1153,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Magnesium"
+            "value": "Magnésium"
           }
         },
         "de": {
@@ -1165,25 +1165,25 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Magnesium"
+            "value": "Magnesio"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Magnesium"
+            "value": "Magnesio"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Magnesium"
+            "value": "Magnez"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Magnesium"
+            "value": "Магній"
           }
         }
       }
@@ -1200,7 +1200,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maraschino"
+            "value": "Marasquin"
           }
         },
         "de": {
@@ -1212,7 +1212,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maraschino"
+            "value": "Marrasquino"
           }
         },
         "it": {
@@ -1224,13 +1224,13 @@
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maraschino"
+            "value": "Maraskino"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maraschino"
+            "value": "Мараскіно"
           }
         }
       }
@@ -1247,37 +1247,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maroon"
+            "value": "Marron"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maroon"
+            "value": "Kastanienbraun"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maroon"
+            "value": "Granate"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maroon"
+            "value": "Marrone"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maroon"
+            "value": "Bordowy"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maroon"
+            "value": "Бордовий"
           }
         }
       }
@@ -1294,37 +1294,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mercury"
+            "value": "Mercure"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mercury"
+            "value": "Quecksilber"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mercury"
+            "value": "Mercurio"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mercury"
+            "value": "Mercurio"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mercury"
+            "value": "Rtęć"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mercury"
+            "value": "Ртуть"
           }
         }
       }
@@ -1341,37 +1341,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Midnight"
+            "value": "Minuit"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Midnight"
+            "value": "Mitternacht"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Midnight"
+            "value": "Medianoche"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Midnight"
+            "value": "Mezzanotte"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Midnight"
+            "value": "Północ"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Midnight"
+            "value": "Північ"
           }
         }
       }
@@ -1388,37 +1388,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mocha"
+            "value": "Moka"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mocha"
+            "value": "Mokka"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mocha"
+            "value": "Moca"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mocha"
+            "value": "Moka"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mocha"
+            "value": "Mokka"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mocha"
+            "value": "Мока"
           }
         }
       }
@@ -1435,37 +1435,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moss"
+            "value": "Mousse"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moss"
+            "value": "Moos"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moss"
+            "value": "Musgo"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moss"
+            "value": "Muschio"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moss"
+            "value": "Mech"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Moss"
+            "value": "Мох"
           }
         }
       }
@@ -1494,25 +1494,25 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nickel"
+            "value": "Níquel"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nickel"
+            "value": "Nichel"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nickel"
+            "value": "Nikiel"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nickel"
+            "value": "Нікель"
           }
         }
       }
@@ -1529,25 +1529,25 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocean"
+            "value": "Océan"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocean"
+            "value": "Ozean"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocean"
+            "value": "Océano"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocean"
+            "value": "Oceano"
           }
         },
         "pl": {
@@ -1559,7 +1559,7 @@
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ocean"
+            "value": "Океан"
           }
         }
       }
@@ -1576,37 +1576,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Orchid"
+            "value": "Orchidée"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Orchid"
+            "value": "Orchidee"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Orchid"
+            "value": "Orquídea"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Orchid"
+            "value": "Orchidea"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Orchid"
+            "value": "Orchidea"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Orchid"
+            "value": "Орхідея"
           }
         }
       }
@@ -1623,37 +1623,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Plum"
+            "value": "Prune"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Plum"
+            "value": "Pflaume"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Plum"
+            "value": "Ciruela"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Plum"
+            "value": "Prugna"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Plum"
+            "value": "Śliwka"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Plum"
+            "value": "Слива"
           }
         }
       }
@@ -1670,37 +1670,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salmon"
+            "value": "Saumon"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salmon"
+            "value": "Lachs"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salmon"
+            "value": "Salmón"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salmon"
+            "value": "Salmone"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salmon"
+            "value": "Łosoś"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salmon"
+            "value": "Лосось"
           }
         }
       }
@@ -1717,37 +1717,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sea Foam"
+            "value": "Écume"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sea Foam"
+            "value": "Meerschaum"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sea Foam"
+            "value": "Espuma marina"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sea Foam"
+            "value": "Schiuma marina"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sea Foam"
+            "value": "Piana morska"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sea Foam"
+            "value": "Морська піна"
           }
         }
       }
@@ -1764,37 +1764,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silver"
+            "value": "Argent"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silver"
+            "value": "Silber"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silver"
+            "value": "Plata"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silver"
+            "value": "Argento"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silver"
+            "value": "Srebro"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silver"
+            "value": "Срібло"
           }
         }
       }
@@ -1811,37 +1811,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sky"
+            "value": "Ciel"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sky"
+            "value": "Himmel"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sky"
+            "value": "Cielo"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sky"
+            "value": "Cielo"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sky"
+            "value": "Niebo"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sky"
+            "value": "Небо"
           }
         }
       }
@@ -1858,37 +1858,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snow"
+            "value": "Neige"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snow"
+            "value": "Schnee"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snow"
+            "value": "Nieve"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snow"
+            "value": "Neve"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snow"
+            "value": "Śnieg"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snow"
+            "value": "Сніг"
           }
         }
       }
@@ -1905,37 +1905,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spindrift"
+            "value": "Embrun"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spindrift"
+            "value": "Gischt"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spindrift"
+            "value": "Salpicadura marina"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spindrift"
+            "value": "Spruzzo marino"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spindrift"
+            "value": "Bryza morska"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spindrift"
+            "value": "Морські бризки"
           }
         }
       }
@@ -1952,37 +1952,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spring"
+            "value": "Printemps"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spring"
+            "value": "Frühling"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spring"
+            "value": "Primavera"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spring"
+            "value": "Primavera"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spring"
+            "value": "Wiosna"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spring"
+            "value": "Весна"
           }
         }
       }
@@ -1999,37 +1999,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steel"
+            "value": "Acier"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steel"
+            "value": "Stahl"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steel"
+            "value": "Acero"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steel"
+            "value": "Acciaio"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steel"
+            "value": "Stal"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steel"
+            "value": "Сталь"
           }
         }
       }
@@ -2046,37 +2046,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strawberry"
+            "value": "Fraise"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strawberry"
+            "value": "Erdbeere"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strawberry"
+            "value": "Fresa"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strawberry"
+            "value": "Fragola"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strawberry"
+            "value": "Truskawka"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strawberry"
+            "value": "Полуниця"
           }
         }
       }
@@ -2093,37 +2093,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tangerine"
+            "value": "Mandarine"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tangerine"
+            "value": "Mandarine"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tangerine"
+            "value": "Mandarina"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tangerine"
+            "value": "Mandarino"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tangerine"
+            "value": "Mandarynka"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tangerine"
+            "value": "Мандарин"
           }
         }
       }
@@ -2140,37 +2140,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Teal"
+            "value": "Sarcelle"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Teal"
+            "value": "Blaugrün"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Teal"
+            "value": "Cerceta"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Teal"
+            "value": "Verde acqua"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Teal"
+            "value": "Cyraneczka"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Teal"
+            "value": "Чирок"
           }
         }
       }
@@ -2187,37 +2187,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tin"
+            "value": "Étain"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tin"
+            "value": "Zinn"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tin"
+            "value": "Estaño"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tin"
+            "value": "Stagno"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tin"
+            "value": "Cyna"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tin"
+            "value": "Олово"
           }
         }
       }
@@ -2234,37 +2234,37 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tungsten"
+            "value": "Tungstène"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tungsten"
+            "value": "Wolfram"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tungsten"
+            "value": "Tungsteno"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tungsten"
+            "value": "Tungsteno"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tungsten"
+            "value": "Wolfram"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tungsten"
+            "value": "Вольфрам"
           }
         }
       }
@@ -2287,31 +2287,31 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turquoise"
+            "value": "Türkis"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turquoise"
+            "value": "Turquesa"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turquoise"
+            "value": "Turchese"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turquoise"
+            "value": "Turkus"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turquoise"
+            "value": "Бірюза"
           }
         }
       }
@@ -2322,43 +2322,43 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "darker"
+            "value": "dark"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "plus foncé"
+            "value": "foncé"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "dunkler"
+            "value": "dunkel"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "más oscuro"
+            "value": "oscuro"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "più scuro"
+            "value": "scuro"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "ciemniejszy"
+            "value": "ciemny"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "темніший"
+            "value": "темний"
           }
         }
       }
@@ -2369,43 +2369,43 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "lighter"
+            "value": "light"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "plus clair"
+            "value": "clair"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "heller"
+            "value": "hell"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "más claro"
+            "value": "claro"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "più chiaro"
+            "value": "chiaro"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "jaśniejszy"
+            "value": "jasny"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "світліший"
+            "value": "світлий"
           }
         }
       }
@@ -2416,43 +2416,43 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "much darker"
+            "value": "deep"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "beaucoup plus foncé"
+            "value": "profond"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "viel dunkler"
+            "value": "tief"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "mucho más oscuro"
+            "value": "profundo"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "molto più scuro"
+            "value": "profondo"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "dużo ciemniejszy"
+            "value": "głęboki"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "набагато темніший"
+            "value": "глибокий"
           }
         }
       }
@@ -2463,43 +2463,43 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "much lighter"
+            "value": "pale"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "beaucoup plus clair"
+            "value": "pâle"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "viel heller"
+            "value": "blass"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "mucho más claro"
+            "value": "pálido"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "molto più chiaro"
+            "value": "pallido"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "dużo jaśniejszy"
+            "value": "blady"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "набагато світліший"
+            "value": "блідий"
           }
         }
       }
@@ -2698,43 +2698,43 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "less saturated"
+            "value": "muted"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "moins saturé"
+            "value": "atténué"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "weniger gesättigt"
+            "value": "gedämpft"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "menos saturado"
+            "value": "apagado"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "meno saturo"
+            "value": "tenue"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "mniej nasycony"
+            "value": "stonowany"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "менш насичений"
+            "value": "приглушений"
           }
         }
       }
@@ -2745,43 +2745,43 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "more saturated"
+            "value": "saturated"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "plus saturé"
+            "value": "saturé"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "stärker gesättigt"
+            "value": "gesättigt"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "más saturado"
+            "value": "saturado"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "più saturo"
+            "value": "saturo"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "bardziej nasycony"
+            "value": "nasycony"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "більш насичений"
+            "value": "насичений"
           }
         }
       }

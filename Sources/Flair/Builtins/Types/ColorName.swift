@@ -176,7 +176,7 @@ extension Style.Color {
     }
 }
 
-private enum LocalizedCatalog {
+enum LocalizedCatalog {
     struct Resource: Decodable {
         let strings: [String: Entry]
     }

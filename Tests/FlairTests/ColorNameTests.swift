@@ -239,6 +239,34 @@ import Testing
     }
 
     @Test
+    func localizedModifierVocabularyUsesSingleWords() {
+        #expect(LocalizedCatalog.value(for: "ColorName.Brightness.muchDarker", languageCode: "en") == "deep")
+        #expect(LocalizedCatalog.value(for: "ColorName.Brightness.darker", languageCode: "en") == "dark")
+        #expect(LocalizedCatalog.value(for: "ColorName.Brightness.lighter", languageCode: "en") == "light")
+        #expect(LocalizedCatalog.value(for: "ColorName.Brightness.muchLighter", languageCode: "en") == "pale")
+        #expect(LocalizedCatalog.value(for: "ColorName.Saturation.lessSaturated", languageCode: "en") == "muted")
+        #expect(LocalizedCatalog.value(for: "ColorName.Saturation.moreSaturated", languageCode: "en") == "saturated")
+        #expect(LocalizedCatalog.value(for: "ColorName.Brightness.darker", languageCode: "fr") == "foncé")
+        #expect(LocalizedCatalog.value(for: "ColorName.Saturation.moreSaturated", languageCode: "uk") == "насичений")
+    }
+
+    @Test
+    func baseColorNamesAreLocalizedOrTransliterated() throws {
+        let steel = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "steel" })
+        let maraschino = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "maraschino" })
+        let mocha = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "mocha" })
+
+        let steelColor = Style.Color.rgba(Float(steel.red), Float(steel.green), Float(steel.blue), 1)
+        let maraschinoColor = Style.Color.rgba(Float(maraschino.red), Float(maraschino.green), Float(maraschino.blue), 1)
+        let mochaColor = Style.Color.rgba(Float(mocha.red), Float(mocha.green), Float(mocha.blue), 1)
+
+        #expect(steelColor.localizedName(locale: Locale(identifier: "fr")) == "Acier")
+        #expect(steelColor.localizedName(locale: Locale(identifier: "uk")) == "Сталь")
+        #expect(maraschinoColor.localizedName(locale: Locale(identifier: "uk")) == "Мараскіно")
+        #expect(mochaColor.localizedName(locale: Locale(identifier: "uk")) == "Мока")
+    }
+
+    @Test
     func localizedNamesExistForSupportedLanguages() {
         let locales = ["en", "fr", "de", "es", "it", "pl", "uk"].map(Locale.init(identifier:))
 
@@ -262,7 +290,7 @@ import Testing
         let english = modified.localizedName(locale: Locale(identifier: "en"))
         let french = modified.localizedName(locale: Locale(identifier: "fr"))
 
-        #expect(english == "darker Clover")
-        #expect(french == "Clover plus foncé")
+        #expect(english == "dark Clover")
+        #expect(french == "Trèfle foncé")
     }
 }
