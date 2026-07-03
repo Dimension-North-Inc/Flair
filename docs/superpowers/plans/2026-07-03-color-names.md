@@ -25,6 +25,7 @@ extension Style.Color {
 - Match nearest crayon color using OKLab perceptual distance, not raw RGB distance.
 - Derive brightness and saturation modifiers from how the input color differs from the matched crayon.
 - Exact and near-exact crayon colors produce the localized base color name without brightness or saturation modifiers.
+- Suppress modifiers when the matched crayon already sits at an axis extreme and the modifier would create a contradictory phrase.
 - Opacity naming is out of scope for v1.
 - Do not add dependencies for color science.
 - Do not build a color picker or UX component in this step.
@@ -87,7 +88,7 @@ import Testing
         #expect(entries.count == 48)
         #expect(entries.first?.id == "licorice")
         #expect(entries.first?.sourceName == "Licorice")
-        #expect(entries.contains { $0.id == "sky-blue" && $0.sourceName == "Sky Blue" })
+        #expect(entries.contains { $0.id == "sky" && $0.sourceName == "Sky" })
     }
 }
 ```
@@ -456,7 +457,7 @@ Append to `ColorNameTests`:
 ```swift
 @Test
 func exactCrayonColorMatchesItselfWithoutModifiers() throws {
-    let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky-blue" })
+    let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky" })
     let components = Style.Color.rgba(
         Float(skyBlue.red),
         Float(skyBlue.green),
@@ -464,14 +465,14 @@ func exactCrayonColorMatchesItselfWithoutModifiers() throws {
         Float(skyBlue.alpha)
     ).nameComponents
 
-    #expect(components.base.id == "sky-blue")
+    #expect(components.base.id == "sky")
     #expect(components.brightness == nil)
     #expect(components.saturation == nil)
 }
 
 @Test
 func nearbyCrayonColorKeepsBaseNameWithoutModifiers() throws {
-    let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky-blue" })
+    let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky" })
     let components = Style.Color.rgba(
         Float(min(skyBlue.red + 0.03, 1.0)),
         Float(min(skyBlue.green + 0.03, 1.0)),
@@ -479,13 +480,13 @@ func nearbyCrayonColorKeepsBaseNameWithoutModifiers() throws {
         Float(skyBlue.alpha)
     ).nameComponents
 
-    #expect(components.base.id == "sky-blue")
+    #expect(components.base.id == "sky")
     #expect(components.brightness == nil)
 }
 
 @Test
 func brightnessModifiersAreRelativeToMatchedBase() throws {
-    let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky-blue" })
+    let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky" })
     let darker = Style.Color.rgba(
         Float(max(skyBlue.red - 0.35, 0.0)),
         Float(max(skyBlue.green - 0.35, 0.0)),
@@ -493,7 +494,7 @@ func brightnessModifiersAreRelativeToMatchedBase() throws {
         1
     ).nameComponents
 
-    #expect(darker.base.id == "sky-blue")
+    #expect(darker.base.id == "sky")
     #expect(darker.brightness == .muchDarker || darker.brightness == .darker)
 }
 
@@ -504,6 +505,48 @@ func saturationModifiersAreRelativeToMatchedBase() {
 
     #expect(vividRed.base.id == mutedRed.base.id)
     #expect(vividRed.saturation == .moreSaturated || mutedRed.saturation == .lessSaturated)
+}
+
+@Test
+func brightnessModifierIsSuppressedForDarkBaseColorMadeLighter() throws {
+    let licorice = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "licorice" })
+    let components = Style.Color.rgba(
+        Float(min(licorice.red + 0.18, 1.0)),
+        Float(min(licorice.green + 0.18, 1.0)),
+        Float(min(licorice.blue + 0.18, 1.0)),
+        1
+    ).nameComponents
+
+    #expect(components.base.id == "licorice")
+    #expect(components.brightness == nil)
+}
+
+@Test
+func brightnessModifierIsSuppressedForLightBaseColorMadeDarker() throws {
+    let snow = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "snow" })
+    let components = Style.Color.rgba(
+        Float(max(snow.red - 0.18, 0.0)),
+        Float(max(snow.green - 0.18, 0.0)),
+        Float(max(snow.blue - 0.18, 0.0)),
+        1
+    ).nameComponents
+
+    #expect(components.base.id == "snow")
+    #expect(components.brightness == nil)
+}
+
+@Test
+func saturationModifierIsSuppressedForLowSaturationBaseColor() throws {
+    let silver = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "silver" })
+    let components = Style.Color.rgba(
+        Float(min(silver.red + 0.10, 1.0)),
+        Float(silver.green),
+        Float(max(silver.blue - 0.10, 0.0)),
+        1
+    ).nameComponents
+
+    #expect(components.base.id == "silver")
+    #expect(components.saturation == nil)
 }
 ```
 
@@ -554,6 +597,14 @@ extension Style.Color {
     private static func brightnessModifier(input: RGBA, base: RGBA) -> BrightnessModifier? {
         let delta = input.brightness - base.brightness
 
+        if base.brightness < 0.20 && delta > 0 {
+            return nil
+        }
+
+        if base.brightness > 0.92 && delta < 0 {
+            return nil
+        }
+
         if delta < -0.30 { return .muchDarker }
         if delta < -0.12 { return .darker }
         if delta < 0.12 { return nil }
@@ -563,6 +614,10 @@ extension Style.Color {
 
     private static func saturationModifier(input: RGBA, base: RGBA) -> SaturationModifier? {
         let delta = input.saturation - base.saturation
+
+        if base.saturation < 0.20 {
+            return nil
+        }
 
         if delta < -0.20 { return .lessSaturated }
         if delta < 0.20 { return nil }
@@ -605,7 +660,7 @@ Run:
 swift test --filter ColorNameTests
 ```
 
-Expected: PASS. If a fixture fails because the test color now matches a neighboring crayon, adjust the fixture color while preserving the requirement: exact/near-exact base colors omit modifiers, and relative deltas add modifiers.
+Expected: PASS. If a fixture fails because the test color now matches a neighboring crayon, adjust the fixture color while preserving the requirements: exact/near-exact base colors omit modifiers, relative deltas add modifiers, and axis-extreme base colors suppress contradictory modifiers.
 
 - [ ] **Step 5: Commit**
 
