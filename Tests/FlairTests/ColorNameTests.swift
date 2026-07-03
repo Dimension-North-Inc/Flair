@@ -73,4 +73,139 @@ import Testing
 
         #expect(color.distance(to: color) == 0)
     }
+
+    @Test
+    func exactCrayonColorMatchesItselfWithoutModifiers() throws {
+        let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky" })
+        let components = Style.Color.rgba(
+            Float(skyBlue.red),
+            Float(skyBlue.green),
+            Float(skyBlue.blue),
+            Float(skyBlue.alpha)
+        ).nameComponents
+
+        #expect(components.base.id == "sky")
+        #expect(components.brightness == nil)
+        #expect(components.saturation == nil)
+    }
+
+    @Test
+    func nearbyCrayonColorKeepsBaseNameWithoutModifiers() throws {
+        let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky" })
+        let components = Style.Color.rgba(
+            Float(min(skyBlue.red + 0.03, 1.0)),
+            Float(min(skyBlue.green + 0.03, 1.0)),
+            Float(min(skyBlue.blue + 0.03, 1.0)),
+            Float(skyBlue.alpha)
+        ).nameComponents
+
+        #expect(components.base.id == "sky")
+        #expect(components.brightness == nil)
+        #expect(components.saturation == nil)
+    }
+
+    @Test
+    func brightnessModifiersAreRelativeToMatchedBase() throws {
+        let clover = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "clover" })
+        let darker = Style.Color.rgba(
+            Float(max(clover.red - 0.18, 0.0)),
+            Float(max(clover.green - 0.18, 0.0)),
+            Float(max(clover.blue - 0.18, 0.0)),
+            1
+        ).nameComponents
+
+        #expect(darker.base.id == "clover")
+        #expect(darker.brightness == .muchDarker || darker.brightness == .darker)
+    }
+
+    @Test
+    func saturationModifiersAreRelativeToMatchedBase() throws {
+        let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky" })
+        let base = Style.Color.rgba(
+            Float(skyBlue.red),
+            Float(skyBlue.green),
+            Float(skyBlue.blue),
+            Float(skyBlue.alpha)
+        ).nameComponents
+        let vivid = Style.Color.rgba(
+            Float(max(skyBlue.red - 0.25, 0.0)),
+            Float(max(skyBlue.green - 0.10, 0.0)),
+            Float(max(skyBlue.blue - 0.15, 0.0)),
+            1
+        ).nameComponents
+
+        #expect(vivid.base.id == base.base.id)
+        #expect(base.saturation == nil)
+        #expect(vivid.saturation == .moreSaturated)
+    }
+
+    @Test
+    func brightnessModifierIsSuppressedForDarkBaseColorMadeLighter() throws {
+        let licorice = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "licorice" })
+        let components = Style.Color.rgba(
+            Float(min(licorice.red + 0.02, 1.0)),
+            Float(min(licorice.green + 0.02, 1.0)),
+            Float(min(licorice.blue + 0.02, 1.0)),
+            1
+        ).nameComponents
+
+        #expect(components.base.id == "licorice")
+        #expect(components.brightness == nil)
+    }
+
+    @Test
+    func brightnessModifierIsSuppressedForLightBaseColorMadeDarker() throws {
+        let snow = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "snow" })
+        let components = Style.Color.rgba(
+            Float(max(snow.red - 0.02, 0.0)),
+            Float(max(snow.green - 0.02, 0.0)),
+            Float(max(snow.blue - 0.02, 0.0)),
+            1
+        ).nameComponents
+
+        #expect(components.base.id == "snow")
+        #expect(components.brightness == nil)
+    }
+
+    @Test
+    func brightnessModifierIsSuppressedForDarkBaseColorMadeDarker() throws {
+        let licorice = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "licorice" })
+        let components = Style.Color.rgba(
+            Float(max(licorice.red - 0.05, 0.0)),
+            Float(max(licorice.green - 0.05, 0.0)),
+            Float(max(licorice.blue - 0.05, 0.0)),
+            1
+        ).nameComponents
+
+        #expect(components.base.id == "licorice")
+        #expect(components.brightness == nil)
+    }
+
+    @Test
+    func saturationModifierIsSuppressedForLowSaturationBaseColor() throws {
+        let silver = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "silver" })
+        let components = Style.Color.rgba(
+            Float(min(silver.red + 0.10, 1.0)),
+            Float(silver.green),
+            Float(max(silver.blue - 0.10, 0.0)),
+            1
+        ).nameComponents
+
+        #expect(components.base.id == "silver")
+        #expect(components.saturation == nil)
+    }
+
+    @Test
+    func saturationModifierIsSuppressedForHighSaturationBaseColor() throws {
+        let lemon = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "lemon" })
+        let components = Style.Color.rgba(
+            Float(max(lemon.red - 0.10, 0.0)),
+            Float(lemon.green),
+            Float(min(lemon.blue + 0.10, 1.0)),
+            1
+        ).nameComponents
+
+        #expect(components.base.id == "lemon")
+        #expect(components.saturation == nil)
+    }
 }

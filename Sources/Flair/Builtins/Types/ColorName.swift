@@ -4,6 +4,24 @@ import AppKit
 #endif
 
 extension Style.Color {
+    enum BrightnessModifier: String, Hashable, Sendable {
+        case muchDarker
+        case darker
+        case lighter
+        case muchLighter
+    }
+
+    enum SaturationModifier: String, Hashable, Sendable {
+        case lessSaturated
+        case moreSaturated
+    }
+
+    struct NameComponents: Hashable, Sendable {
+        let base: CrayonColorResource
+        let brightness: BrightnessModifier?
+        let saturation: SaturationModifier?
+    }
+
     struct RGBA: Hashable, Sendable {
         let red: Double
         let green: Double
@@ -77,6 +95,50 @@ extension Style.Color {
             return ref.flairRGBAComponents
         }
     }
+
+    var nameComponents: NameComponents {
+        let input = rgbaComponents
+        let base = CrayonPalette.nearestColor(to: input)
+        return NameComponents(
+            base: base,
+            brightness: Self.brightnessModifier(input: input, base: base.rgba),
+            saturation: Self.saturationModifier(input: input, base: base.rgba)
+        )
+    }
+
+    private static func brightnessModifier(input: RGBA, base: RGBA) -> BrightnessModifier? {
+        let delta = input.brightness - base.brightness
+
+        if base.brightness < 0.20 {
+            return nil
+        }
+
+        if base.brightness > 0.92 {
+            return nil
+        }
+
+        if delta < -0.30 { return .muchDarker }
+        if delta < -0.12 { return .darker }
+        if delta < 0.12 { return nil }
+        if delta < 0.30 { return .lighter }
+        return .muchLighter
+    }
+
+    private static func saturationModifier(input: RGBA, base: RGBA) -> SaturationModifier? {
+        let delta = input.saturation - base.saturation
+
+        if base.saturation < 0.20 {
+            return nil
+        }
+
+        if base.saturation > 0.85 {
+            return nil
+        }
+
+        if delta < -0.20 { return .lessSaturated }
+        if delta < 0.20 { return nil }
+        return .moreSaturated
+    }
 }
 
 extension Style.Color.CrayonColorResource {
@@ -127,6 +189,14 @@ extension Style.Color {
     }
 
     enum CrayonPalette {
+        static let entries: [CrayonColorResource] = {
+            do {
+                return try loadResourceEntries()
+            } catch {
+                preconditionFailure("Failed to load CrayonColors.plist: \(error)")
+            }
+        }()
+
         static func loadResourceEntries() throws -> [CrayonColorResource] {
             guard let url = Bundle.module.url(forResource: "CrayonColors", withExtension: "plist") else {
                 throw CocoaError(.fileNoSuchFile)
@@ -134,6 +204,16 @@ extension Style.Color {
 
             let data = try Data(contentsOf: url)
             return try PropertyListDecoder().decode([CrayonColorResource].self, from: data)
+        }
+
+        static func nearestColor(to color: Style.Color.RGBA) -> CrayonColorResource {
+            let input = color.okLab
+            guard let nearest = entries.min(by: { lhs, rhs in
+                lhs.rgba.okLab.distance(to: input) < rhs.rgba.okLab.distance(to: input)
+            }) else {
+                preconditionFailure("CrayonColors.plist must contain at least one color")
+            }
+            return nearest
         }
     }
 }
