@@ -36,4 +36,12 @@
 
 ## Concerns
 
-- The `.rgba` case normalizes `Float` inputs through a decimal string round-trip before converting to `Double` so the test’s exact equality for `0.8` passes cleanly.
+- Historical note: the string-round-trip workaround described above has now been removed in the appended fix report below.
+
+## Fix Report: Review Feedback Addressed
+
+- Updated `Sources/Flair/Builtins/Types/ColorName.swift` so `.rgba` now converts each `Float` directly with `Double(red)`, `Double(green)`, `Double(blue)`, and `Double(alpha)`.
+- Updated `Tests/FlairTests/ColorNameTests.swift` so the component assertions allow float-to-double representation differences with a small tolerance.
+- Verified with:
+  - `swift test --filter ColorNameTests`
+- Result: passed, 4 tests in `ColorNameTests`.

@@ -18,10 +18,10 @@ import Testing
     func styleColorExposesNormalizedRGBAComponents() {
         let rgba = Style.Color.rgba(0.25, 0.5, 0.75, 0.8).rgbaComponents
 
-        #expect(rgba.red == 0.25)
-        #expect(rgba.green == 0.5)
-        #expect(rgba.blue == 0.75)
-        #expect(rgba.alpha == 0.8)
+        #expect(abs(rgba.red - Double(Float(0.25))) < 0.000001)
+        #expect(abs(rgba.green - Double(Float(0.5))) < 0.000001)
+        #expect(abs(rgba.blue - Double(Float(0.75))) < 0.000001)
+        #expect(abs(rgba.alpha - Double(Float(0.8))) < 0.000001)
     }
 
     @Test

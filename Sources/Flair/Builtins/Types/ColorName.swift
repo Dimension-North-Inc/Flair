@@ -53,17 +53,13 @@ extension Style.Color {
     }
 
     var rgbaComponents: RGBA {
-        func normalized(_ value: Float) -> Double {
-            Double(String(value)) ?? Double(value)
-        }
-
         switch self {
         case let .rgba(red, green, blue, alpha):
             return RGBA(
-                red: normalized(red),
-                green: normalized(green),
-                blue: normalized(blue),
-                alpha: normalized(alpha)
+                red: Double(red),
+                green: Double(green),
+                blue: Double(blue),
+                alpha: Double(alpha)
             )
 
         default:
