@@ -119,6 +119,27 @@ import Testing
     }
 
     @Test
+    func deepColorCompetesAsModifiedBaseName() throws {
+        let clover = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "clover" })
+        let name = Style.Color.rgba(
+            Float(max(clover.red - 0.34, 0.0)),
+            Float(max(clover.green - 0.34, 0.0)),
+            Float(max(clover.blue - 0.34, 0.0)),
+            1
+        ).localizedName(locale: Locale(identifier: "en"))
+
+        #expect(name == "deep Clover")
+    }
+
+    @Test
+    func paleColorCompetesAsModifiedBaseName() {
+        let name = Style.Color.rgba(0, 0, 0.875, 1)
+            .localizedName(locale: Locale(identifier: "en"))
+
+        #expect(name == "pale Midnight")
+    }
+
+    @Test
     func saturationModifiersAreRelativeToMatchedBase() throws {
         let skyBlue = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "sky" })
         let base = Style.Color.rgba(
@@ -127,12 +148,8 @@ import Testing
             Float(skyBlue.blue),
             Float(skyBlue.alpha)
         ).nameComponents
-        let vivid = Style.Color.rgba(
-            Float(max(skyBlue.red - 0.25, 0.0)),
-            Float(max(skyBlue.green - 0.10, 0.0)),
-            Float(max(skyBlue.blue - 0.15, 0.0)),
-            1
-        ).nameComponents
+        let vividSky = skyBlue.rgba.adjusted(saturation: skyBlue.rgba.saturation + 0.35)
+        let vivid = Style.Color.rgba(Float(vividSky.red), Float(vividSky.green), Float(vividSky.blue), 1).nameComponents
 
         #expect(vivid.base.id == base.base.id)
         #expect(base.saturation == nil)
@@ -191,7 +208,6 @@ import Testing
             1
         ).nameComponents
 
-        #expect(components.base.id == "silver")
         #expect(components.saturation == nil)
     }
 

@@ -57,6 +57,25 @@ extension Style.Color {
         let saturation: SaturationModifier?
     }
 
+    struct NameCandidate: Hashable, Sendable {
+        let components: NameComponents
+        let rgba: RGBA
+
+        func score(for input: OKLab) -> Double {
+            var score = rgba.okLab.distance(to: input)
+            switch components.brightness {
+            case .muchDarker, .muchLighter:
+                break
+            case .darker, .lighter:
+                score += 0.02
+            case nil:
+                break
+            }
+            if components.saturation != nil { score += 0.02 }
+            return score
+        }
+    }
+
     struct RGBA: Hashable, Sendable {
         let red: Double
         let green: Double
@@ -72,6 +91,61 @@ extension Style.Color {
             let minimum = min(red, green, blue)
             guard maximum > 0 else { return 0 }
             return (maximum - minimum) / maximum
+        }
+
+        func adjusted(brightness: Double? = nil, saturation: Double? = nil) -> RGBA {
+            let adjustedBrightness = max(0, min(brightness ?? self.brightness, 1))
+            let adjustedSaturation = max(0, min(saturation ?? self.saturation, 1))
+
+            guard adjustedSaturation > 0, let hue else {
+                return RGBA(
+                    red: adjustedBrightness,
+                    green: adjustedBrightness,
+                    blue: adjustedBrightness,
+                    alpha: alpha
+                )
+            }
+
+            let sector = hue * 6
+            let integerSector = floor(sector)
+            let fraction = sector - integerSector
+            let p = adjustedBrightness * (1 - adjustedSaturation)
+            let q = adjustedBrightness * (1 - adjustedSaturation * fraction)
+            let t = adjustedBrightness * (1 - adjustedSaturation * (1 - fraction))
+
+            switch Int(integerSector) % 6 {
+            case 0:
+                return RGBA(red: adjustedBrightness, green: t, blue: p, alpha: alpha)
+            case 1:
+                return RGBA(red: q, green: adjustedBrightness, blue: p, alpha: alpha)
+            case 2:
+                return RGBA(red: p, green: adjustedBrightness, blue: t, alpha: alpha)
+            case 3:
+                return RGBA(red: p, green: q, blue: adjustedBrightness, alpha: alpha)
+            case 4:
+                return RGBA(red: t, green: p, blue: adjustedBrightness, alpha: alpha)
+            default:
+                return RGBA(red: adjustedBrightness, green: p, blue: q, alpha: alpha)
+            }
+        }
+
+        private var hue: Double? {
+            let maximum = max(red, green, blue)
+            let minimum = min(red, green, blue)
+            let chroma = maximum - minimum
+            guard chroma > 0 else { return nil }
+
+            let rawHue: Double
+            if maximum == red {
+                rawHue = ((green - blue) / chroma).truncatingRemainder(dividingBy: 6)
+            } else if maximum == green {
+                rawHue = ((blue - red) / chroma) + 2
+            } else {
+                rawHue = ((red - green) / chroma) + 4
+            }
+
+            let normalized = rawHue / 6
+            return normalized < 0 ? normalized + 1 : normalized
         }
 
         var okLab: OKLab {
@@ -133,46 +207,98 @@ extension Style.Color {
 
     var nameComponents: NameComponents {
         let input = rgbaComponents
-        let base = CrayonPalette.nearestColor(to: input)
-        return NameComponents(
-            base: base,
-            brightness: Self.brightnessModifier(input: input, base: base.rgba),
-            saturation: Self.saturationModifier(input: input, base: base.rgba)
-        )
+        let inputOKLab = input.okLab
+        let nearestBase = CrayonPalette.nearestColor(to: input)
+
+        if Self.shouldPreserveExtremeBase(input: input, base: nearestBase.rgba) {
+            return NameComponents(base: nearestBase, brightness: nil, saturation: nil)
+        }
+
+        guard let candidate = Self.nameCandidates.min(by: { lhs, rhs in
+            lhs.score(for: inputOKLab) < rhs.score(for: inputOKLab)
+        }) else {
+            preconditionFailure("CrayonColors.plist must contain at least one color")
+        }
+
+        return candidate.components
     }
 
-    private static func brightnessModifier(input: RGBA, base: RGBA) -> BrightnessModifier? {
-        let delta = input.brightness - base.brightness
+    private static func shouldPreserveExtremeBase(input: RGBA, base: RGBA) -> Bool {
+        let isExtreme = base.brightness < 0.20
+            || base.brightness > 0.92
+            || base.saturation < 0.20
+            || base.saturation > 0.85
 
+        guard isExtreme else { return false }
+
+        return abs(input.brightness - base.brightness) < 0.08
+            && abs(input.saturation - base.saturation) < 0.15
+    }
+
+    private static let nameCandidates: [NameCandidate] = {
+        CrayonPalette.entries.flatMap { base in
+            let baseRGBA = base.rgba
+            let brightnessModifiers = brightnessCandidateModifiers(for: baseRGBA)
+            let saturationModifiers = saturationCandidateModifiers(for: baseRGBA)
+
+            return brightnessModifiers.flatMap { brightness in
+                saturationModifiers.map { saturation in
+                    NameCandidate(
+                        components: NameComponents(base: base, brightness: brightness, saturation: saturation),
+                        rgba: baseRGBA.adjusted(
+                            brightness: brightness.map { brightnessTarget(for: $0, base: baseRGBA) },
+                            saturation: saturation.map { saturationTarget(for: $0, base: baseRGBA) }
+                        )
+                    )
+                }
+            }
+        }
+    }()
+
+    private static func brightnessCandidateModifiers(for base: RGBA) -> [BrightnessModifier?] {
         if base.brightness < 0.20 {
-            return nil
+            return [nil]
         }
 
         if base.brightness > 0.92 {
-            return nil
+            return [nil]
         }
 
-        if delta < -0.30 { return .muchDarker }
-        if delta < -0.12 { return .darker }
-        if delta < 0.12 { return nil }
-        if delta < 0.30 { return .lighter }
-        return .muchLighter
+        return [nil, .muchDarker, .darker, .lighter, .muchLighter]
     }
 
-    private static func saturationModifier(input: RGBA, base: RGBA) -> SaturationModifier? {
-        let delta = input.saturation - base.saturation
-
+    private static func saturationCandidateModifiers(for base: RGBA) -> [SaturationModifier?] {
         if base.saturation < 0.20 {
-            return nil
+            return [nil]
         }
 
         if base.saturation > 0.85 {
-            return nil
+            return [nil]
         }
 
-        if delta < -0.20 { return .lessSaturated }
-        if delta < 0.20 { return nil }
-        return .moreSaturated
+        return [nil, .lessSaturated, .moreSaturated]
+    }
+
+    private static func brightnessTarget(for modifier: BrightnessModifier, base: RGBA) -> Double {
+        switch modifier {
+        case .muchDarker:
+            return base.brightness - 0.38
+        case .darker:
+            return base.brightness - 0.20
+        case .lighter:
+            return base.brightness + 0.20
+        case .muchLighter:
+            return base.brightness + 0.38
+        }
+    }
+
+    private static func saturationTarget(for modifier: SaturationModifier, base: RGBA) -> Double {
+        switch modifier {
+        case .lessSaturated:
+            return base.saturation - 0.35
+        case .moreSaturated:
+            return base.saturation + 0.35
+        }
     }
 }
 
