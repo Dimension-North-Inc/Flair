@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Testing
 
 @testable import Flair
@@ -22,6 +23,35 @@ import Testing
         #expect(abs(rgba.green - Double(Float(0.5))) < 0.000001)
         #expect(abs(rgba.blue - Double(Float(0.75))) < 0.000001)
         #expect(abs(rgba.alpha - Double(Float(0.8))) < 0.000001)
+    }
+
+    @Test
+    func swiftUIColorInitializerStoresSRGBComponents() {
+        let environment = EnvironmentValues()
+        let color = Style.Color(SwiftUI.Color(red: 0.25, green: 0.5, blue: 0.75, opacity: 0.8), environment: environment)
+        let rgba = color.rgbaComponents
+
+        #expect(abs(rgba.red - 0.25) < 0.000001)
+        #expect(abs(rgba.green - 0.5) < 0.000001)
+        #expect(abs(rgba.blue - 0.75) < 0.000001)
+        #expect(abs(rgba.alpha - 0.8) < 0.000001)
+    }
+
+    @Test
+    func styleColorExtractsReferenceRGBAComponents() {
+        let rgba = Style.Color.blue.rgbaComponents
+
+        #expect(rgba.blue > rgba.red)
+        #expect(rgba.blue > rgba.green)
+        #expect(rgba.alpha == 1)
+    }
+
+    @Test
+    func rgbaReportsBrightnessAndSaturation() {
+        let rgba = Style.Color.RGBA(red: 0.25, green: 0.5, blue: 0.75, alpha: 1)
+
+        #expect(rgba.brightness == 0.75)
+        #expect(abs(rgba.saturation - 0.6666666667) < 0.000001)
     }
 
     @Test

@@ -10,6 +10,17 @@ extension Style.Color {
         let blue: Double
         let alpha: Double
 
+        var brightness: Double {
+            max(red, green, blue)
+        }
+
+        var saturation: Double {
+            let maximum = max(red, green, blue)
+            let minimum = min(red, green, blue)
+            guard maximum > 0 else { return 0 }
+            return (maximum - minimum) / maximum
+        }
+
         var okLab: OKLab {
             func linearized(_ value: Double) -> Double {
                 if value <= 0.04045 {
@@ -63,12 +74,7 @@ extension Style.Color {
             )
 
         default:
-            return RGBA(
-                red: Double(ref.redComponent),
-                green: Double(ref.greenComponent),
-                blue: Double(ref.blueComponent),
-                alpha: Double(ref.alphaComponent)
-            )
+            return ref.flairRGBAComponents
         }
     }
 }
@@ -80,43 +86,33 @@ extension Style.Color.CrayonColorResource {
 }
 
 extension ColorRef {
-    #if os(macOS)
-    var redComponent: CGFloat {
+    var flairRGBAComponents: Style.Color.RGBA {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
-        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        return red
-    }
 
-    var greenComponent: CGFloat {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        return green
-    }
+        #if os(macOS)
+        guard let color = usingColorSpace(.sRGB) else {
+            preconditionFailure("Unable to resolve color components in sRGB")
+        }
+        red = color.redComponent
+        green = color.greenComponent
+        blue = color.blueComponent
+        alpha = color.alphaComponent
+        #else
+        guard getRed(&red, green: &green, blue: &blue, alpha: &alpha) else {
+            preconditionFailure("Unable to resolve color components in sRGB")
+        }
+        #endif
 
-    var blueComponent: CGFloat {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        return blue
+        return Style.Color.RGBA(
+            red: Double(red),
+            green: Double(green),
+            blue: Double(blue),
+            alpha: Double(alpha)
+        )
     }
-
-    var alphaComponent: CGFloat {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        return alpha
-    }
-    #endif
 }
 
 extension Style.Color {

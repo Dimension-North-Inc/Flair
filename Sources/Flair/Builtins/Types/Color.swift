@@ -69,7 +69,7 @@ extension Style {
                 
             default:
                 let resolved = color.resolve(in: environment)
-                self = .rgba(resolved.linearRed, resolved.linearGreen, resolved.linearBlue, resolved.opacity)
+                self = .rgba(resolved.red, resolved.green, resolved.blue, resolved.opacity)
             }
         }
         
