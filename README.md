@@ -78,6 +78,18 @@ let colorScheme = s.colorScheme
 wordy. Prefer dynamic member lookup (`style.colorScheme`) for ordinary typed
 reads and writes.
 
+### Color Names
+
+`Style.Color` can produce a compact localized display name for UI surfaces:
+
+```swift
+let color = Style.Color.rgba(0.25, 0.5, 0.75, 1)
+let name = color.localizedName
+```
+
+Names are based on the bundled Crayons palette, perceptual color matching, and
+localized brightness/saturation modifiers.
+
 ## Registration
 When you define custom styles within your own application, make sure to 
 register them early in the lifecycle of the application. Registration allows

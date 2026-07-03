@@ -217,6 +217,14 @@ import Testing
     }
 
     @Test
+    func publicLocalizedNamePropertyReturnsCompactName() {
+        let name = Style.Color.rgba(0.25, 0.5, 0.75, 1).localizedName
+
+        #expect(!name.isEmpty)
+        #expect(name.count < 80)
+    }
+
+    @Test
     func modifiedColorLocalizedNameUsesRelativeModifiers() throws {
         let clover = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "clover" })
         let name = Style.Color.rgba(
