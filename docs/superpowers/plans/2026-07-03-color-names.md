@@ -25,7 +25,7 @@ extension Style.Color {
 - Match nearest crayon color using OKLab perceptual distance, not raw RGB distance.
 - Derive brightness and saturation modifiers from how the input color differs from the matched crayon.
 - Exact and near-exact crayon colors produce the localized base color name without brightness or saturation modifiers.
-- Suppress modifiers when the matched crayon already sits at an axis extreme and the modifier would create a contradictory phrase.
+- Suppress modifiers when the matched crayon already sits near either extreme of that axis.
 - Opacity naming is out of scope for v1.
 - Do not add dependencies for color science.
 - Do not build a color picker or UX component in this step.
@@ -536,6 +536,20 @@ func brightnessModifierIsSuppressedForLightBaseColorMadeDarker() throws {
 }
 
 @Test
+func brightnessModifierIsSuppressedForDarkBaseColorMadeDarker() throws {
+    let licorice = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "licorice" })
+    let components = Style.Color.rgba(
+        Float(max(licorice.red - 0.05, 0.0)),
+        Float(max(licorice.green - 0.05, 0.0)),
+        Float(max(licorice.blue - 0.05, 0.0)),
+        1
+    ).nameComponents
+
+    #expect(components.base.id == "licorice")
+    #expect(components.brightness == nil)
+}
+
+@Test
 func saturationModifierIsSuppressedForLowSaturationBaseColor() throws {
     let silver = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "silver" })
     let components = Style.Color.rgba(
@@ -546,6 +560,20 @@ func saturationModifierIsSuppressedForLowSaturationBaseColor() throws {
     ).nameComponents
 
     #expect(components.base.id == "silver")
+    #expect(components.saturation == nil)
+}
+
+@Test
+func saturationModifierIsSuppressedForHighSaturationBaseColor() throws {
+    let lemon = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "lemon" })
+    let components = Style.Color.rgba(
+        Float(max(lemon.red - 0.10, 0.0)),
+        Float(lemon.green),
+        Float(min(lemon.blue + 0.10, 1.0)),
+        1
+    ).nameComponents
+
+    #expect(components.base.id == "lemon")
     #expect(components.saturation == nil)
 }
 ```
@@ -597,11 +625,11 @@ extension Style.Color {
     private static func brightnessModifier(input: RGBA, base: RGBA) -> BrightnessModifier? {
         let delta = input.brightness - base.brightness
 
-        if base.brightness < 0.20 && delta > 0 {
+        if base.brightness < 0.20 {
             return nil
         }
 
-        if base.brightness > 0.92 && delta < 0 {
+        if base.brightness > 0.92 {
             return nil
         }
 
@@ -616,6 +644,10 @@ extension Style.Color {
         let delta = input.saturation - base.saturation
 
         if base.saturation < 0.20 {
+            return nil
+        }
+
+        if base.saturation > 0.85 {
             return nil
         }
 
@@ -660,7 +692,7 @@ Run:
 swift test --filter ColorNameTests
 ```
 
-Expected: PASS. If a fixture fails because the test color now matches a neighboring crayon, adjust the fixture color while preserving the requirements: exact/near-exact base colors omit modifiers, relative deltas add modifiers, and axis-extreme base colors suppress contradictory modifiers.
+Expected: PASS. If a fixture fails because the test color now matches a neighboring crayon, adjust the fixture color while preserving the requirements: exact/near-exact base colors omit modifiers, relative deltas add modifiers, and axis-extreme base colors suppress modifiers on that axis.
 
 - [ ] **Step 5: Commit**
 

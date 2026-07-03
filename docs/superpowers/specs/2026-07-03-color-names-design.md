@@ -84,14 +84,12 @@ should appear only when the input color meaningfully varies from the base color.
 This keeps the name anchored to the catalog color instead of describing every
 color in absolute terms.
 
-Modifiers should also respect whether the matched crayon already sits at an
-extreme on that axis. If the base color is already very dark, do not add a
-lightness/brightness modifier that would read as an opposition to the base
-name. If the base color is already very light, do not add a darkness modifier
-that would produce the same kind of contradiction. The same guard applies to
-saturation: if the base color is already low-saturation, do not add a relative
-saturation modifier on that axis. When an axis would produce a contradictory
-phrase, omit that axis's modifier and let the nearest base name carry the label.
+Modifiers should also respect whether the matched crayon already sits near
+either extreme on that axis. If the base color is already very dark or very
+light, do not add a brightness modifier. If the base color is already very low
+or very high saturation, do not add a saturation modifier. When an axis would
+produce a strained or contradictory phrase, omit that axis's modifier and let
+the nearest base name carry the label.
 
 V1 buckets:
 
@@ -119,11 +117,10 @@ Initial thresholds:
 - less saturated: saturation delta below -0.20
 - default saturation: saturation delta from -0.20 up to 0.20
 - more saturated: saturation delta 0.20 and above
-- suppress brightness modifiers when the base brightness is below 0.20 and the
-  input is lighter than the base
-- suppress brightness modifiers when the base brightness is above 0.92 and the
-  input is darker than the base
+- suppress brightness modifiers when the base brightness is below 0.20
+- suppress brightness modifiers when the base brightness is above 0.92
 - suppress saturation modifiers when the base saturation is below 0.20
+- suppress saturation modifiers when the base saturation is above 0.85
 
 Threshold changes after implementation should be driven by failing or awkward
 fixture names, not by ad hoc tuning.
@@ -209,7 +206,7 @@ through localized format strings, not through English-only string joining.
   without brightness or saturation modifiers.
 - Brightness and saturation modifiers are applied only when the input color
   meaningfully differs from the matched crayon on that axis.
-- Modifiers are suppressed when the matched crayon already sits at an axis
-  extreme and the modifier would create a contradictory phrase.
+- Modifiers are suppressed on any axis where the matched crayon already sits
+  near either extreme of that axis.
 - Tests cover matching, bucketing, phrase construction, and representative
   localizations.
