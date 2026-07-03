@@ -208,4 +208,53 @@ import Testing
         #expect(components.base.id == "lemon")
         #expect(components.saturation == nil)
     }
+
+    @Test
+    func exactCrayonLocalizedNameUsesBaseOnly() {
+        let name = Style.Color.rgba(0, 0, 0, 1).localizedName(locale: Locale(identifier: "en"))
+
+        #expect(name == "Licorice")
+    }
+
+    @Test
+    func modifiedColorLocalizedNameUsesRelativeModifiers() throws {
+        let clover = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "clover" })
+        let name = Style.Color.rgba(
+            Float(max(clover.red - 0.18, 0.0)),
+            Float(max(clover.green - 0.18, 0.0)),
+            Float(max(clover.blue - 0.18, 0.0)),
+            1
+        ).localizedName(locale: Locale(identifier: "en"))
+
+        #expect(!name.isEmpty)
+        #expect(!name.contains("ColorName."))
+    }
+
+    @Test
+    func localizedNamesExistForSupportedLanguages() {
+        let locales = ["en", "fr", "de", "es", "it", "pl", "uk"].map(Locale.init(identifier:))
+
+        for locale in locales {
+            let name = Style.Color.rgba(0, 0, 0, 1).localizedName(locale: locale)
+
+            #expect(!name.isEmpty)
+            #expect(!name.contains("ColorName."))
+        }
+    }
+
+    @Test
+    func formatterUsesLocalizedPhraseTemplates() throws {
+        let clover = try #require(Style.Color.CrayonPalette.loadResourceEntries().first { $0.id == "clover" })
+        let modified = Style.Color.rgba(
+            Float(max(clover.red - 0.18, 0.0)),
+            Float(max(clover.green - 0.18, 0.0)),
+            Float(max(clover.blue - 0.18, 0.0)),
+            1
+        )
+        let english = modified.localizedName(locale: Locale(identifier: "en"))
+        let french = modified.localizedName(locale: Locale(identifier: "fr"))
+
+        #expect(english == "darker Clover")
+        #expect(french == "Clover plus foncé")
+    }
 }

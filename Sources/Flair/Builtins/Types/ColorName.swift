@@ -4,6 +4,41 @@ import AppKit
 #endif
 
 extension Style.Color {
+    public var localizedName: String {
+        localizedName(locale: .current)
+    }
+
+    public func localizedName(locale: Locale) -> String {
+        let components = nameComponents
+        let base = Self.localizedString("ColorName.Base.\(components.base.id)", locale: locale)
+        let brightness = components.brightness.map { modifier in
+            Self.localizedString("ColorName.Brightness.\(modifier.rawValue)", locale: locale)
+        }
+        let saturation = components.saturation.map { modifier in
+            Self.localizedString("ColorName.Saturation.\(modifier.rawValue)", locale: locale)
+        }
+
+        switch (brightness, saturation) {
+        case let (.some(brightness), .some(saturation)):
+            let format = Self.localizedString("ColorName.Format.BrightnessSaturationBase", locale: locale)
+            return String(format: format, locale: locale, brightness, saturation, base)
+        case let (.some(brightness), .none):
+            let format = Self.localizedString("ColorName.Format.BrightnessBase", locale: locale)
+            return String(format: format, locale: locale, brightness, base)
+        case let (.none, .some(saturation)):
+            let format = Self.localizedString("ColorName.Format.SaturationBase", locale: locale)
+            return String(format: format, locale: locale, saturation, base)
+        case (.none, .none):
+            let format = Self.localizedString("ColorName.Format.BaseOnly", locale: locale)
+            return String(format: format, locale: locale, base)
+        }
+    }
+
+    private static func localizedString(_ key: String, locale: Locale) -> String {
+        let languageCode = locale.language.languageCode?.identifier ?? "en"
+        return LocalizedCatalog.value(for: key, languageCode: languageCode) ?? key
+    }
+
     enum BrightnessModifier: String, Hashable, Sendable {
         case muchDarker
         case darker
@@ -138,6 +173,43 @@ extension Style.Color {
         if delta < -0.20 { return .lessSaturated }
         if delta < 0.20 { return nil }
         return .moreSaturated
+    }
+}
+
+private enum LocalizedCatalog {
+    struct Resource: Decodable {
+        let strings: [String: Entry]
+    }
+
+    struct Entry: Decodable {
+        let localizations: [String: Localization]?
+    }
+
+    struct Localization: Decodable {
+        let stringUnit: StringUnit?
+    }
+
+    struct StringUnit: Decodable {
+        let value: String
+    }
+
+    static let resource: Resource = {
+        do {
+            guard let url = Bundle.module.url(forResource: "Localizable", withExtension: "xcstrings") else {
+                throw CocoaError(.fileNoSuchFile)
+            }
+
+            let data = try Data(contentsOf: url)
+            return try JSONDecoder().decode(Resource.self, from: data)
+        } catch {
+            preconditionFailure("Failed to load Localizable.xcstrings: \(error)")
+        }
+    }()
+
+    static func value(for key: String, languageCode: String) -> String? {
+        let entry = resource.strings[key]
+        return entry?.localizations?[languageCode]?.stringUnit?.value
+            ?? entry?.localizations?["en"]?.stringUnit?.value
     }
 }
 
