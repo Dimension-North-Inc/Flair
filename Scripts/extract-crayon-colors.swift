@@ -53,6 +53,12 @@ let entries = list.allKeys.compactMap { name -> CrayonColorResource? in
         alpha: component(color.alphaComponent),
         localizedNames: ["en": name]
     )
+}.sorted { lhs, rhs in
+    if lhs.id == rhs.id {
+        return lhs.sourceName < rhs.sourceName
+    }
+
+    return lhs.id < rhs.id
 }
 
 let encoder = PropertyListEncoder()
