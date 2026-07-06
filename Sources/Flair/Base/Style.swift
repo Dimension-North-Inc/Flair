@@ -62,6 +62,7 @@ public struct Style {
         FontAngleStyle.name:              FontAngleStyle.self,
         FontWidthStyle.name:              FontWidthStyle.self,
         FontWeightStyle.name:             FontWeightStyle.self,
+        FontVariantCapsStyle.name:        FontVariantCapsStyle.self,
 
         // builtin text styles
         AlignmentStyle.name:              AlignmentStyle.self,

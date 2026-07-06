@@ -75,6 +75,9 @@ extension Style {
                     angle: self.italic
                     ? self.fontAngle.next : self.fontAngle
                 )
+                .replacing(
+                    variantCaps: self.fontVariantCaps
+                )
             
             return desc
         }

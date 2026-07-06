@@ -155,6 +155,15 @@ public struct FontDescriptor {
         replacingTraits(angle: value)
     }
 
+    public func replacing(variantCaps value: FontVariantCaps) -> Self {
+        let settings = value.featureSettings
+        guard !settings.isEmpty else {
+            return Self(impl: impl.addingAttributes([.featureSettings: settings]))
+        }
+
+        return Self(impl: impl.addingAttributes([.featureSettings: settings]))
+    }
+
     private func replacingTraits(
         weight requestedWeight: FontWeight? = nil,
         width requestedWidth: FontWidth? = nil,
@@ -235,6 +244,60 @@ extension FontDescriptorRef {
     subscript<T>(key: FontDescriptorRef.AttributeName) -> T? {
         self.object(forKey: key) as? T
     }
+}
+
+/// Standard capital glyph variants supported by Apple font descriptors.
+public enum FontVariantCaps: String, Codable, Hashable, CaseIterable, CustomStringConvertible, Sendable {
+    case normal
+    case smallCaps
+    case allSmallCaps
+    case petiteCaps
+    case allPetiteCaps
+
+    public var description: String {
+        switch self {
+        case .normal: "normal"
+        case .smallCaps: "small caps"
+        case .allSmallCaps: "all small caps"
+        case .petiteCaps: "petite caps"
+        case .allPetiteCaps: "all petite caps"
+        }
+    }
+
+    fileprivate var featureSettings: [[FontDescriptorRef.FeatureKey: Int]] {
+        switch self {
+        case .normal:
+            []
+        case .smallCaps:
+            [Self.lowerCaseSmallCaps]
+        case .allSmallCaps:
+            [Self.lowerCaseSmallCaps, Self.upperCaseSmallCaps]
+        case .petiteCaps:
+            [Self.lowerCasePetiteCaps]
+        case .allPetiteCaps:
+            [Self.lowerCasePetiteCaps, Self.upperCasePetiteCaps]
+        }
+    }
+
+    private static let lowerCaseSmallCaps: [FontDescriptorRef.FeatureKey: Int] = [
+        .typeIdentifier: kLowerCaseType,
+        .selectorIdentifier: kLowerCaseSmallCapsSelector
+    ]
+
+    private static let upperCaseSmallCaps: [FontDescriptorRef.FeatureKey: Int] = [
+        .typeIdentifier: kUpperCaseType,
+        .selectorIdentifier: kUpperCaseSmallCapsSelector
+    ]
+
+    private static let lowerCasePetiteCaps: [FontDescriptorRef.FeatureKey: Int] = [
+        .typeIdentifier: kLowerCaseType,
+        .selectorIdentifier: kLowerCasePetiteCapsSelector
+    ]
+
+    private static let upperCasePetiteCaps: [FontDescriptorRef.FeatureKey: Int] = [
+        .typeIdentifier: kUpperCaseType,
+        .selectorIdentifier: kUpperCasePetiteCapsSelector
+    ]
 }
 
 /// Standard font weights

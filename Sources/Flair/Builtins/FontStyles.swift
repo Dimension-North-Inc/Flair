@@ -54,6 +54,11 @@ public struct FontWeightStyle: StyleKeys {
     public static let initial: FontWeight = .regular
 }
 
+public struct FontVariantCapsStyle: StyleKeys {
+    public static let name = "flair.font-variant-caps"
+    public static let initial = FontVariantCaps.normal
+}
+
 extension Style.Keys {
     public var fontName: FontNameStyle.Type {
         FontNameStyle.self
@@ -73,5 +78,9 @@ extension Style.Keys {
 
     public var fontWeight: FontWeightStyle.Type {
         FontWeightStyle.self
+    }
+
+    public var fontVariantCaps: FontVariantCapsStyle.Type {
+        FontVariantCapsStyle.self
     }
 }

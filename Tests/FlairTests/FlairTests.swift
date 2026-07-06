@@ -567,4 +567,21 @@ import SwiftUI
         #expect(font?.pointSize == 14)
         #expect(paragraph?.lineSpacing == 3)
     }
+
+    @Test
+    func fontVariantCapsAppliesDescriptorFeatures() {
+        var style = Style()
+        style.fontVariantCaps = .allSmallCaps
+
+        let settings = style.fontDescriptor.ref.fontAttributes[.featureSettings] as? [[FontDescriptorRef.FeatureKey: Int]]
+
+        #expect(settings?.contains([
+            .typeIdentifier: kLowerCaseType,
+            .selectorIdentifier: kLowerCaseSmallCapsSelector
+        ]) == true)
+        #expect(settings?.contains([
+            .typeIdentifier: kUpperCaseType,
+            .selectorIdentifier: kUpperCaseSmallCapsSelector
+        ]) == true)
+    }
 }
