@@ -9,6 +9,8 @@
 import SwiftUI
 import Foundation
 
+public typealias AttributedStringRef = NSAttributedString
+
 extension FontRef: @unchecked @retroactive Sendable {}
 
 extension NSParagraphStyle: @unchecked @retroactive Sendable {}
@@ -221,5 +223,35 @@ extension AttributedString {
             copy[range].font = style.font
         }
         return copy
+    }
+}
+
+public extension Style {
+    func attributedStringRef(_ string: String) -> AttributedStringRef {
+        AttributedStringRef(string: string, attributes: attributedStringRefAttributes)
+    }
+
+    var attributedStringRefAttributes: [NSAttributedString.Key: Any] {
+        var attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: self.paragraph,
+            .foregroundColor: self.textColor.ref,
+            .backgroundColor: self.textBackgroundColor.ref
+        ]
+
+        if let font = self.font {
+            attributes[.font] = font
+        }
+
+        if let underline = self.underline {
+            attributes[.underlineStyle] = underline.style.rawValue
+            attributes[.underlineColor] = underline.color?.ref
+        }
+
+        if let strikethrough = self.strikethrough {
+            attributes[.strikethroughStyle] = strikethrough.style.rawValue
+            attributes[.strikethroughColor] = strikethrough.color?.ref
+        }
+
+        return attributes
     }
 }

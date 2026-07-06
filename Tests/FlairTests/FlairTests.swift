@@ -551,4 +551,20 @@ import SwiftUI
         style.fontSize = 36
         #expect(style.font?.pointSize == 36)
     }
+
+    @Test
+    func stylesCanBeConvertedToAttributedStringRefs() {
+        var style = Style()
+        style.fontSize = 14
+        style.fontWeight = .bold
+        style.lineSpacing = 3
+
+        let attributedString = style.attributedStringRef("Styled")
+        let font = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? FontRef
+        let paragraph = attributedString.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSParagraphStyle
+
+        #expect(font?.fontName == "Helvetica-Bold")
+        #expect(font?.pointSize == 14)
+        #expect(paragraph?.lineSpacing == 3)
+    }
 }
