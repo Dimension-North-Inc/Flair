@@ -144,35 +144,67 @@ public struct FontDescriptor {
     }
 
     public func replacing(weight value: FontWeight) -> Self {
-        let options = familyMembers(resized: size)
-        let nearest = _nearest(to: value, in: options.compactMap(\.weight)) ?? value
-
-        var traits = impl.fontAttributes[.traits] as? [FontDescriptorRef.TraitKey: Any] ?? [:]
-        
-        traits[.weight] = nearest.rawValue
-        
-        return Self(impl: impl.addingAttributes([.traits: traits]))
+        replacingTraits(weight: value)
     }
     
     public func replacing(width value: FontWidth) -> Self {
-        let options = familyMembers(resized: size)
-        let nearest = _nearest(to: value, in: options.compactMap(\.width)) ?? value
-
-        var traits = impl.fontAttributes[.traits] as? [FontDescriptorRef.TraitKey: Any] ?? [:]
-        
-        traits[.width] = nearest.rawValue
-        
-        return Self(impl: impl.addingAttributes([.traits: traits]))
+        replacingTraits(width: value)
     }
     
     public func replacing(angle value: FontAngle) -> Self {
-        let options = familyMembers(resized: size)
-        let nearest = _nearest(to: value, in: options.compactMap(\.angle)) ?? value
+        replacingTraits(angle: value)
+    }
 
+    private func replacingTraits(
+        weight requestedWeight: FontWeight? = nil,
+        width requestedWidth: FontWidth? = nil,
+        angle requestedAngle: FontAngle? = nil
+    ) -> Self {
+        let targetWeight = requestedWeight ?? weight ?? .regular
+        let targetWidth = requestedWidth ?? width ?? .standard
+        let targetAngle = requestedAngle ?? angle ?? .standard
+        let options = familyMembers(resized: size)
+
+        guard let best = options.min(by: {
+            $0.fontMatchScore(weight: targetWeight, width: targetWidth, angle: targetAngle)
+                < $1.fontMatchScore(weight: targetWeight, width: targetWidth, angle: targetAngle)
+        }) else {
+            return replacingTraitsFallback(weight: targetWeight, width: targetWidth, angle: targetAngle)
+        }
+
+        return size.map { best.replacing(size: $0) } ?? best
+    }
+
+    private func fontMatchScore(weight targetWeight: FontWeight, width targetWidth: FontWidth, angle targetAngle: FontAngle) -> CGFloat {
+        let weightScore = CGFloat(abs(weightRank(weight ?? .regular) - weightRank(targetWeight)))
+        let widthScore = abs((width ?? .standard).rawValue - targetWidth.rawValue) * 100
+        let angleScore = abs((angle ?? .standard).rawValue - targetAngle.rawValue) * 10
+        return widthScore + angleScore + weightScore
+    }
+
+    private func weightRank(_ value: FontWeight) -> Int {
+        if let index = FontWeight.allCases.firstIndex(of: value) {
+            return index
+        }
+
+        switch value.rawValue {
+        case ..<(-0.8): return 0
+        case ..<(-0.6): return 1
+        case ..<(-0.3): return 2
+        case ..<(0.1): return 3
+        case ..<(0.2): return 4
+        case ..<(0.35): return 5
+        case ..<(0.5): return 6
+        case ..<(0.7): return 7
+        default: return 8
+        }
+    }
+
+    private func replacingTraitsFallback(weight: FontWeight, width: FontWidth, angle: FontAngle) -> Self {
         var traits = impl.fontAttributes[.traits] as? [FontDescriptorRef.TraitKey: Any] ?? [:]
-        
-        traits[.slant] = nearest.rawValue
-        
+        traits[.weight] = weight.rawValue
+        traits[.width] = width.rawValue
+        traits[.slant] = angle.rawValue
         return Self(impl: impl.addingAttributes([.traits: traits]))
     }
 }
